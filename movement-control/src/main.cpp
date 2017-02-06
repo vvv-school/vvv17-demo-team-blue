@@ -234,7 +234,7 @@ protected:
     }
 
     /***************************************************/
-    bool denyCard(const double fingers_closure)
+    bool grasp_it(const double fingers_closure)
     {
         Vector x; string hand;
         if (object.getLocation(x))
@@ -425,6 +425,12 @@ public:
         return true;
     }
 
+    void deny_card()
+    {
+        Vector denyConfig(16, 0.0);
+        denyConfig[0] = 36.0;
+    }
+
     /***************************************************/
     bool respond(const Bottle &command, Bottle &reply)
     {
@@ -444,19 +450,19 @@ public:
             reply.addString("ack");
             reply.addString("Yep! I'm looking down now!");
         }
-        else if (cmd=="deny_card")
+        else if (cmd=="grasp_it")
         {
             // the "closure" accounts for how much we should
             // close the fingers around the object:
             // if closure == 0.0, the finger joints have to reach their minimum
             // if closure == 1.0, the finger joints have to reach their maximum
-            double fingers_closure=0.9; // default value
+            double fingers_closure=0.5; // default value
 
             // we can pass a new value via rpc
             if (command.size()>1)
                 fingers_closure=command.get(1).asDouble();
 
-            bool ok=denyCard(fingers_closure);
+            bool ok=grasp_it(fingers_closure);
             // we assume the robot is not moving now
             if (ok)
             {
