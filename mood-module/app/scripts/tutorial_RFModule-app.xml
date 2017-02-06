@@ -1,0 +1,33 @@
+<application>
+
+  <name>Tutorial_RFModule</name>
+  <description> Tutorial on yarp RFModule</description>
+
+  <dependencies>
+      <port>/yarplogger</port>
+  </dependencies>
+
+  <module>
+      <name>tutorial_RFModule</name>
+      <parameters> --mode coder</parameters>
+      <prefix>/coder</prefix>
+      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+      <node>localhost</node>
+  </module>
+
+  <module>
+      <name>tutorial_RFModule</name>
+      <parameters>--mode decoder</parameters>
+      <prefix>/decoder</prefix>
+      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+      <node>localhost</node>
+  </module>
+
+  <connection>
+      <from external="true">/coder/Codec/out</from>
+      <to>/decoder/Codec/in</to>
+      <protocol>tcp</protocol>
+  </connection>
+
+</application>
+
