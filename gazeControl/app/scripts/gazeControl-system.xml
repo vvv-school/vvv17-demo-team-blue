@@ -19,6 +19,7 @@
 
  <module>
       <name>yarprobotinterface</name>
+      <parameters>--context simCartesianControl --config no_legs.xml</parameters>
       <dependencies>
           <port timeout="20">/yarplogger</port>
           <port timeout="20">/icubSim/torso/state:o</port>
@@ -28,7 +29,6 @@
       <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
       <node>localhost</node>
   </module>
-
 
   <module>
       <name>iKinGazeCtrl</name>
