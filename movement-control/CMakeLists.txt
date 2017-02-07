@@ -31,9 +31,9 @@ icubcontrib_set_default_prefix()
 # import math symbols from standard cmath
 add_definitions(-D_USE_MATH_DEFINES)
 
-include_directories(${YARP_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/src)
+include_directories(${YARP_INCLUDE_DIRS} src include)
 add_executable(${PROJECT_NAME} src/main.cpp
-			       src/slidingController_IDL.cpp
+                               src/slidingController_IDL.cpp
                                src/helpers.h
                                src/helpers.cpp)
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES} actionPrimitives perceptiveModels iKin ctrlLib)
