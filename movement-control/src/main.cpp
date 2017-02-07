@@ -6,11 +6,19 @@
 #include <cmath>
 #include <algorithm>
 #include <memory>
-
+#include <fstream>
 #include <yarp/os/all.h>
 #include <yarp/dev/all.h>
 #include <yarp/sig/all.h>
 #include <yarp/math/Math.h>
+
+#include <iCub/iKin/iKinFwd.h>
+#include <iCub/perception/models.h>
+#include <iCub/action/actionPrimitives.h>
+
+#include "slidingController_IDL.h"
+
+#define EXPLORATION_TOL     5e-3
 
 #include "helpers.h"
 
@@ -19,6 +27,10 @@ using namespace yarp::os;
 using namespace yarp::dev;
 using namespace yarp::sig;
 using namespace yarp::math;
+using namespace iCub::ctrl;
+using namespace iCub::iKin;
+using namespace iCub::perception;
+using namespace iCub::action;
 
 
 /***************************************************/
@@ -36,7 +48,46 @@ protected:
     RpcServer rpcPort;
     ObjectRetriever object;
 
+    ActionPrimitivesLayer1  action;
+    string graspModelFileToWrite;
+    deque<string> handKeys;
+    /******************Touch model***********/
+    bool calibrateGraspModel(const bool forceCalibration)
+    {
+        Model *model; action.getGraspModel(model);
+        if (model!=NULL)
+        {
+            if (forceCalibration || !model->isCalibrated())
+            {
+                Bottle fingers;
+                Bottle &fng=fingers.addList();
+                fng.addString("index");
+                fng.addString("middle");
+                fng.addString("ring");
+                fng.addString("little");
+
+                Property prop;
+                prop.put("finger",fingers.get(0));
+                model->calibrate(prop);
+
+                prop.clear();
+                prop.put("finger","thumb");
+                model->calibrate(prop);
+
+                ofstream fout;
+                fout.open(graspModelFileToWrite.c_str());
+                model->toStream(fout);
+                fout.close();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     /***************************************************/
+
     void fixate(const Vector &x)
     {
         // simply look at x,
@@ -780,4 +831,3 @@ int main(int argc, char *argv[])
     rf.configure(argc,argv);
     return mod.runModule(rf);
 }
-
