@@ -44,13 +44,13 @@
   </connection>
 
   <connection>
-      <from>/BrutusTT/cardTracker/image:o</from>
+      <from>/BrutusTT/CardTracker/image:o</from>
       <to>/BrutusTT/view/tracker:i</to>
   </connection>
 
   <connection>
       <from>/BrutusTT/lbpExtract/segmentedlbp:o</from>
-      <to>/BrutusTT/cardTracker/image:i</to>
+      <to>/BrutusTT/CardTracker/image:i</to>
   </connection>
 
 </application>

@@ -60,8 +60,8 @@ class CardTracker(BaseModule):
         self.imgInPort       = self.createInputPort('image')
         self.imgOutPort      = self.createOutputPort('image')
 
-        self.bufImageIn,  self.bufArrayIn  = self.createImageBuffer(CardTracker.D_WIDTH, CardTracker.D_HEIGHT, 3)
-        self.bufImageOut, self.bufArrayOut = self.createImageBuffer(CardTracker.D_WIDTH, CardTracker.D_HEIGHT, 3)
+        self.bufImageIn,  self.bufArrayIn  = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
+        self.bufImageOut, self.bufArrayOut = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
 
         self.order           = CardTracker.O_HORIZONTAL
         self.orderIsReversed = False
@@ -75,8 +75,11 @@ class CardTracker(BaseModule):
 
         if self.imgInPort.read(self.bufImageIn):
 
+            assert self.bufImageIn.width()  == self.D_WIDTH
+            assert self.bufImageIn.height() == self.D_HEIGHT
+
             # Make sure the image has not been re-allocated
-            assert self.bufArrayIn.__array_interface__['data'][0] == self.bufImageIn.getRawImage().__long__()
+#             assert self.bufArrayIn.__array_interface__['data'][0] == self.bufImageIn.getRawImage().__long__()
 
             # convert image to be usable in OpenCV
             image  = cv2.cvtColor(self.bufArrayIn, cv2.COLOR_BGR2RGB)
@@ -184,7 +187,7 @@ class CardTracker(BaseModule):
 
         # we only care for one contour
         cards = {}
-        for card in [self.detect_cards(cv2_image)]:
+        for card in self.detect_cards(cv2_image):
             if card:
                 cards[card.tid] = card        
         
@@ -205,11 +208,11 @@ class CardTracker(BaseModule):
         for card in card_list:
             card.highlite_marker(cv2_image)
 
-#         self.sendCards(card_list)
-#         self.sendOrder(card_list)
-#         self.sendTranslation(card_list)
+        self.sendCards(card_list)
+        self.sendOrder(card_list)
+        self.sendTranslation(card_list)
 
-        return self.image# cv2_image
+        return self.image
 
 
     def respond(self, command, reply):
@@ -251,6 +254,7 @@ class CardTracker(BaseModule):
 
 
     def detect_cards(self, image):
+        results = []
         gray    = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gray    = cv2.bilateralFilter(gray, 11, 17, 17)
         edged   = cv2.Canny(gray, 30, 200)
@@ -278,8 +282,11 @@ class CardTracker(BaseModule):
                 # draw center
                 center = (x + (w / 2), y + (h / 2)) 
                 cv2.circle(image, center, 5, (0,255,0), -1)
+                
+                # results.append()
     
         self.image = image
+        return results
 
 
 def createArgParser():
