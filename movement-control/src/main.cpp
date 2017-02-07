@@ -40,6 +40,7 @@ protected:
     PolyDriver drvArmR, drvArmL, drvGaze;
     PolyDriver drvHandR, drvHandL;
     ICartesianControl *iarm;
+    bool impedanceSw,oldImpedanceSw;
     IGazeControl      *igaze;
     int startup_ctxt_arm_right;
     int startup_ctxt_arm_left;
@@ -86,7 +87,31 @@ protected:
         return false;
     }
 
-    /***************************************************/
+    /******************ARM CONTROLLER*******************/
+    void setImpedance(const bool enable=true, const bool forceSet=false)
+    {
+        if (!forceSet && (enable==impedanceSw))
+            return;
+
+        IInteractionMode *imode;
+        drvArmR.view(imode);
+
+        if (enable)
+        {
+            IImpedanceControl *iimp;
+            drvArmR.view(iimp);
+            //Thanks Ugo ;)
+            imode->setInteractionMode(0,VOCAB_IM_COMPLIANT); iimp->setImpedance(0,0.4,0.03);
+            imode->setInteractionMode(1,VOCAB_IM_COMPLIANT); iimp->setImpedance(1,0.4,0.03);
+            imode->setInteractionMode(2,VOCAB_IM_COMPLIANT); iimp->setImpedance(2,0.4,0.03);
+            imode->setInteractionMode(3,VOCAB_IM_COMPLIANT); iimp->setImpedance(3,0.2,0.01);
+            imode->setInteractionMode(4,VOCAB_IM_COMPLIANT); iimp->setImpedance(4,0.2,0.0);
+        }
+        else for (int j=0; j<5; j++)
+            imode->setInteractionMode(j,VOCAB_IM_STIFF);
+
+        impedanceSw=enable;
+    }
 
     void fixate(const Vector &x)
     {
