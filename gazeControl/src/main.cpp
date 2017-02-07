@@ -23,8 +23,7 @@ protected:
     PolyDriver drvGaze;
     IGazeControl      *igaze;
 
-    // BufferedPort<ImageOf<PixelRgb> > imgLPortIn,imgRPortIn;
-    // BufferedPort<ImageOf<PixelRgb> > imgLPortOut,imgRPortOut;
+    BufferedPort<Bottle> stateInput;
 
     RpcServer rpcPort;
 
@@ -80,11 +79,7 @@ public:
         // open the view
         drvGaze.view(igaze);
 
-        // imgLPortIn.open("/imgL:i");
-        // imgRPortIn.open("/imgR:i");
-        //
-        // imgLPortOut.open("/imgL:o");
-        // imgRPortOut.open("/imgR:o");
+        stateInput.open("/gaze-control/state:i");
 
         rpcPort.open("/service");
         attach(rpcPort);
@@ -97,8 +92,7 @@ public:
     /***************************************************/
     bool interruptModule()
     {
-        // imgLPortIn.interrupt();
-        // imgRPortIn.interrupt();
+        stateInput.interrupt();
         return true;
     }
 
@@ -106,10 +100,7 @@ public:
     bool close()
     {
         drvGaze.close();
-        // imgLPortIn.close();
-        // imgRPortIn.close();
-        // imgLPortOut.close();
-        // imgRPortOut.close();
+        stateInput.close();
         rpcPort.close();
         return true;
     }
@@ -118,6 +109,7 @@ public:
     bool respond(const Bottle &command, Bottle &reply) // list of instruction that are required to implemet
     {
         string cmd=command.get(0).asString();
+
         if (cmd=="help")
         {
             reply.addVocab(Vocab::encode("many"));
@@ -128,8 +120,8 @@ public:
         }
         else if (cmd=="look_up")
         {
-            look_up();
-            if (!ok_look_down){ reply.addString("Yep! I'm looking up now!"); }
+          look_up();
+          if (!ok_look_down){ reply.addString("Yep! I'm looking up now!"); }
         }
         else if (cmd=="look_down")
         {
@@ -152,19 +144,11 @@ public:
     /***************************************************/
     bool updateModule()
     {
-        // // get fresh images
-        // ImageOf<PixelRgb> *imgL=imgLPortIn.read(); // read() means read(true) by default : it means it is blocked here until it receives an image (contrary to previously which was unblocking)
-        // ImageOf<PixelRgb> *imgR=imgRPortIn.read();
-        //
-        // // interrupt sequence detected
-        // if ((imgL==NULL) || (imgR==NULL)) // when we press ctrl+c so stopped but normally pointing to valid objects so process
-        //     return false;
-        //
-        // imgLPortOut.prepare()=*imgL;
-        // imgRPortOut.prepare()=*imgR;
-        //
-        // imgLPortOut.write();
-        // imgRPortOut.write();
+        // get states
+        String *state = stateInput.read();
+
+        if (state==NULL)
+           return false;
 
         return true;
     }
