@@ -34,7 +34,6 @@ include_directories(${YARP_INCLUDE_DIRS}
 
 add_executable(${PROJECT_NAME}
                ${CMAKE_SOURCE_DIR}/src/slidingController_IDL.cpp
-               ${CMAKE_SOURCE_DIR}/src/helpers.cpp
                ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES} actionPrimitives perceptiveModels iKin ctrlLib)
