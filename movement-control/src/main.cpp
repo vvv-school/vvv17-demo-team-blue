@@ -610,7 +610,7 @@ public:
             return false;
         }
         Property optionAction;
-        string name=rf.check("name",Value("slidingController")).asString().c_str();
+        string name=rf.check("name",Value("movement-controller")).asString().c_str();
 
         string grasp_model_file=(arm=="left"?"grasp_model_file_left":"grasp_model_file_right");
         optionAction.put("robot",robot.c_str());
@@ -625,6 +625,7 @@ public:
         graspModelFileToWrite=rf.getHomeContextPath().c_str();
         graspModelFileToWrite+="/";
         graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
+        yInfo() << "home path: " << rf.getHomeContextPath();
 
         if (!inSimulation)
         {
@@ -698,6 +699,7 @@ public:
     {
         // TODO: bla
         Vector approachPos = cardPos;
+        approachPos[0] += 0.00;
         approachPos[2] += 0.05;
 
         // We only use the right hand
@@ -961,7 +963,7 @@ int main(int argc, char *argv[])
 
     CtrlModule mod;
     ResourceFinder rf;
-    rf.setDefaultContext("slidingController");
+    rf.setDefaultContext("movement-controller");
     rf.setDefault("grasp_model_type","springy");
     rf.setDefault("grasp_model_file_left","grasp_model_left.ini");
     rf.setDefault("grasp_model_file_right","grasp_model_right.ini");
