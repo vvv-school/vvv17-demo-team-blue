@@ -3,7 +3,7 @@ Team Blue code for VVV17 Final Assignment
 
 Team members:
 * Bence Magyar
-* Bruno Brita
+* Bruno Brito
 * Fabian Paus
 * Francois Foerster
 * Ingo Keller

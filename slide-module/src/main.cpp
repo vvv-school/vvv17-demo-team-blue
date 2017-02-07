@@ -30,6 +30,8 @@
 #include <iCub/perception/models.h>
 #include <iCub/action/actionPrimitives.h>
 
+#include "helpers.h"
+
 #include "slidingController_IDL.h"
 
 #define EXPLORATION_TOL     5e-3
