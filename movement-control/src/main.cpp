@@ -243,21 +243,21 @@ protected:
         else
             drvArmL.view(iarm);
 
-        Model *model; action.getGraspModel(model);
-          if (model!=NULL)
-          {
-              Value out;
-              model->getOutput(out);
-              double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
-              if (contact_force>exploration_max_force)
-              {
-                  printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+        Model *model = NULL;
+        if (action.getGraspModel(model))
+        {
+            Value out;
+            model->getOutput(out);
+            double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+            if (contact_force>exploration_max_force)
+            {
+                printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
 
-                  //INSERT PUSH CARD HERE
+                //INSERT PUSH CARD HERE
 
-                  expMutex.unlock();
-              }
-           }
+                //expMutex.unlock();
+            }
+        }
         // enable all dofs but the roll of the torso
 
         Vector dof(10, 1.0);
@@ -700,37 +700,21 @@ public:
         Vector approachPos = cardPos;
         approachPos[2] += 0.05;
 
-        std::string hand=(cardPos[1]>0.0?"right":"left");
+        // We only use the right hand
+        std::string hand="right";
+        yInfo() << "Choosing hand: " << hand;
 
         fixate(cardPos);
 
         Vector handOrientation(4, 0.0);
         {
             Matrix Rot(3,3);
-            if (hand == "right")
-            {
-                Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
-                Rot(1,0)= 0.0; Rot(1,1)= 0.0;  Rot(1,2)= 1.0;
-                Rot(2,0)= 0.0; Rot(2,1)= -1.0;  Rot(2,2)=0.0;
-            }
-            else
-            {
-                Rot(0,0)=-1.0; Rot(0,1)=  0.0; Rot(0,2)= 0.0;
-                Rot(1,0)= 0.0; Rot(1,1)= -1.0; Rot(1,2)= 0.0;
-                Rot(2,0)= 0.0; Rot(2,1)=  0.0; Rot(2,2)= 1.0;
-            }
-            Vector o(4);
-            o[0] = 0.0;
-            o[1] = -1.0;
-            o[2] = 0.0;
-            o[3] = 30.0 * (M_PI / 180.0);
 
-            Matrix RotY = axis2dcm(o).submatrix(0, 2, 0, 2);
+            Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
+            Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
+            Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)= -1.0;
 
-            yInfo() << Rot.rows() << "x " << Rot.cols() << " * "
-                    << RotY.rows() << "x" << RotY.cols();
-
-            handOrientation = dcm2axis(RotY * Rot);
+            handOrientation = dcm2axis(Rot);
         }
 
         VectorOf<int> abduction,thumb,fingers, index;
