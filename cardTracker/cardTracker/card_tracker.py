@@ -60,8 +60,8 @@ class CardTracker(BaseModule):
         self.imgInPort       = self.createInputPort('image')
         self.imgOutPort      = self.createOutputPort('image')
 
-        self.bufImageIn,  self.bufArrayIn  = self.createImageBuffer(320, 240, 3)
-        self.bufImageOut, self.bufArrayOut = self.createImageBuffer(320, 240, 3)
+        self.bufImageIn,  self.bufArrayIn  = self.createImageBuffer(CardTracker.D_WIDTH, CardTracker.D_HEIGHT, 3)
+        self.bufImageOut, self.bufArrayOut = self.createImageBuffer(CardTracker.D_WIDTH, CardTracker.D_HEIGHT, 3)
 
         self.order           = CardTracker.O_HORIZONTAL
         self.orderIsReversed = False

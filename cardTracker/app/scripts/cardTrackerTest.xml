@@ -1,0 +1,56 @@
+<application>
+
+  <description> CardTracker Test</description>
+  <name>CardTracker_Test</name>
+
+  <module>
+      <name>yarpdataplayer</name>
+      <prefix>/BrutusTT</prefix>
+      <node>localhost</node>      
+  </module>
+
+  <module>
+      <name>yarpview</name>
+      <parameters> --name /BrutusTT/view/segmented:i</parameters>
+      <node>localhost</node>
+  </module>
+
+  <module>
+      <name>yarpview</name>
+      <parameters> --name /BrutusTT/view/extracted:i</parameters>
+      <node>localhost</node>
+  </module>
+
+  <module>
+      <name>yarpview</name>
+      <parameters> --name /BrutusTT/view/tracker:i</parameters>
+      <node>localhost</node>
+  </module>
+
+  <module>
+      <name>cardTracker</name>
+      <prefix>/BrutusTT</prefix>
+      <node>localhost</node>
+  </module>
+
+  <connection>
+      <from>/BrutusTT/lbpExtract/segmentedlbp:o</from>
+      <to>/BrutusTT/view/segmented:i</to>
+  </connection>
+
+  <connection>
+      <from>/BrutusTT/lbpExtract/extractedlbp:o</from>
+      <to>/BrutusTT/view/extracted:i</to>
+  </connection>
+
+  <connection>
+      <from>/BrutusTT/cardTracker/image:o</from>
+      <to>/BrutusTT/view/tracker:i</to>
+  </connection>
+
+  <connection>
+      <from>/BrutusTT/lbpExtract/segmentedlbp:o</from>
+      <to>/BrutusTT/cardTracker/image:i</to>
+  </connection>
+
+</application>

@@ -16,6 +16,7 @@
 #    along with SPY.  If not, see <http://www.gnu.org/licenses/>.                                  #
 ####################################################################################################
 import argparse
+import sys
 import time
 import yarp
 
@@ -45,7 +46,7 @@ class BaseModule(yarp.RFModule, YarpFactory):
         self.rpc_port = yarp.RpcServer()
 
         # name settings
-        port_name = '/BrutusTT/%s/%s' % (name, 'rpc')
+        port_name = '/%s/%s' % (name, 'rpc')
 
         self.rpc_port.open(port_name)
 #         if not self.rpc_port.open(port_name):
@@ -59,12 +60,14 @@ class BaseModule(yarp.RFModule, YarpFactory):
     def interruptModule(self):
         for port in reversed(self._ports):
             port.interrupt()
+        self.rpc_port.interrupt()
         return True
 
 
     def close(self):
         for port in reversed(self._ports):
             port.close()
+        self.rpc_port.close()
         return True
 
 
@@ -110,9 +113,7 @@ def main(module_cls, args = None):
     resource_finder = yarp.ResourceFinder()
     resource_finder.setVerbose(True)
 
-    # resource_finder.configure(argc,argv);
+    resource_finder.configure(sys.argv)
 
     module = module_cls(args)
     module.runModule(resource_finder)
-
-    yarp.Network.fini()
