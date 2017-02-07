@@ -445,8 +445,8 @@ protected:
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,1.0);
-            moveFingers(hand,fingers,0.2);
+            moveFingers(hand,thumb,0.0);
+            moveFingers(hand,fingers,0.3);
             yInfo()<<"prepared hand";
 
             //approach_target_for_push(hand,x,o);
@@ -513,6 +513,7 @@ public:
     bool configure(ResourceFinder &rf)
     {
         http://www.google.com
+        https://www.facebook.com
         string robot=rf.check("robot",Value("icubSim")).asString();
 
         if (!openCartesian(robot,"right_arm"))
@@ -646,6 +647,80 @@ public:
             handOrientation = dcm2axis(RotY * Rot);
         }
 
+        VectorOf<int> abduction,thumb,fingers, index;
+        abduction.push_back(7);
+        thumb.push_back(8);
+        int indexFingerJ = 11;
+        index.push_back(indexFingerJ);
+        for (int i=9; i<16; i++)
+        {
+            if (i != indexFingerJ)
+                fingers.push_back(i);
+        }
+
+        Vector fingerJoints;
+        for (int i = 7; i < 16; ++i)
+        {
+            fingerJoints.push_back(i);
+        }
+
+        Vector fingerValues(fingerJoints.size());
+        fingerValues[0] = 50.0;
+        fingerValues[1] = 80.0;
+        fingerValues[2] = 10.0;
+        fingerValues[3] = 120.0;
+        fingerValues[4] = 22.5;
+        fingerValues[5] = 72.0;
+        fingerValues[6] = 0.0;
+        fingerValues[7] = 0.0;
+        fingerValues[8] = 0.0;
+
+        IControlLimits   *ilim;
+        IPositionControl *ipos;
+        IControlMode2     *imod;
+        if (hand=="right")
+        {
+            drvHandR.view(ilim);
+            drvHandR.view(ipos);
+            drvHandR.view(imod);
+            drvArmR.view(iarm);
+        }
+        else
+        {
+            drvHandL.view(ilim);
+            drvHandL.view(ipos);
+            drvHandL.view(imod);
+            drvArmL.view(iarm);
+        }
+
+        for (size_t i=0; i<fingerJoints.size(); i++)
+        {
+            int j=fingerJoints[i];
+            double value = fingerValues[i];
+
+            imod->setControlMode(j, VOCAB_CM_POSITION);
+            ipos->positionMove(j, value);
+        }
+
+        // wait until all fingers have attained their set-points
+        bool done;
+        do
+        {
+            done = true;
+            for (size_t i=0; i<fingerJoints.size(); i++)
+            {
+                int j = fingerJoints[i];
+                bool jointDone = false;
+                ipos->checkMotionDone(j, &jointDone);
+                done = done && jointDone;
+            }
+        } while (!done);
+
+        if (!iarm->goToPoseSync(approachPos, handOrientation, 20.0))
+        {
+            yError() << "Could not move to approach position";
+            return false;
+        }
 
         return true;
     }
@@ -712,6 +787,20 @@ public:
             {
                 reply.addString("nack");
                 reply.addString("I don't see any object!");
+            }
+        }
+        else if (cmd == "get_object_loc")
+        {
+            // Temporary
+            Vector loc;
+            if (object.getLocation(loc))
+            {
+                reply.addString("ack");
+                reply.addString(loc.toString());
+            }
+            else
+            {
+                reply.addString("nack");
             }
         }
         else if (cmd == "home")
