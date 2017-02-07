@@ -16,6 +16,8 @@
  */
 
 #include <yarp/os/BufferedPort.h>
+#include <yarp/os/Port.h>
+#include <yarp/os/Bottle.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/RFModule.h>
 #include <yarp/os/Network.h>
@@ -32,13 +34,14 @@
 #include "duckDetector_IDL.h"
 
 /********************************************************/
-class Processing : public yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono> >
+class Processing : public yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >
 {
     std::string moduleName;
 
     yarp::os::RpcServer handlerPort;
 
-    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono> >   outPort;
+    yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outPort;
+    yarp::os::Port positionPort;
 
     yarp::os::RpcClient rpc;
 
@@ -61,9 +64,12 @@ public:
 
         this->useCallback();
 
-        BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono> >::open( "/" + moduleName + "/disparity:i" );
+        BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::open( "/" + moduleName + "/rgb:i" );
         outPort.open("/"+ moduleName + "/output");
+        positionPort.open("/" + moduleName + "/position:o");
 
+//        yarp::os::Network::connect("/SFM/disp:o", "/" + moduleName + "/disparity:i");
+//        yarp::os::Network::connect("/SFM/rpc", "/" + moduleName + "/disparity:i");
         return true;
     }
 
@@ -71,47 +77,49 @@ public:
     void close()
     {
         outPort.close();
-        BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono> >::close();
+        positionPort.close();
+        BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::close();
     }
 
     /********************************************************/
     void interrupt()
     {
-        BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelMono> >::interrupt();
+        BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::interrupt();
     }
 
     /********************************************************/
-    void onRead( yarp::sig::ImageOf<yarp::sig::PixelMono> &dispImage )
+    void onRead( yarp::sig::ImageOf<yarp::sig::PixelRgb> &dispImage )
     {
-        yarp::sig::ImageOf<yarp::sig::PixelMono> &outImage  = outPort.prepare();
+        yarp::sig::ImageOf<yarp::sig::PixelRgb> &outImage  = outPort.prepare();
 
         outImage.resize(dispImage.width(), dispImage.height());
         outImage.zero();
         
+        // cv::Mat disp = cv::cvarrToMat((IplImage *)dispImage.getIplImage());
         cv::Mat inDisp_cv = cv::cvarrToMat((IplImage *)dispImage.getIplImage());  
         cv::Mat disp = inDisp_cv.clone();
 
         cv::GaussianBlur(disp, disp, cv::Size(5, 5),2,2);
 
-        cv::dilate(disp, disp, cv::Mat(), cv::Point(-1,-1),
-            4, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue());
+        // cv::dilate(disp, disp, cv::Mat(), cv::Point(-1,-1),
+        //     4, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue());
 
-        cv::Point min_loc, max_loc;
-        double min, max;
-        cv::minMaxLoc(disp, &min, &max, &min_loc, &max_loc);
+        // cv::Point min_loc, max_loc;
+        // double min, max;
+        // cv::minMaxLoc(disp, &min, &max, &min_loc, &max_loc);
 
 
-        cv::threshold(disp, disp, 80, 255, cv::THRESH_TOZERO);
+        // cv::threshold(disp, disp, 80, 255, cv::THRESH_TOZERO);
 
-        std::vector<std::vector<cv::Point> > contours;
+        // std::vector<std::vector<cv::Point> > contours;
 
-        cv::findContours( disp, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
+        // cv::findContours( disp, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
 
-        cv::drawContours(disp, contours, 0, cv::Scalar(255,255,0));        
+        // cv::drawContours(disp, contours, 0, cv::Scalar(255,255,0));        
 
-        std::vector<cv::Moments> mu(contours.size() );
-        for( int i = 0; i < contours.size(); i++ )
-        { mu[i] = moments( contours[i], false ); }
+        // std::vector<cv::Moments> mu(contours.size() );
+        // for( int i = 0; i < contours.size(); i++ )
+        //{ mu[i] = moments( contours[i], false ); }
 
 
         //Mass center
@@ -134,10 +142,23 @@ public:
         //                 targetPort.write();  
         // }
 
-        cvtColor(disp, disp, CV_GRAY2RGB);        
+        // cvtColor(disp, disp, CV_GRAY2RGB);        
+
+        // IplImage out = dispImage.getIplImage();
+        // // outImage.resize(out.width, out.height);
+        // // cvCopy( &out, (IplImage *) outImage.getIplImage());
+        // cvCopy( &out, (IplImage *) outImage.getIplImage());
+        // outPort.write();
+
+        yarp::os::Bottle position_out;
+        position_out.addDouble(20.0);
+        position_out.addDouble(30.0);
+        position_out.addDouble(40.0);
+
+        positionPort.write(position_out);
 
         IplImage out = disp;
-        outImage.resize(out.width, out.height);
+        // outImage.resize(out.width, out.height);
         cvCopy( &out, (IplImage *) outImage.getIplImage());
         outPort.write();
     }

@@ -388,67 +388,6 @@ protected:
         igaze->waitMotionDone();
     }
 
-    /***************************************************/
-    bool grasp_it(const double fingers_closure)
-    {
-        Vector x;
-        string hand;
-        if (object.getLocation(x))
-        {
-            yInfo()<<"retrieved 3D location = ("<<x.toString(3,3)<<")";
-
-            // we select the hand accordingly
-            hand=(x[1]>0.0?"right":"left");
-            yInfo()<<"selected hand = \""<<hand<<'\"';
-        }
-        else
-            return false;
-
-        fixate(x);
-        yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
-
-        // refine the localization of the object
-        // with a proper hand-related map
-        if (object.getLocation(x,hand))
-        {
-            yInfo()<<"refined 3D location = ("<<x.toString(3,3)<<")";
-
-            // TODO: Make proper hand orientation
-            Vector o=computeHandOrientation(hand);
-            yInfo()<<"computed orientation = ("<<o.toString(3,3)<<")";
-
-            // we set up here the lists of joints we need to actuate
-            VectorOf<int> abduction,thumb,fingers;
-            abduction.push_back(7);
-            thumb.push_back(8);
-            for (int i=9; i<16; i++)
-                fingers.push_back(i);
-
-            // let's put the hand in the pre-grasp configuration
-            moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,1.0);
-            moveFingers(hand,fingers,0.0);
-            yInfo()<<"prepared hand";
-
-            approachTargetWithHand(hand,x,o);
-            yInfo()<<"approached object";
-
-            moveFingers(hand,fingers,fingers_closure);
-            yInfo()<<"grasped";
-
-            liftObject(hand);
-            yInfo()<<"lifted";
-
-            moveFingers(hand,fingers,0.0);
-            yInfo()<<"released";
-
-            home(hand);
-            yInfo()<<"gone home";
-            return true;
-        }
-        return false;
-    }
-
     bool push_object()
     {
         Vector x; string hand;
@@ -693,10 +632,10 @@ public:
         return true;
     }
 
-    void deny_card()
+    bool approach_card(Vector cardPos)
     {
-        Vector denyConfig(16, 0.0);
-        denyConfig[0] = 36.0;
+        // TODO: bla
+        return true;
     }
 
     /***************************************************/
@@ -718,31 +657,6 @@ public:
             reply.addString("ack");
             reply.addString("Yep! I'm looking down now!");
         }
-        else if (cmd=="grasp_it")
-        {
-            // the "closure" accounts for how much we should
-            // close the fingers around the object:
-            // if closure == 0.0, the finger joints have to reach their minimum
-            // if closure == 1.0, the finger joints have to reach their maximum
-            double fingers_closure=0.5; // default value
-
-            // we can pass a new value via rpc
-            if (command.size()>1)
-                fingers_closure=command.get(1).asDouble();
-
-            bool ok=grasp_it(fingers_closure);
-            // we assume the robot is not moving now
-            if (ok)
-            {
-                reply.addString("ack");
-                reply.addString("Yeah! I did it! Maybe...");
-            }
-            else
-            {
-                reply.addString("nack");
-                reply.addString("I don't see any object!");
-            }
-        }
         else if (cmd == "push_object")
         {
             // the "closure" accounts for how much we should
@@ -756,6 +670,26 @@ public:
                 fingers_closure=command.get(1).asDouble();
 
             bool ok=push_object();
+            // we assume the robot is not moving now
+            if (ok)
+            {
+                reply.addString("ack");
+                reply.addString("Yeah! I did it! Maybe...");
+            }
+            else
+            {
+                reply.addString("nack");
+                reply.addString("I don't see any object!");
+            }
+        }
+        else if (cmd == "approach_card")
+        {
+            Vector cardPos(3, 0.0);
+            cardPos[0] = command.get(1).asDouble();
+            cardPos[1] = command.get(2).asDouble();
+            cardPos[2] = command.get(3).asDouble();
+
+            bool ok = approach_card(cardPos);
             // we assume the robot is not moving now
             if (ok)
             {

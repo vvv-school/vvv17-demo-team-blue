@@ -20,16 +20,16 @@
   </arguments>
 
   <authors>
-    <author email="vadim.tikhanoff@iit.it"> Vadim Tikhanoff </author>
-    <author email="tanis.mar@iit.it"> Tanis Mar</author>
+    <author email="joris.guerin@ensam.eu"> Joris Guerin </author>
+    <author email="kompky@gmail.com"> Kyveli Kompatsiari</author>
   </authors>
 
   <data>
     <input>
       <type>yarp::sig::Image</type>
-      <port carrier="udp">/duck-detector/disparity:i</port>
+      <port carrier="udp">/duck-detector/rgb:i</port>
       <description>
-        Gets the disparity input stream from the datasetplayer.
+        Gets the rgb input stream from the datasetplayer.
       </description>
     </input>
     <output>
