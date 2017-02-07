@@ -124,6 +124,8 @@ protected:
         igaze->waitMotionDone();
     }
 
+  
+
     /***************************************************/
     Vector computeHandOrientation(const string &hand)
     {
