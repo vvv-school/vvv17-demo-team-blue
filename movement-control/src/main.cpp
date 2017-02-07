@@ -557,6 +557,8 @@ public:
     yarp::sig::Vector leftArmStartX;
     yarp::sig::Vector leftArmStartO;
 
+    bool inSimulation;
+
     /***************************************************/
     bool configure(ResourceFinder &rf)
     {
@@ -565,6 +567,7 @@ public:
 
         //string robot=rf.check("robot",Value("icub")).asString().c_str();
         string robot=rf.check("robot",Value("icubSim")).asString();
+        inSimulation = robot == "icubSim";
 
         if (!openCartesian(robot,"right_arm"))
             return false;
@@ -623,18 +626,22 @@ public:
         graspModelFileToWrite+="/";
         graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
 
-        if (!action.open(optionAction))
+        if (!inSimulation)
         {
-            drvHandR.close();
-            driverJoint.close();
-            return false;
-        }
+            if (!action.open(optionAction))
+            {
+                yError() << "Could not open action";
+                drvHandR.close();
+                driverJoint.close();
+                return false;
+            }
 
-        handKeys=action.getHandSeqList();
-        printf("***** List of available hand sequence keys:\n");
-        for (size_t i=0; i<handKeys.size(); i++)
-            printf("%s\n",handKeys[i].c_str());
-        calibrateGraspModel(false);
+            handKeys=action.getHandSeqList();
+            printf("***** List of available hand sequence keys:\n");
+            for (size_t i=0; i<handKeys.size(); i++)
+                printf("%s\n",handKeys[i].c_str());
+            calibrateGraspModel(false);
+        }
 
         // save startup contexts
         drvArmR.view(iarm);
