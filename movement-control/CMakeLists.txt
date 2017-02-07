@@ -40,5 +40,6 @@ target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES} actionPrimitives percept
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
+file(GLOB conf    ${CMAKE_SOURCE_DIR}/app/conf/*.ini)
 file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)
 yarp_install(FILES ${scripts} DESTINATION ${ICUBCONTRIB_APPLICATIONS_INSTALL_DIR})
