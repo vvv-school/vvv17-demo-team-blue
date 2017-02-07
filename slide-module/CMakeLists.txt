@@ -6,8 +6,8 @@ project(blue_slide_module)
 
 # mandatory use of these packages
 find_package(YARP REQUIRED)
-find_package(ICUBcontrib REQUIRED)
 find_package(ICUB REQUIRED)
+find_package(ICUBcontrib REQUIRED)
 
 # extend the current search path used by cmake to load helpers
 list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
@@ -24,14 +24,12 @@ icubcontrib_set_default_prefix()
 # import math symbols from standard cmath
 #add_definitions(-D_MY_DEFINITION)
 
-
-
 # building module
 include_directories(${YARP_INCLUDE_DIRS}
-+                    ${ctrlLib_INCLUDE_DIRS}
-+                    ${iKin_INCLUDE_DIRS}
-+                    ${perceptiveModels_INCLUDE_DIRS}
-+                    ${actionPrimitives_INCLUDE_DIRS}
+                     ${ctrlLib_INCLUDE_DIRS}
+                     ${iKin_INCLUDE_DIRS}
+                     ${perceptiveModels_INCLUDE_DIRS}
+                     ${actionPrimitives_INCLUDE_DIRS}
                      ${CMAKE_SOURCE_DIR}/include)
 
 add_executable(${PROJECT_NAME}
@@ -41,7 +39,6 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES} actionPrimitives perceptiveModels iKin ctrlLib)
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-
 
 # generate ad-hoc project to perform "make uninstall"
 icubcontrib_add_uninstall_target()
