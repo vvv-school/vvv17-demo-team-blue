@@ -1,0 +1,24 @@
+<application>
+
+  <description> blue slide module</description>
+  <name>blue_slide_module</name>
+
+  <dependencies>
+      <port>/yarplogger</port>
+  </dependencies>
+
+  <module>
+      <name>blue_slide_module</name>
+      <!--parameters> --mode coder</parameters>
+      <prefix>/coder</prefix> -->
+      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+      <node>localhost</node>
+  </module>
+
+  <connection>
+      <from external="true">/coder/Codec/out</from>
+      <to>/decoder/Codec/in</to>
+      <protocol>tcp</protocol>
+  </connection>
+
+</application>
