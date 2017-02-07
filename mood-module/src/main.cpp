@@ -8,7 +8,7 @@
 #include <yarp/os/LogStream.h>
 #include <yarp/os/ResourceFinder.h>
 
-#include <Codec.h>
+#include <mood.h>
 
 using namespace yarp::os;
 
@@ -17,7 +17,7 @@ int main(int argc, char * argv[])
 {
     Network yarp;
 
-    Codec module;
+    Mood module;
     ResourceFinder rf;
     rf.configure(argc, argv);
     rf.setDefaultContext("tutorial_RFModule");

@@ -30,7 +30,7 @@ include_directories(${YARP_INCLUDE_DIRS}
                     src)
 
 add_executable(${PROJECT_NAME} 
-               src/Codec.cpp
+               src/mood.cpp
                src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES})
