@@ -43,7 +43,12 @@ class Processing : public yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::P
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outPort;
     yarp::os::Port positionPort;
 
+    std::vector<int32_t> lowBound;
+    std::vector<int32_t> highBound;
+
     yarp::os::RpcClient rpc;
+
+    yarp::os::Mutex mutex;
 
 public:
     /********************************************************/
@@ -67,6 +72,15 @@ public:
         BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::open( "/" + moduleName + "/rgb:i" );
         outPort.open("/"+ moduleName + "/output");
         positionPort.open("/" + moduleName + "/position:o");
+
+        //magical values
+        lowBound.push_back(90);
+        lowBound.push_back(200);
+        lowBound.push_back(140);
+
+        highBound.push_back(135);
+        highBound.push_back(255);
+        highBound.push_back(180);
 
 //        yarp::os::Network::connect("/SFM/disp:o", "/" + moduleName + "/disparity:i");
 //        yarp::os::Network::connect("/SFM/rpc", "/" + moduleName + "/disparity:i");
@@ -98,8 +112,56 @@ public:
         // cv::Mat disp = cv::cvarrToMat((IplImage *)dispImage.getIplImage());
         cv::Mat inDisp_cv = cv::cvarrToMat((IplImage *)dispImage.getIplImage());  
         cv::Mat disp = inDisp_cv.clone();
+        cv::Mat greyscale_im = cv::Mat::zeros(disp.size().height, disp.size().width, CV_8UC1);
 
-        cv::GaussianBlur(disp, disp, cv::Size(5, 5),2,2);
+        cv::cvtColor(disp, greyscale_im, CV_BGR2HSV);
+
+        cv::erode(greyscale_im, greyscale_im, cv::Mat(), cv::Point(-1,-1),
+             1, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue());
+
+        mutex.lock();
+        cv::inRange(greyscale_im, cv::Scalar(lowBound[0], lowBound[1], lowBound[2]), cv::Scalar(highBound[0], highBound[1], highBound[2]), greyscale_im);
+        mutex.unlock();
+
+        cv::dilate(greyscale_im, greyscale_im, cv::Mat(), cv::Point(-1,-1),
+             6, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue());
+
+        std::vector<std::vector<cv::Point> > contours;
+        cv::findContours(greyscale_im, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
+
+        cv::drawContours(disp, contours, 0, cv::Scalar(255,255,0));
+
+        std::vector<cv::Moments> mu(contours.size());
+        std::vector<cv::Point> mc(contours.size());
+        int maxpoint = 0, max_i = 0;
+        for( int i = 0; i < contours.size(); i++ )
+        { 
+            mu[i] = moments(contours[i], false); 
+            mc[i] = cv::Point(mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00);
+            if (mc[i].x + mc[i].y > maxpoint)
+            {
+                maxpoint = mc[i].x + mc[i].y;
+                max_i = i;
+            }
+        }
+
+        cv::circle(disp, mc[max_i], 3, cv::Scalar(0,255,0), -1, 8, 0);
+        // cv::GaussianBlur(disp, disp, cv::Size(5, 5),2,2);
+ 
+        // Set up the detector with default parameters.
+        /*cv::SimpleBlobDetector detector;
+ 
+        // Detect blobs.
+        std::vector<cv::KeyPoint> keypoints;
+        detector.detect(greyscale_im, keypoints);
+ 
+        // Draw detected blobs as red circles.
+        // DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle corresponds to the size of blob
+        cv::Mat im_with_keypoints;
+        cv::drawKeypoints(im_with_keypoints, keypoints, greyscale_im, cv::Scalar(0,0,255), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
+    
+ */       // Show blobs
+        // waitKey(0);
 
         // cv::dilate(disp, disp, cv::Mat(), cv::Point(-1,-1),
         //     4, cv::BORDER_CONSTANT, cv::morphologyDefaultBorderValue());
@@ -151,16 +213,57 @@ public:
         // outPort.write();
 
         yarp::os::Bottle position_out;
-        position_out.addDouble(20.0);
-        position_out.addDouble(30.0);
-        position_out.addDouble(40.0);
+        position_out.addDouble(mc[max_i].x);
+        position_out.addDouble(mc[max_i].y);
 
         positionPort.write(position_out);
 
         IplImage out = disp;
-        // outImage.resize(out.width, out.height);
+        outImage.resize(out.width, out.height);
         cvCopy( &out, (IplImage *) outImage.getIplImage());
         outPort.write();
+    }
+
+    bool setLowerBound(const int32_t r, const int32_t g, const int32_t b)
+    {
+        mutex.lock();
+        lowBound.clear();
+        lowBound.push_back(r);
+        lowBound.push_back(g);
+        lowBound.push_back(b);
+        mutex.unlock();
+        return true;
+    }
+    /********************************************************/
+    bool setUpperBound(const int32_t r, const int32_t g, const int32_t b)
+    {
+        mutex.lock();
+        highBound.clear();
+        highBound.push_back(r);
+        highBound.push_back(g);
+        highBound.push_back(b);
+        mutex.unlock();
+        return true;
+    }
+
+    std::vector<int32_t> getLowerBound()
+    {
+        std::vector<int32_t> v;
+        mutex.lock();
+        v = lowBound;
+        mutex.unlock();
+        
+        return v;
+    }
+    
+    /********************************************************/
+    std::vector<int32_t> getUpperBound()
+    {
+        std::vector<int32_t> v;
+        mutex.lock();
+        v = highBound;
+        mutex.unlock();
+        return v;
     }
 };
 
@@ -182,6 +285,29 @@ class Module : public yarp::os::RFModule, public duckDetector_IDL
     }
 
 public:
+
+    bool setLowerBound(const int32_t r, const int32_t g, const int32_t b)
+    {
+        processing->setLowerBound(r, g, b);
+        return true;
+    }
+    /********************************************************/
+    bool setUpperBound(const int32_t r, const int32_t g, const int32_t b)
+    {
+        processing->setUpperBound(r, g, b);
+        return true;
+    }
+
+    std::vector<int32_t> getLowerBound()
+    {
+        return processing->getLowerBound();
+    }
+    
+    /********************************************************/
+    std::vector<int32_t> getUpperBound()
+    {
+        return processing->getUpperBound();
+    }
 
     /********************************************************/
     bool configure(yarp::os::ResourceFinder &rf)
