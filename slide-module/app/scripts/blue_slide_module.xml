@@ -1,12 +1,12 @@
 <application>
 
-  <description> blue slide module</description>
-  <name>blue_slide_module</name>
+  <description>blue slide module</description>
+  <name>Blue slide module APP</name>
 
   <dependencies>
       <port>/yarplogger</port>
   </dependencies>
-
+i
   <module>
       <name>blue_slide_module</name>
       <!--parameters> --mode coder</parameters>
