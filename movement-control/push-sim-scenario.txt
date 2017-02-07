@@ -1,0 +1,7 @@
+// Test objects in Simulator
+$ yarp rpc /icubSim/world
+world del all
+world set ball 100 0 0
+world mk box 0.05 0.05 0.05 0.0 -0.65 0.4 0.0 0.0 1.0
+world set box 1 -0.1 -0.64 0.4
+
