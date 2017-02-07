@@ -1,7 +1,5 @@
 <module>
     <name>blue_state_machine</name>
-    <description>tutotial RFModule</description>
-    <copypolicy>Released under the terms of the GNU GPL v2.0</copypolicy>
     <version>1.0</version>
 
     <description-long>
@@ -18,12 +16,12 @@
 
     <!-- <data> can have multiple <input> or <output> tags. -->
     <data>
-        <input port_type="stream">            
+        <!--input port_type="stream">            
             <type>yarp::os::Bottle</type>
             <port carrier="udp">/mood/in</port>
             <required>yes</required>
             <description>recieves text messages of the state machine's inner state</description>
-        </input>
+        </input-->
 
         <input port_type="service">
             <type>yarp::os::Bottle</type>
@@ -33,14 +31,14 @@
 
         <output port_type="stream">
             <type>yarp::os::Bottle</type>
-            <port carrier="udp">/mood/speech_out</port>
+            <port carrier="udp">/state-machine/speech_out</port>
             <description>Output to speech module</description>
         </output>
 
         <output port_type="stream">
             <type>yarp::os::Bottle</type>
-            <port carrier="udp">/mood/face_out</port>
-            <description>Output to face expression module</description>
+            <port carrier="udp">/state-machine/state:o</port>
+            <description>Output of current state as string</description>
         </output>
 
     </data>
