@@ -32,17 +32,13 @@ icubcontrib_set_default_prefix()
 add_definitions(-D_USE_MATH_DEFINES)
 
 include_directories(${YARP_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR}/src)
-add_executable(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/src/main.cpp
-                               ${CMAKE_SOURCE_DIR}/src/slidingController_IDL.cpp
-                               ${CMAKE_SOURCE_DIR}/src/helpers.h
-                               ${CMAKE_SOURCE_DIR}/src/helpers.cpp)
-
+add_executable(${PROJECT_NAME} src/main.cpp
+			       src/slidingController_IDL.cpp
+                               src/helpers.h
+                               src/helpers.cpp)
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES} actionPrimitives perceptiveModels iKin ctrlLib)
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-
-# generate ad-hoc project to perform "make uninstall"
-icubcontrib_add_uninstall_target()
 
 file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)
 yarp_install(FILES ${scripts} DESTINATION ${ICUBCONTRIB_APPLICATIONS_INSTALL_DIR})
