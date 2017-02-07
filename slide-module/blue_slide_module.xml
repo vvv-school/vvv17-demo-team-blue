@@ -1,0 +1,44 @@
+<module>
+    <name>tutorial_RFModule</name>
+
+    <doxygen-group>tutotials VVV</doxygen-group>
+    <description>tutotial RFModule</description>
+    <copypolicy>Released under the terms of the GNU GPL v2.0</copypolicy>
+    <version>1.0</version>
+
+    <description-long>
+    This module implements a simple string coder/decoder.
+    </description-long>
+
+    <authors>
+        <author email="ali.paikan@iit.it"> Ali Paikan </author>
+    </authors>
+
+    <arguments>
+        <param default="coder" required="no" desc="select the coder/decoder mode"> mode </param>
+    </arguments>
+
+    <!-- <data> can have multiple <input> or <output> tags. -->
+    <data>
+        <input port_type="stream">            
+            <type>yarp::os::Bottle</type>
+            <port carrier="udp">/Codec/in</port>
+            <required>yes</required>
+            <description>recieves text messages</description>
+        </input>
+
+        <input port_type="service">
+            <type>yarp::os::Bottle</type>
+            <port carrier="tcp">/Codec/rpc</port>
+            <description>receives rpc commands: [quit],...</description>
+        </input>
+
+        <!-- output datas if available -->
+        <output port_type="stream">
+            <type>yarp::os::Bottle</type>
+            <port carrier="udp">/Codec/out</port>
+            <description>streams coded or encoded text messages</description>
+        </output>
+    </data>
+
+</module>
