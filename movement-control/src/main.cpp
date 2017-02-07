@@ -38,8 +38,10 @@ class CtrlModule: public RFModule
 {
 protected:
     PolyDriver drvArmR, drvArmL, drvGaze;
+    PolyDriver driverJoint;
     PolyDriver drvHandR, drvHandL;
     ICartesianControl *iarm;
+    string arm;
     bool impedanceSw,oldImpedanceSw;
     IGazeControl      *igaze;
     int startup_ctxt_arm_right;
@@ -52,6 +54,10 @@ protected:
     ActionPrimitivesLayer1  action;
     string graspModelFileToWrite;
     deque<string> handKeys;
+    double exploration_max_force;
+
+    Mutex mainMutex;
+    Mutex expMutex;
     /******************Touch model***********/
     bool calibrateGraspModel(const bool forceCalibration)
     {
@@ -124,7 +130,7 @@ protected:
         igaze->waitMotionDone();
     }
 
-  
+
 
     /***************************************************/
     Vector computeHandOrientation(const string &hand)
@@ -237,6 +243,21 @@ protected:
         else
             drvArmL.view(iarm);
 
+        Model *model; action.getGraspModel(model);
+          if (model!=NULL)
+          {
+              Value out;
+              model->getOutput(out);
+              double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+              if (contact_force>exploration_max_force)
+              {
+                  printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+
+                  //INSERT PUSH CARD HERE
+
+                  expMutex.unlock();
+              }
+           }
         // enable all dofs but the roll of the torso
 
         Vector dof(10, 1.0);
@@ -539,7 +560,7 @@ public:
     /***************************************************/
     bool configure(ResourceFinder &rf)
     {
-        http://www.google.com
+        //string robot=rf.check("robot",Value("icub")).asString().c_str();
         string robot=rf.check("robot",Value("icubSim")).asString();
 
         if (!openCartesian(robot,"right_arm"))
@@ -582,6 +603,35 @@ public:
             drvHandL.close();
             return false;
         }
+        Property optionAction;
+        string name=rf.check("name",Value("slidingController")).asString().c_str();
+
+        string grasp_model_file=(arm=="left"?"grasp_model_file_left":"grasp_model_file_right");
+        optionAction.put("robot",robot.c_str());
+        optionAction.put("local",(name+"/action").c_str());
+        optionAction.put("part",(arm+"_arm").c_str());
+        optionAction.put("torso_pitch","on");
+        optionAction.put("torso_roll","off");
+        optionAction.put("torso_yaw","on");
+        optionAction.put("grasp_model_type",rf.find("grasp_model_type").asString().c_str());
+        optionAction.put("grasp_model_file",rf.findFile(grasp_model_file.c_str()).c_str());
+        optionAction.put("hand_sequences_file",rf.findFile("hand_sequences_file").c_str());
+        graspModelFileToWrite=rf.getHomeContextPath().c_str();
+        graspModelFileToWrite+="/";
+        graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
+
+        if (!action.open(optionAction))
+        {
+            drvHandR.close();
+            driverJoint.close();
+            return false;
+        }
+
+        handKeys=action.getHandSeqList();
+        printf("***** List of available hand sequence keys:\n");
+        for (size_t i=0; i<handKeys.size(); i++)
+            printf("%s\n",handKeys[i].c_str());
+        calibrateGraspModel(false);
 
         // save startup contexts
         drvArmR.view(iarm);
