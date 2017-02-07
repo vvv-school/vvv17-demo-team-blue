@@ -1,0 +1,22 @@
+<application>
+
+  <description>blue movement module</description>
+  <name>Blue movement module APP</name>
+
+  <dependencies>
+      <port>/yarplogger</port>
+  </dependencies>
+i
+  <module>
+      <name>blue_movement_module</name>
+      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+      <node>localhost</node>
+  </module>
+
+  <!--connection>
+      <from external="true">/coder/Codec/out</from>
+      <to>/decoder/Codec/in</to>
+      <protocol>tcp</protocol>
+  </connection-->
+
+</application>
