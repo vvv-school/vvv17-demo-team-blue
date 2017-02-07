@@ -25,6 +25,7 @@ class Module: public RFModule
 protected:
 
     RpcServer rpcPort;
+    yarp::os::BufferedPort<yarp::os::Bottle> stateOutPort;
 
     bool                        closing;
 
@@ -39,62 +40,15 @@ public:
     bool configure(ResourceFinder &rf)
     {
         // string robot=rf.check("robot",Value("icubSim")).asString();
-        //
-        // // FILL IN THE CODE
-        // Property optGaze;
-        // optGaze.put("device","gazecontrollerclient");
-        // optGaze.put("remote","/iKinGazeCtrl");
-        // optGaze.put("local","/gaze_client");
-        //
-        // // open a client interface to connect to the joint controller // Where we say what you want to control
-        // Property optJointL;
-        // optJointL.put("device","remote_controlboard");
-        // optJointL.put("remote","/"+robot+"/left_arm");
-        // optJointL.put("local","/position/left_arm");
-        //
-        // Property optJointR;
-        // optJointR.put("device","remote_controlboard");
-        // optJointR.put("remote","/"+robot+"/right_arm");
-        // optJointR.put("local","/position/right_arm");
-        //
-        // // "/"+robot+"/cartesianController/"+arm);
-        //
-        //
-        // if (!drvHandL.open(optJointL))
-        // {
-        //     yError()<<"Unable to connect to /icubSim/left_arm";
-        //     return false;
-        // }
-        //
-        //
-        // if (!drvHandR.open(optJointR))
-        // {
-        //     yError()<<"Unable to connect to /icubSim/right_arm";
-        //     return false;
-        // }
-        //
-        // if (!drvGaze.open(optGaze)) // open Gaze interface (no solver and controller component here)
-        // {
-        //     yError()<<"Unable to open the Gaze Controller";
-        //     drvArmL.close(); // if something goes bad, we have to close everything
-        //     drvArmR.close(); // if something goes bad, we have to close everything
-        //     return false;
-        // }
-        //
-        //
-        // // save startup contexts
-        // drvArmR.view(iarm);
-        // iarm->storeContext(&startup_ctxt_arm_right);
-        //
-        // drvArmL.view(iarm);
-        // iarm->storeContext(&startup_ctxt_arm_left);
-        //
-        // drvGaze.view(igaze);
-        // igaze->storeContext(&startup_ctxt_gaze);
-        //
-        // rpcPort.open("/service");
-        // attach(rpcPort);
-        // return true;
+
+        bool ret = true;
+
+        ret &= stateOutPort.open("/state-machine/state:o");
+        if(!ret) {
+            yError()<<"Cannot open some of the ports";
+            return false;
+        }
+
 
         int score_robot = 0 ;
         int score_human = 0 ;
@@ -114,21 +68,26 @@ public:
         }
         else if (cmd=="start")
         {
+            publishState("starting");
+
 
             if (!ok_look_down)
             {
               look_down(); // ok_look_down has to be tuned true
               reply.addString("I look down");
+              publishState("looking at cards");
             }
 
             cardRecognition() ; // update both scores inside
 
             if (score_robot > score_human){
               reply.addString("I want to bet");
+              publishState("bet");
               pushObject() ;
             }
             else {
               reply.addString("I don't want to bet");
+              publishState("don't bet");
             }
 
             // The dealer distributes cards
@@ -136,11 +95,13 @@ public:
               look_up() ; // ok_look_down has to be tuned false
               Time::delay(2.0);
               reply.addString("Waiting for the dealer to distribute");
+              publishState("look up");
             }
 
             if (!ok_look_down){
               look_down() ; // ok_look_down has to be tuned true
               reply.addString("I look down");
+              publishState("looking at cards");
             }
 
             cardRecognition() ;  // update both scores inside
@@ -148,9 +109,10 @@ public:
             if (score_robot > score_human){
                   pullObject() ;
                   reply.addString("I have won !");
+                  publishState("won");
                 }
                 else {
-                  reply.addString("I've lost...");
+                  reply.addString("lost");
                 }
         }
         else
@@ -216,6 +178,15 @@ public:
     bool updateModule()
     {
         return !closing;
+    }
+
+    void publishState(const std::string& state)
+    {
+        Bottle& output = stateOutPort.prepare();
+        output.clear();
+        output.addString(state.c_str());
+        stateOutPort.write();
+        yarp::os::Time::delay(1.0);
     }
 };
 
