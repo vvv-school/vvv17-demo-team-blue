@@ -610,6 +610,43 @@ public:
     bool approach_card(Vector cardPos)
     {
         // TODO: bla
+        Vector approachPos = cardPos;
+        approachPos[2] += 0.05;
+
+        std::string hand=(cardPos[1]>0.0?"right":"left");
+
+        fixate(cardPos);
+
+        Vector handOrientation(4, 0.0);
+        {
+            Matrix Rot(3,3);
+            if (hand == "right")
+            {
+                Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
+                Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
+                Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)=-1.0;
+            }
+            else
+            {
+                Rot(0,0)=-1.0; Rot(0,1)=  0.0; Rot(0,2)= 0.0;
+                Rot(1,0)= 0.0; Rot(1,1)= -1.0; Rot(1,2)= 0.0;
+                Rot(2,0)= 0.0; Rot(2,1)=  0.0; Rot(2,2)= 1.0;
+            }
+            Vector o(4);
+            o[0] = 0.0;
+            o[1] = -1.0;
+            o[2] = 0.0;
+            o[3] = 30.0 * (M_PI / 180.0);
+
+            Matrix RotY = axis2dcm(o).submatrix(0, 2, 0, 2);
+
+            yInfo() << Rot.rows() << "x " << Rot.cols() << " * "
+                    << RotY.rows() << "x" << RotY.cols();
+
+            handOrientation = dcm2axis(RotY * Rot);
+        }
+
+
         return true;
     }
 
