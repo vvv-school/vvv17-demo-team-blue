@@ -15,7 +15,7 @@
  * Public License for more details
 */
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <fstream>
 #include <deque>
@@ -57,6 +57,7 @@ protected:
 
     RpcServer portRpc;
     BufferedPort<Bottle> portIn;
+    ObjectRetriever object;
     string graspModelFileToWrite;
     deque<string> handKeys;
 
@@ -90,7 +91,19 @@ protected:
         {
             if (forceCalibration || !model->isCalibrated())
             {
-                Property prop("(finger all_parallel)");
+                Bottle fingers;
+                Bottle &fng=fingers.addList();
+                fng.addString("index");
+                fng.addString("middle");
+                fng.addString("ring");
+                fng.addString("little");
+
+                Property prop;
+                prop.put("finger",fingers.get(0));
+                model->calibrate(prop);
+
+                prop.clear();
+                prop.put("finger","thumb");
                 model->calibrate(prop);
 
                 ofstream fout;
@@ -230,7 +243,7 @@ public:
         iarm->setTrajTime(0.65);
         iarm->setInTargetTol(0.001);
 
-        iarm->tweakSet(changeElbowHeight(elbow_height,elbow_weight));
+        //iarm->tweakSet(changeElbowHeight(elbow_height,elbow_weight));
         iarm->storeContext(&context);
 
         setImpedance(impedanceSw,true);
@@ -297,7 +310,7 @@ public:
 
             iarm->setLimits(0,0.0,30.0);
             iarm->setTrajTime(1.0);
-            iarm->tweakSet(changeElbowHeight(0.1,elbow_weight));
+            //iarm->tweakSet(changeElbowHeight(0.1,elbow_weight));
 
             Vector startPoint(3,0.0);
             startPoint[0]=-0.35; startPoint[2]=0.15;
