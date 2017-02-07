@@ -38,8 +38,11 @@ class CtrlModule: public RFModule
 {
 protected:
     PolyDriver drvArmR, drvArmL, drvGaze;
+    PolyDriver driverJoint;
     PolyDriver drvHandR, drvHandL;
     ICartesianControl *iarm;
+    string arm;
+    bool impedanceSw,oldImpedanceSw;
     IGazeControl      *igaze;
     int startup_ctxt_arm_right;
     int startup_ctxt_arm_left;
@@ -51,6 +54,10 @@ protected:
     ActionPrimitivesLayer1  action;
     string graspModelFileToWrite;
     deque<string> handKeys;
+    double exploration_max_force;
+
+    Mutex mainMutex;
+    Mutex expMutex;
     /******************Touch model***********/
     bool calibrateGraspModel(const bool forceCalibration)
     {
@@ -86,7 +93,31 @@ protected:
         return false;
     }
 
-    /***************************************************/
+    /******************ARM CONTROLLER*******************/
+    void setImpedance(const bool enable=true, const bool forceSet=false)
+    {
+        if (!forceSet && (enable==impedanceSw))
+            return;
+
+        IInteractionMode *imode;
+        drvArmR.view(imode);
+
+        if (enable)
+        {
+            IImpedanceControl *iimp;
+            drvArmR.view(iimp);
+            //Thanks Ugo ;)
+            imode->setInteractionMode(0,VOCAB_IM_COMPLIANT); iimp->setImpedance(0,0.4,0.03);
+            imode->setInteractionMode(1,VOCAB_IM_COMPLIANT); iimp->setImpedance(1,0.4,0.03);
+            imode->setInteractionMode(2,VOCAB_IM_COMPLIANT); iimp->setImpedance(2,0.4,0.03);
+            imode->setInteractionMode(3,VOCAB_IM_COMPLIANT); iimp->setImpedance(3,0.2,0.01);
+            imode->setInteractionMode(4,VOCAB_IM_COMPLIANT); iimp->setImpedance(4,0.2,0.0);
+        }
+        else for (int j=0; j<5; j++)
+            imode->setInteractionMode(j,VOCAB_IM_STIFF);
+
+        impedanceSw=enable;
+    }
 
     void fixate(const Vector &x)
     {
@@ -98,6 +129,8 @@ protected:
         igaze->lookAtFixationPoint(x);
         igaze->waitMotionDone();
     }
+
+
 
     /***************************************************/
     Vector computeHandOrientation(const string &hand)
@@ -210,6 +243,21 @@ protected:
         else
             drvArmL.view(iarm);
 
+        Model *model; action.getGraspModel(model);
+          if (model!=NULL)
+          {
+              Value out;
+              model->getOutput(out);
+              double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+              if (contact_force>exploration_max_force)
+              {
+                  printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+
+                  //INSERT PUSH CARD HERE
+
+                  expMutex.unlock();
+              }
+           }
         // enable all dofs but the roll of the torso
 
         Vector dof(10, 1.0);
@@ -514,6 +562,8 @@ public:
     {
         http://www.google.com
         https://www.facebook.com
+
+        //string robot=rf.check("robot",Value("icub")).asString().c_str();
         string robot=rf.check("robot",Value("icubSim")).asString();
 
         if (!openCartesian(robot,"right_arm"))
@@ -556,6 +606,35 @@ public:
             drvHandL.close();
             return false;
         }
+        Property optionAction;
+        string name=rf.check("name",Value("slidingController")).asString().c_str();
+
+        string grasp_model_file=(arm=="left"?"grasp_model_file_left":"grasp_model_file_right");
+        optionAction.put("robot",robot.c_str());
+        optionAction.put("local",(name+"/action").c_str());
+        optionAction.put("part",(arm+"_arm").c_str());
+        optionAction.put("torso_pitch","on");
+        optionAction.put("torso_roll","off");
+        optionAction.put("torso_yaw","on");
+        optionAction.put("grasp_model_type",rf.find("grasp_model_type").asString().c_str());
+        optionAction.put("grasp_model_file",rf.findFile(grasp_model_file.c_str()).c_str());
+        optionAction.put("hand_sequences_file",rf.findFile("hand_sequences_file").c_str());
+        graspModelFileToWrite=rf.getHomeContextPath().c_str();
+        graspModelFileToWrite+="/";
+        graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
+
+        if (!action.open(optionAction))
+        {
+            drvHandR.close();
+            driverJoint.close();
+            return false;
+        }
+
+        handKeys=action.getHandSeqList();
+        printf("***** List of available hand sequence keys:\n");
+        for (size_t i=0; i<handKeys.size(); i++)
+            printf("%s\n",handKeys[i].c_str());
+        calibrateGraspModel(false);
 
         // save startup contexts
         drvArmR.view(iarm);
@@ -624,8 +703,8 @@ public:
             if (hand == "right")
             {
                 Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
-                Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
-                Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)=-1.0;
+                Rot(1,0)= 0.0; Rot(1,1)= 0.0;  Rot(1,2)= 1.0;
+                Rot(2,0)= 0.0; Rot(2,1)= -1.0;  Rot(2,2)=0.0;
             }
             else
             {
@@ -721,6 +800,9 @@ public:
             yError() << "Could not move to approach position";
             return false;
         }
+        iarm->waitMotionDone();
+
+
 
         return true;
     }
