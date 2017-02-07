@@ -6,7 +6,7 @@ project(blue_slide_module)
 
 # mandatory use of these packages
 find_package(YARP REQUIRED)
-find_package(iCub REQUIRED)
+find_package(ICUB REQUIRED)
 find_package(ICUBcontrib REQUIRED)
 
 # extend the current search path used by cmake to load helpers
