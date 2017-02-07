@@ -54,6 +54,7 @@ class CardTracker(BaseModule):
         BaseModule.configure(self, rf)
 
         self.cardsPort       = self.createOutputPort('cards')
+        self.simplePort      = self.createOutputPort('simple')
         self.orderPort       = self.createOutputPort('order')
         self.translationPort = self.createOutputPort('translation')
 
@@ -61,7 +62,6 @@ class CardTracker(BaseModule):
         self.imgOutPort      = self.createOutputPort('image')
 
         self.bufImageIn,  self.bufArrayIn  = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
-        self.bufImageIn2,  self.bufArrayIn2  = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
         self.bufImageOut, self.bufArrayOut = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
 
         self.order           = CardTracker.O_HORIZONTAL
@@ -145,6 +145,32 @@ class CardTracker(BaseModule):
         self.translationPort.write(bottle)
 
 
+    def sendSimpleBottle(self, cards):
+        """ This method sends the simple card information to the simple port.
+
+        Message: ( ( <id> <center-x>  <center-y> )* )
+
+        All values are integer values.
+
+        @param cards - list of Template objects
+        """
+        bottle  = yarp.Bottle()
+        bottle.clear()
+
+        cards_list = bottle.addList()
+
+        # send all cards
+        for card in cards:
+
+            # id and center
+            card_values = cards_list.addList()
+            card_values.addInt(card.tid)
+            card_values.addInt(card.center[0])
+            card_values.addInt(card.center[1])
+
+        self.simplePort.write(bottle)
+
+    
     def sendCards(self, cards):
         """ This method sends the card information to the cards port.
 
@@ -194,6 +220,7 @@ class CardTracker(BaseModule):
         # we only care for one contour
         cards     = dict([ (card.tid, card) for card in self.detect_cards(cv2_image) if card ])
         card_list = [ cards[tid] for tid in cards ]
+        print len(cards)
 
         # handle memory
         if self.memory_length > 0:
@@ -212,8 +239,9 @@ class CardTracker(BaseModule):
         self.sendCards(card_list)
         self.sendOrder(card_list)
         self.sendTranslation(card_list)
+        self.sendSimpleBottle(card_list)
 
-        return cv2_image
+        return self.image
 
 
     def respond(self, command, reply):
@@ -260,6 +288,11 @@ class CardTracker(BaseModule):
         @result list of Patch objects
         """
 
+        rgray = image[:,:,2]
+        clahe = cv2.createCLAHE( clipLimit=2.0, tileGridSize=(8, 8) )
+        rgray = clahe.apply(rgray)
+        self.image = cv2.cvtColor(rgray, cv2.COLOR_GRAY2BGR)
+
         # convert to gray
         gray    = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -271,8 +304,10 @@ class CardTracker(BaseModule):
         (cnts, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contours  = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
 
+
         # convert to patches
         patches   = [Patch(contour, image) for contour in contours]
+        print 'patches', len(contours)
 
         # return patches that represent a card
         return [patch for patch in patches if patch.isCard()]
