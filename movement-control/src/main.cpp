@@ -876,6 +876,12 @@ int main(int argc, char *argv[])
 
     CtrlModule mod;
     ResourceFinder rf;
+    rf.setDefaultContext("slidingController");
+    rf.setDefault("grasp_model_type","springy");
+    rf.setDefault("grasp_model_file_left","grasp_model_left.ini");
+    rf.setDefault("grasp_model_file_right","grasp_model_right.ini");
+    rf.setDefault("hand_sequences_file","hand_sequences.ini");
     rf.configure(argc,argv);
+
     return mod.runModule(rf);
 }
