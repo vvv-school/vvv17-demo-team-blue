@@ -39,7 +39,7 @@ public:
     /***************************************************/
     bool configure(ResourceFinder &rf)
     {
-        // string robot=rf.check("robot",Value("icubSim")).asString();
+        string robot=rf.check("robot",Value("icubSim")).asString();
 
         bool ret = true;
 
@@ -49,11 +49,16 @@ public:
             return false;
         }
 
+        rpcPort.open("/state-machine/command");
+        attach(rpcPort);
+
 
         int score_robot = 0 ;
         int score_human = 0 ;
 
         bool ok_look_down = false ;
+
+        return true;
     }
 
     /***************************************************/
@@ -70,50 +75,46 @@ public:
         {
             publishState("starting");
 
+            //we delay a bit so that the robot can speak & ppl can marvel at it
+            yarp::os::Time::delay(3.0);
+            ok_look_down = true;
 
-            if (!ok_look_down)
-            {
-              look_down(); // ok_look_down has to be tuned true
-              reply.addString("I look down");
-              publishState("looking at cards");
-            }
+            look_down(); // ok_look_down has to be tuned true
+            publishState("looking at cards");
 
             cardRecognition() ; // update both scores inside
 
             if (score_robot > score_human){
-              reply.addString("I want to bet");
-              publishState("bet");
-              pushObject() ;
+                publishState("bet");
+                pushObject() ;
             }
             else {
-              reply.addString("I don't want to bet");
-              publishState("don't bet");
+                publishState("don't bet");
             }
+
 
             // The dealer distributes cards
             if (ok_look_down){
-              look_up() ; // ok_look_down has to be tuned false
-              Time::delay(2.0);
-              reply.addString("Waiting for the dealer to distribute");
-              publishState("look up");
+                look_up() ; // ok_look_down has to be tuned false
+                Time::delay(2.0);
+                publishState("look up");
             }
 
             if (!ok_look_down){
-              look_down() ; // ok_look_down has to be tuned true
-              reply.addString("I look down");
-              publishState("looking at cards");
+                look_down() ; // ok_look_down has to be tuned true
+                publishState("looking at cards");
             }
 
             cardRecognition() ;  // update both scores inside
 
             if (score_robot > score_human){
-                  pullObject() ;
-                  reply.addString("I have won !");
-                  publishState("won");
-                }
-                else {
-                  reply.addString("lost");
-                }
+                pullObject() ;
+                publishState("won");
+            }
+            else
+            {
+                publishState("lost");
+            }
         }
         else
             // the father class already handles the "quit" command
@@ -129,11 +130,16 @@ public:
     void cardRecognition()
     {
         // FILL IN HERE
+        // check that we have card data
+        // set
+
+
     }
 
     void look_down()
     {
         // FILL IN HERE
+        ok_look_down = true;
     }
 
     void look_up()
@@ -159,6 +165,8 @@ public:
     bool close()
     {
         // we have to close ports here
+        rpcPort.close();
+        stateOutPort.close();
         return true;
     }
 
@@ -194,9 +202,6 @@ public:
 /***************************************************/
 int main(int argc, char *argv[])
 {
-
-    yarp::os::Network::init();
-
     Network yarp;
     if (!yarp.checkNetwork())
     {
