@@ -30,6 +30,8 @@
 #include <iCub/perception/models.h>
 #include <iCub/action/actionPrimitives.h>
 
+#include "helpers.h"
+
 #include "slidingController_IDL.h"
 
 #define EXPLORATION_TOL     5e-3
@@ -55,6 +57,7 @@ protected:
 
     RpcServer portRpc;
     BufferedPort<Bottle> portIn;
+    ObjectRetriever object;
     string graspModelFileToWrite;
     deque<string> handKeys;
 

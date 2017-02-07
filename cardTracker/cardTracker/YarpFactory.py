@@ -159,7 +159,7 @@ class YarpFactory(object):
 
             buf_array = np.zeros((height, width, channels), dtype = np.uint8)
 
-        buf_image.setExternal( buf_array,
+        buf_image.setExternal( np.getbuffer(buf_array),
                                buf_array.shape[1],
                                buf_array.shape[0] )
 

@@ -1,0 +1,17 @@
+<application>
+
+  <name>Blue Watchdog Module APP</name>
+  <description> Blue Watchdog module</description>
+
+  <dependencies>
+      <port>/yarplogger</port>
+  </dependencies>
+
+  <module>
+      <name>blue_watchdog_module</name>
+      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+      <node>localhost</node>
+  </module>
+
+</application>
+
