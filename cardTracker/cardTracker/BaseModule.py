@@ -19,7 +19,7 @@ import argparse
 import time
 import yarp
 
-from vvv17_demo.YarpFactory import YarpFactory
+from cardTracker.YarpFactory import YarpFactory
 
 EMSG_YARP_NOT_FOUND  = "Could not connect to the yarp server. Try running 'yarp detect'."
 

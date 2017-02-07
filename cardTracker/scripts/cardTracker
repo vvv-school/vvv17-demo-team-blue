@@ -1,0 +1,8 @@
+#!/usr/bin/env python2
+
+from cardTracker.BaseModule    import main
+from cardTracker.card_tracker  import CardTracker, createArgParser
+
+
+if __name__ == '__main__':
+    main(CardTracker, createArgParser())
