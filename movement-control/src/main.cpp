@@ -660,9 +660,9 @@ public:
         else if (cmd == "approach_card")
         {
             Vector cardPos(3, 0.0);
-            cardPos[0] = command.get(1).getDouble();
-            cardPos[1] = command.get(2).getDouble();
-            cardPos[2] = command.get(3).getDouble();
+            cardPos[0] = command.get(1).asDouble();
+            cardPos[1] = command.get(2).asDouble();
+            cardPos[2] = command.get(3).asDouble();
 
             bool ok = approach_card(cardPos);
             // we assume the robot is not moving now
