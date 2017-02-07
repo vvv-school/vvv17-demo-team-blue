@@ -12,8 +12,6 @@
 #include <yarp/math/Math.h>
 #include <yarp/dev/IControlMode.h>
 
-#include "helpers.h"
-
 using namespace std;
 using namespace yarp::os;
 using namespace yarp::dev;
