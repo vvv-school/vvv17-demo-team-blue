@@ -16,7 +16,7 @@ except ImportError:
 
 
 from cardTracker.BaseModule  import BaseModule, main
-from cardTracker.template    import Template
+from cardTracker.patch       import Patch
 
 
 class CardTracker(BaseModule):
@@ -61,6 +61,7 @@ class CardTracker(BaseModule):
         self.imgOutPort      = self.createOutputPort('image')
 
         self.bufImageIn,  self.bufArrayIn  = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
+        self.bufImageIn2,  self.bufArrayIn2  = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
         self.bufImageOut, self.bufArrayOut = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
 
         self.order           = CardTracker.O_HORIZONTAL
@@ -75,11 +76,13 @@ class CardTracker(BaseModule):
 
         if self.imgInPort.read(self.bufImageIn):
 
-            assert self.bufImageIn.width()  == self.D_WIDTH
-            assert self.bufImageIn.height() == self.D_HEIGHT
+            print 'received'
+
+#             assert self.bufImageIn.width()  == self.D_WIDTH
+#             assert self.bufImageIn.height() == self.D_HEIGHT
 
             # Make sure the image has not been re-allocated
-#             assert self.bufArrayIn.__array_interface__['data'][0] == self.bufImageIn.getRawImage().__long__()
+#            assert self.bufArrayIn.__array_interface__['data'][0] == self.bufImageIn.getRawImage().__long__()
 
             # convert image to be usable in OpenCV
             image  = cv2.cvtColor(self.bufArrayIn, cv2.COLOR_BGR2RGB)
@@ -145,8 +148,8 @@ class CardTracker(BaseModule):
     def sendCards(self, cards):
         """ This method sends the card information to the cards port.
 
-        Message: <number of cards> ( ( <id> <center-x>  <center-y> <contour> )* )
-                 <contour> = (<p1-x> <p1-y> <p2-x> <p2-y> <p3-x> <p3-y> <p4-x> <p4-y>)
+        Message: <number of cards> ( ( <id> <center-x>  <center-y> <bounding box> )* )
+                 <bounding box> = (<tl-x> <tl-y> <br-x> <br-y>)
 
         All values are integer values.
 
@@ -159,18 +162,21 @@ class CardTracker(BaseModule):
         bottle.addInt(len(cards))
         cards_list = bottle.addList()
 
+        # send all cards
         for card in cards:
 
-            center_x, center_y  = card.center
-            card_values         = cards_list.addList()
+            # id and center
+            card_values = cards_list.addList()
             card_values.addInt(card.tid)
-            card_values.addInt(center_x)
-            card_values.addInt(center_y)
-            card_contour = card_values.addList()
+            card_values.addInt(card.center[0])
+            card_values.addInt(card.center[1])
 
-            for value in card.contours:
-                card_contour.addInt(int(value[0][0]))
-                card_contour.addInt(int(value[0][1]))
+            # bounding box
+            card_contour = card_values.addList()
+            card_contour.addInt(int(card.tl[0]))
+            card_contour.addInt(int(card.tl[1]))
+            card_contour.addInt(int(card.br[0]))
+            card_contour.addInt(int(card.br[1]))
 
         self.cardsPort.write(bottle)
 
@@ -186,12 +192,8 @@ class CardTracker(BaseModule):
         """
 
         # we only care for one contour
-        cards = {}
-        for card in self.detect_cards(cv2_image):
-            if card:
-                cards[card.tid] = card        
-        
-        card_list = [ cards[mid] for mid in cards ]
+        cards     = dict([ (card.tid, card) for card in self.detect_cards(cv2_image) if card ])
+        card_list = [ cards[tid] for tid in cards ]
 
         # handle memory
         if self.memory_length > 0:
@@ -202,17 +204,16 @@ class CardTracker(BaseModule):
                 self.memory[card.tid] = ( card, cur_time )
 
             # create new card list and only include card which are within the time frame
-            card_list = [ self.memory[mid][0] for mid in self.memory if cur_time - self.memory[mid][1] < self.memory_length ]
+            card_list = [ self.memory[tid][0] for tid in self.memory if cur_time - self.memory[tid][1] < self.memory_length ]
 
         # highlight markers in output image
-        for card in card_list:
-            card.highlite_marker(cv2_image)
+        _ = [card.highlite() for card in card_list]
 
         self.sendCards(card_list)
         self.sendOrder(card_list)
         self.sendTranslation(card_list)
 
-        return self.image
+        return cv2_image
 
 
     def respond(self, command, reply):
@@ -254,39 +255,28 @@ class CardTracker(BaseModule):
 
 
     def detect_cards(self, image):
-        results = []
+        """ Return the detected cards 
+
+        @result list of Patch objects
+        """
+
+        # convert to gray
         gray    = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        # filter
         gray    = cv2.bilateralFilter(gray, 11, 17, 17)
         edged   = cv2.Canny(gray, 30, 200)
+
+        # get contours
         (cnts, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        cnts = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
-    
-        # loop over our contours
-        found_cards = []
-        for c in cnts:
+        contours  = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
 
-            # approximate the contour
-            peri = cv2.arcLength(c, True)
-            approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-            if len(approx) == 4:
-                found_cards.append(approx)
+        # convert to patches
+        patches   = [Patch(contour, image) for contour in contours]
 
-                # draw contour
-                cv2.drawContours(image, [approx], -1, (0, 255, 0), 3)
+        # return patches that represent a card
+        return [patch for patch in patches if patch.isCard()]
 
-                x,y,w,h = cv2.boundingRect(approx)
-                
-                # draw bounding box
-                cv2.rectangle(image, (x, y), (x+w, y+h) , (255,0,0), 2)
-
-                # draw center
-                center = (x + (w / 2), y + (h / 2)) 
-                cv2.circle(image, center, 5, (0,255,0), -1)
-                
-                # results.append()
-    
-        self.image = image
-        return results
 
 
 def createArgParser():
