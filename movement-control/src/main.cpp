@@ -5,6 +5,7 @@
 #include <string>
 #include <cmath>
 #include <algorithm>
+#include <memory>
 
 #include <yarp/os/all.h>
 #include <yarp/dev/all.h>
@@ -131,18 +132,23 @@ protected:
         Vector curDof;
         iarm->setDOF(dof, curDof);
 
-        // reach the first via-point
-        // located 5 cm above the target x
-
+        // TODO: Make the
         Vector approach = x;
-        approach[0] += 0.15;
+        approach[0] += 0.10;
         approach[2] += 0.02;
         iarm->goToPoseSync(approach, o);
         iarm->waitMotionDone();
 
         // reach the final target x;
 
-        iarm->goToPoseSync(x, o);
+        Vector afterPush = x;
+        afterPush[0] -= 0.03;
+        iarm->goToPoseSync(afterPush, o);
+        iarm->waitMotionDone();
+
+        Vector goUp = x;
+        goUp[2] += 0.08;
+        iarm->goToPoseSync(goUp, o);
         iarm->waitMotionDone();
     }
 
@@ -225,30 +231,36 @@ protected:
     }
 
     /***************************************************/
-    void home(const string &hand)
+    bool home(const string &hand)
     {
-        Vector home_x(3);
-        home_x[0]=-0.2;
-        home_x[2]=0.08;
+        Vector homeX, homeO;
 
         // select the correct interface
         if (hand=="right")
         {
             drvArmR.view(iarm);
-            home_x[1]=0.3;
+            homeX = rightArmStartX;
+            homeO = rightArmStartO;
         }
         else
         {
             drvArmL.view(iarm);
-            home_x[1]=-0.3;
+            homeX = leftArmStartX;
+            homeO = leftArmStartO;
         }
 
         igaze->lookAtAbsAngles(Vector(3,0.0));
-        iarm->goToPositionSync(home_x);
 
+        iarm->goToPoseSync(homeX, homeO);
         iarm->waitMotionDone();
+
+        yInfo() << "Moved arms home";
+
         igaze->waitMotionDone();
         igaze->setTrackingMode(false);
+
+
+        return true;
     }
 
     /***************************************************/
@@ -327,7 +339,7 @@ protected:
         return false;
     }
 
-    bool push_object(const double fingers_closure)
+    bool push_object()
     {
         Vector x; string hand;
         if (object.getLocation(x))
@@ -363,7 +375,7 @@ protected:
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
             moveFingers(hand,thumb,1.0);
-            moveFingers(hand,fingers,0.0);
+            moveFingers(hand,fingers,0.9);
             yInfo()<<"prepared hand";
 
             approach_target_for_push(hand,x,o);
@@ -421,6 +433,11 @@ protected:
     }
 
 public:
+    yarp::sig::Vector rightArmStartX;
+    yarp::sig::Vector rightArmStartO;
+    yarp::sig::Vector leftArmStartX;
+    yarp::sig::Vector leftArmStartO;
+
     /***************************************************/
     bool configure(ResourceFinder &rf)
     {
@@ -471,9 +488,19 @@ public:
         // save startup contexts
         drvArmR.view(iarm);
         iarm->storeContext(&startup_ctxt_arm_right);
+        while (!iarm->getPose(rightArmStartX, rightArmStartO))
+        {
+            yInfo() << "Waiting for right arm pos";
+            Time::delay(0.1);
+        }
 
         drvArmL.view(iarm);
         iarm->storeContext(&startup_ctxt_arm_left);
+        while (!iarm->getPose(leftArmStartX, leftArmStartO))
+        {
+            yInfo() << "Waiting for left arm pos";
+            Time::delay(0.1);
+        }
 
         drvGaze.view(igaze);
         igaze->storeContext(&startup_ctxt_gaze);
@@ -571,7 +598,7 @@ public:
             if (command.size()>1)
                 fingers_closure=command.get(1).asDouble();
 
-            bool ok=push_object(fingers_closure);
+            bool ok=push_object();
             // we assume the robot is not moving now
             if (ok)
             {
@@ -582,6 +609,20 @@ public:
             {
                 reply.addString("nack");
                 reply.addString("I don't see any object!");
+            }
+        }
+        else if (cmd == "home")
+        {
+            bool ok = home("right") && home("left");
+            if (ok)
+            {
+                reply.addString("ack");
+                reply.addString("Yeah! I did it! Maybe...");
+            }
+            else
+            {
+                reply.addString("nack");
+                reply.addString("I couldn't get home :(");
             }
         }
         else

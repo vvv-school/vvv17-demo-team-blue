@@ -29,6 +29,7 @@ add_executable(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/src/main.cpp
                                ${CMAKE_SOURCE_DIR}/src/helpers.cpp)
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES})
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 # generate ad-hoc project to perform "make uninstall"
 icubcontrib_add_uninstall_target()
