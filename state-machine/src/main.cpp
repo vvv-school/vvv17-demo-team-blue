@@ -12,8 +12,6 @@
 #include <yarp/math/Math.h>
 #include <yarp/dev/IControlMode.h>
 
-#include "helpers.h"
-
 using namespace std;
 using namespace yarp::os;
 using namespace yarp::dev;
@@ -27,12 +25,14 @@ class Module: public RFModule
 protected:
 
     RpcServer rpcPort;
-    ObjectRetriever object;
-
-    Processing                  *processing;
-    friend class                processing;
 
     bool                        closing;
+
+    // state variables
+    bool ok_look_down;
+    int score_robot;
+    int score_human;
+
 
 public:
     /***************************************************/
@@ -159,6 +159,34 @@ public:
         return true;
     }
 
+    void pullObject()
+    {
+        // FILL IN HERE
+    }
+
+    void cardRecognition()
+    {
+        // FILL IN HERE
+    }
+
+    void look_down()
+    {
+        // FILL IN HERE
+    }
+
+    void look_up()
+    {
+        // FILL IN HERE
+    }
+
+
+    void pushObject()
+    {
+        // FILL IN HERE
+    }
+
+
+
     /***************************************************/
     bool interrupt()
     {
@@ -168,9 +196,7 @@ public:
     /**********************************************************/
     bool close()
     {
-        processing->interrupt();
-        processing->close();
-        delete processing;
+        // we have to close ports here
         return true;
     }
 

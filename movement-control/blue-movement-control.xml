@@ -1,0 +1,25 @@
+<module>
+    <name>blue_movement_module</name>
+
+    <description> module to handle cartesian movements </description>
+
+    <authors>
+        <author email="ali.paikan@iit.it"> Ali Paikan </author>
+    </authors>
+
+   <data>
+        <!--input port_type="stream">
+            <type>yarp::os::Bottle</type>
+            <port carrier="udp">/movement/in</port>
+            <required>yes</required>
+            <description>recieves text messages of the state machine's inner state</description>
+        </input-->
+
+        <input port_type="service">
+            <type>yarp::os::Bottle</type>
+            <port carrier="tcp">/movement/rpc</port>
+            <description>receives rpc commands: [quit],...</description>
+        </input>⏎
+
+
+</module>

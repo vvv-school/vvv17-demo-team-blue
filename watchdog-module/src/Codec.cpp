@@ -21,8 +21,8 @@ bool Codec::configure(yarp::os::ResourceFinder &rf) {
 
     // open all ports
     bool ret = true;//commandPort.open("/Codec/rpc");
-    ret &= inPort.open("/Codec/in");
-    ret &= outPort.open("/Codec/out");
+    ret &= skinInPort.open("/blue_watchdog/skin:i");
+    ret &= alertOutPort.open("/blue_watchdog/alert:o");
     if(!ret) {
         yError()<<"Cannot open some of the ports";
         return false;
@@ -34,11 +34,11 @@ bool Codec::configure(yarp::os::ResourceFinder &rf) {
     }
 
     // set some paramters
-    modeParam = rf.check("mode", Value("coder")).asString();
-    if((modeParam != "coder") && (modeParam !="decoder")) {
-        yError()<<"Unknown mode value "<<modeParam;
-        return false;
-    }
+//    modeParam = rf.check("mode", Value("coder")).asString();
+//    if((modeParam != "coder") && (modeParam !="decoder")) {
+//        yError()<<"Unknown mode value "<<modeParam;
+//        return false;
+//    }
 
     // everything is fine
     return true;
@@ -52,25 +52,15 @@ double Codec::getPeriod() {
 
 bool Codec::updateModule() {
 
-    Bottle* input = inPort.read();
+    Bottle* input = skinInPort.read();
     if(input==NULL)
         return false;
     std::string data;
-    if(modeParam == "coder") {
-        yInfo()<<"Encoding"<<input->toString();
-        if(input->size())
-            data = encode(input->get(0).asString());
-    }
-    else {
-        yInfo()<<"Decoding"<<input->toString();
-        if(input->size())
-            data = decode(input->get(0).asString());
-    }
 
-    Bottle& output = outPort.prepare();
+    Bottle& output = alertOutPort.prepare();
     output.clear();
     output.addString(data.c_str());
-    outPort.write();
+    alertOutPort.write();
     return true;
 }
 
@@ -88,37 +78,16 @@ bool Codec::respond(const Bottle& command, Bottle& reply) {
 
 
 bool Codec::interruptModule() {
-    yInfo()<<"Interrupting codec module";
-    inPort.interrupt();
+
+    skinInPort.interrupt();
     return true;
 }
 
 
 bool Codec::close() {
-    yInfo()<<"closing codec module";
-    commandPort.close();
-    inPort.close();
+    skinInPort.close();
     // you can force writing remaining data
     // using outPort.writeStrict();
-    outPort.close();
+    alertOutPort.close();
     return true;
-}
-
-
-std::string Codec::encode(const std::string &msg) {
-    std::string code;
-    for(int i=0; i<msg.size(); i++)
-        code.push_back(msg[i] - '@' );
-
-    yWarning() << code;
-    return code;
-}
-
-std::string Codec::decode(const std::string &msg) {
-    std::string code;
-    for(int i=0; i<msg.size(); i++)
-        code.push_back(msg[i] + '@' );
-
-    yError() << code;
-    return code;
 }

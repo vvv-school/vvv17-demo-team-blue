@@ -15,7 +15,7 @@
  * Public License for more details
 */
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <fstream>
 #include <deque>
@@ -55,6 +55,7 @@ protected:
 
     RpcServer portRpc;
     BufferedPort<Bottle> portIn;
+
     string graspModelFileToWrite;
     deque<string> handKeys;
 
@@ -70,7 +71,6 @@ protected:
     double t0,vel,oldVel,T;
     double exploration_height;
     double exploration_max_force;
-    double elbow_height,elbow_weight;
 
     double expT0;
     deque<Vector> expPos;
@@ -88,7 +88,19 @@ protected:
         {
             if (forceCalibration || !model->isCalibrated())
             {
-                Property prop("(finger all_parallel)");
+                Bottle fingers;
+                Bottle &fng=fingers.addList();
+                fng.addString("index");
+                fng.addString("middle");
+                fng.addString("ring");
+                fng.addString("little");
+
+                Property prop;
+                prop.put("finger",fingers.get(0));
+                model->calibrate(prop);
+
+                prop.clear();
+                prop.put("finger","thumb");
                 model->calibrate(prop);
 
                 ofstream fout;
@@ -103,7 +115,7 @@ protected:
         return false;
     }
 
-    /***************************************************************/
+    /**************************************************************
     Bottle changeElbowHeight(const double height, const double weight)
     {
         Bottle tweakOptions;
@@ -120,7 +132,7 @@ protected:
         weightsPart.addDouble(0.0);
         weightsPart.addDouble(weight);
         return tweakOptions;
-    }
+    }*/
 
     /***************************************************************/
     void setImpedance(const bool sw, const bool forceSet=false)
@@ -156,8 +168,8 @@ public:
         string robot=rf.check("robot",Value("icub")).asString().c_str();
         arm=rf.check("arm",Value("right")).asString().c_str();
         vel=rf.check("vel",Value(0.2)).asDouble();
-        elbow_height=rf.check("elbow_height",Value(0.4)).asDouble();
-        elbow_weight=rf.check("elbow_weight",Value(30.0)).asDouble();
+
+
         double arm_roll=rf.check("arm_roll",Value(0.0)).asDouble();
         double arm_pitch=rf.check("arm_yaw",Value(0.0)).asDouble();
         double arm_yaw=rf.check("arm_pitch",Value(0.0)).asDouble();
@@ -228,7 +240,6 @@ public:
         iarm->setTrajTime(0.65);
         iarm->setInTargetTol(0.001);
 
-        iarm->tweakSet(changeElbowHeight(elbow_height,elbow_weight));
         iarm->storeContext(&context);
 
         setImpedance(impedanceSw,true);
@@ -295,7 +306,6 @@ public:
 
             iarm->setLimits(0,0.0,30.0);
             iarm->setTrajTime(1.0);
-            iarm->tweakSet(changeElbowHeight(0.1,elbow_weight));
 
             Vector startPoint(3,0.0);
             startPoint[0]=-0.35; startPoint[2]=0.15;

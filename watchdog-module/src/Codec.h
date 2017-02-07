@@ -50,13 +50,11 @@ public:
     virtual bool close();
 
 private:
-    std::string encode(const std::string &msg);
-    std::string decode(const std::string &msg);
+// ADD FUNCITONS HERE IF NEEDED
 
 private:
-    std::string modeParam;
     yarp::os::RpcServer commandPort;                    // command port
-    yarp::os::BufferedPort<yarp::os::Bottle> inPort;    // input port
-    yarp::os::BufferedPort<yarp::os::Bottle> outPort;   // output port
+    yarp::os::BufferedPort<yarp::os::Bottle> skinInPort;    // input port
+    yarp::os::BufferedPort<yarp::os::Bottle> alertOutPort;   // output port
 };
 
