@@ -26,7 +26,7 @@ icubcontrib_set_default_prefix()
 
 # building module
 include_directories(${YARP_INCLUDE_DIRS}
-                    ${ctrlLIb_INCLUDE_DIRS}
+                    ${ctrlLib_INCLUDE_DIRS}
                     ${iKin_INCLUDE_DIRS}
                     ${perceptiveModels_INCLUDE_DIRS}
                     ${actionPrimitives_INCLUDE_DIRS}
