@@ -79,7 +79,8 @@ bool ObjectRetriever::getLocation(Vector &location,
         {
             cmd.addString("world");
             cmd.addString("get");
-            cmd.addString("ball");
+            cmd.addString("box");
+            cmd.addInt(1);
             if (portLocation.write(cmd,reply))
             {
                 if (reply.size()>=3)

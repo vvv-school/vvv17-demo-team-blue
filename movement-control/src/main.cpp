@@ -249,15 +249,15 @@ protected:
             homeO = leftArmStartO;
         }
 
-        igaze->lookAtAbsAngles(Vector(3,0.0));
 
         iarm->goToPoseSync(homeX, homeO);
         iarm->waitMotionDone();
 
         yInfo() << "Moved arms home";
 
-        igaze->waitMotionDone();
+        igaze->lookAtAbsAngles(Vector(3,0.0));
         igaze->setTrackingMode(false);
+        //igaze->waitMotionDone();
 
 
         return true;
