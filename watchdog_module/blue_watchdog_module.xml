@@ -1,0 +1,42 @@
+<module>
+    <name>blue_watchdog_module</name>
+    <description>watchdog</description>
+    <copypolicy>Released under the terms of the GNU GPL v2.0</copypolicy>
+    <version>1.0</version>
+
+    <description-long>
+    Blue team watchdog module
+    </description-long>
+
+    <authors>
+        <author email="bence.magyar.robotics@gmail.com"> Bence Magyar </author>
+    </authors>
+
+    <arguments>
+        <!--param default="coder" required="no" desc="select the coder/decoder mode"> mode </param-->
+    </arguments>
+
+    <!-- <data> can have multiple <input> or <output> tags. -->
+    <data>
+        <input port_type="stream">            
+            <type>yarp::os::Bottle</type>
+            <port carrier="udp">/blue_watchdog/skindata:i</port>
+            <required>yes</required>
+            <description>recieves images of skin sensor data</description>
+        </input>
+
+        <input port_type="service">
+            <type>yarp::os::Bottle</type>
+            <port carrier="tcp">/blue_watchdog/rpc</port>
+            <description>in case we need it</description>
+        </input>
+
+        <output port_type="stream">
+            <type>yarp::os::Bottle</type>
+            <port carrier="udp">/blue_watchdog/alert:o</port>
+            <description>Output to speech module</description>
+        </output>
+
+    </data>
+
+</module>
