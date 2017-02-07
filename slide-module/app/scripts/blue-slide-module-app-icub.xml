@@ -1,6 +1,6 @@
 <application>
 
-  <name>Assignment on Grasp It App icub</name>
+  <name>Blue SLide MOdule App icub</name>
 
   <dependencies>
       <port>/yarplogger</port>

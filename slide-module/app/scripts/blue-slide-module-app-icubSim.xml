@@ -1,6 +1,6 @@
 <application>
 
-  <name>Assignment on Grasp It App icubSim</name>
+  <name>Blue Slide Module App icubSim</name>
 
   <dependencies>
       <port>/yarplogger</port>
@@ -10,11 +10,12 @@
   </dependencies>
 
   <module>
-      <name>assignment_grasp-it</name>
+      <name>blue_slide_module</name>
       <parameters>--robot icubSim</parameters>
       <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
       <node>localhost</node>
   </module>
+
 
   <connection>
       <from>/location</from>

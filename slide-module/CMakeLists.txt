@@ -45,4 +45,4 @@ file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)
 yarp_install(FILES ${scripts} DESTINATION ${ICUBCONTRIB_APPLICATIONS_INSTALL_DIR})
 
 #file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)
-yarp_install(FILES blue_slide_module.xml DESTINATION ${ICUBCONTRIB_MODULES_INSTALL_DIR})
+yarp_install(FILES DESTINATION ${ICUBCONTRIB_MODULES_INSTALL_DIR})
