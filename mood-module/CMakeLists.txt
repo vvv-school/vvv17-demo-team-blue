@@ -27,18 +27,14 @@ icubcontrib_set_default_prefix()
 
 # building module
 include_directories(${YARP_INCLUDE_DIRS}
-                    ${CMAKE_SOURCE_DIR}/src)
+                    src)
 
 add_executable(${PROJECT_NAME} 
-               ${CMAKE_SOURCE_DIR}/src/Codec.cpp
-               ${CMAKE_SOURCE_DIR}/src/main.cpp)
+               src/Codec.cpp
+               src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES})
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-
-
-# generate ad-hoc project to perform "make uninstall"
-icubcontrib_add_uninstall_target()
 
 file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)
 yarp_install(FILES ${scripts} DESTINATION ${ICUBCONTRIB_APPLICATIONS_INSTALL_DIR})

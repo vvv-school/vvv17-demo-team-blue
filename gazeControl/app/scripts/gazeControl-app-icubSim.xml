@@ -1,16 +1,10 @@
 <application>
 
-  <name>gazeControl App</name>
-
-  <dependencies>
-      <port>/yarplogger</port>
-      <port>/icubSim/cam/left</port>
-      <port>/icubSim/cam/right</port>
-      <port>/iKinGazeCtrl/rpc</port>
-  </dependencies>
+  <name>gazeControl App icubSim</name>
 
   <module>
       <name>gazeControl</name>
+      <parameters>--robot icubSim</parameters>
       <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
       <node>localhost</node>
   </module>
@@ -27,7 +21,7 @@
       <node>localhost</node>
   </module>
 
-  <connection>
+  <!-- <connection>
       <from>/icubSim/cam/left</from>
       <to>/imgL:i</to>
       <protocol>udp</protocol>
@@ -49,6 +43,6 @@
       <from>/imgR:o</from>
       <to>/viewerR</to>
       <protocol>udp</protocol>
-  </connection>
+  </connection> -->
 
 </application>

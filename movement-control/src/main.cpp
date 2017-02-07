@@ -6,11 +6,19 @@
 #include <cmath>
 #include <algorithm>
 #include <memory>
-
+#include <fstream>
 #include <yarp/os/all.h>
 #include <yarp/dev/all.h>
 #include <yarp/sig/all.h>
 #include <yarp/math/Math.h>
+
+#include <iCub/iKin/iKinFwd.h>
+#include <iCub/perception/models.h>
+#include <iCub/action/actionPrimitives.h>
+
+#include "slidingController_IDL.h"
+
+#define EXPLORATION_TOL     5e-3
 
 #include "helpers.h"
 
@@ -19,6 +27,10 @@ using namespace yarp::os;
 using namespace yarp::dev;
 using namespace yarp::sig;
 using namespace yarp::math;
+using namespace iCub::ctrl;
+using namespace iCub::iKin;
+using namespace iCub::perception;
+using namespace iCub::action;
 
 
 /***************************************************/
@@ -36,7 +48,46 @@ protected:
     RpcServer rpcPort;
     ObjectRetriever object;
 
+    ActionPrimitivesLayer1  action;
+    string graspModelFileToWrite;
+    deque<string> handKeys;
+    /******************Touch model***********/
+    bool calibrateGraspModel(const bool forceCalibration)
+    {
+        Model *model; action.getGraspModel(model);
+        if (model!=NULL)
+        {
+            if (forceCalibration || !model->isCalibrated())
+            {
+                Bottle fingers;
+                Bottle &fng=fingers.addList();
+                fng.addString("index");
+                fng.addString("middle");
+                fng.addString("ring");
+                fng.addString("little");
+
+                Property prop;
+                prop.put("finger",fingers.get(0));
+                model->calibrate(prop);
+
+                prop.clear();
+                prop.put("finger","thumb");
+                model->calibrate(prop);
+
+                ofstream fout;
+                fout.open(graspModelFileToWrite.c_str());
+                model->toStream(fout);
+                fout.close();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     /***************************************************/
+
     void fixate(const Vector &x)
     {
         // simply look at x,
@@ -73,6 +124,40 @@ protected:
         o[1] = -1.0;
         o[2] = 0.0;
         o[3] = 30.0 * (M_PI / 180.0);
+
+        Matrix RotY = axis2dcm(o).submatrix(0, 2, 0, 2);
+
+        yInfo() << Rot.rows() << "x " << Rot.cols() << " * "
+                << RotY.rows() << "x" << RotY.cols();
+
+        return dcm2axis(RotY * Rot);
+    }
+
+    /***************************************************/
+    Vector computeHandOrientationForRetrieve(const string &hand)
+    {
+        // we have to provide a 4x1 vector representing the
+        // final orientation for the specified hand, with
+        // the palm pointing downward
+
+        Matrix Rot(3,3);
+        if (hand == "right")
+        {
+            Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
+            Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
+            Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)=-1.0;
+        }
+        else
+        {
+            Rot(0,0)=-1.0; Rot(0,1)=  0.0; Rot(0,2)= 0.0;
+            Rot(1,0)= 0.0; Rot(1,1)= -1.0; Rot(1,2)= 0.0;
+            Rot(2,0)= 0.0; Rot(2,1)=  0.0; Rot(2,2)= 1.0;
+        }
+        Vector o(4);
+        o[0] = 0.0;
+        o[1] = -1.0;
+        o[2] = 0.0;
+        o[3] = 50.0 * (M_PI / 180.0);
 
         Matrix RotY = axis2dcm(o).submatrix(0, 2, 0, 2);
 
@@ -249,15 +334,15 @@ protected:
             homeO = leftArmStartO;
         }
 
-        igaze->lookAtAbsAngles(Vector(3,0.0));
 
         iarm->goToPoseSync(homeX, homeO);
         iarm->waitMotionDone();
 
         yInfo() << "Moved arms home";
 
-        igaze->waitMotionDone();
+        igaze->lookAtAbsAngles(Vector(3,0.0));
         igaze->setTrackingMode(false);
+        //igaze->waitMotionDone();
 
 
         return true;
@@ -379,6 +464,53 @@ protected:
             yInfo()<<"prepared hand";
 
             approach_target_for_push(hand,x,o);
+            yInfo()<<"approached object";
+
+            return true;
+        }
+        return false;
+    }
+
+    bool retrieve_object(double fingers_closure)
+    {
+        Vector x; string hand;
+        if (object.getLocation(x))
+        {
+            yInfo()<<"retrieved 3D location = ("<<x.toString(3,3)<<")";
+
+            // we select the hand accordingly
+            hand=(x[1]>0.0?"right":"left");
+            yInfo()<<"selected hand = \""<<hand<<'\"';
+        }
+        else
+            return false;
+
+        fixate(x);
+        yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
+
+        // refine the localization of the object
+        // with a proper hand-related map
+        if (object.getLocation(x,hand))
+        {
+            yInfo()<<"refined 3D location = ("<<x.toString(3,3)<<")";
+
+            Vector o=computeHandOrientationForRetrieve(hand);
+            yInfo()<<"computed orientation = ("<<o.toString(3,3)<<")";
+
+            // we set up here the lists of joints we need to actuate
+            VectorOf<int> abduction,thumb,fingers;
+            abduction.push_back(7);
+            thumb.push_back(8);
+            for (int i=9; i<16; i++)
+                fingers.push_back(i);
+
+            // let's put the hand in the pre-grasp configuration
+            moveFingers(hand,abduction,0.7);
+            moveFingers(hand,thumb,1.0);
+            moveFingers(hand,fingers,0.2);
+            yInfo()<<"prepared hand";
+
+            //approach_target_for_push(hand,x,o);
             yInfo()<<"approached object";
 
             return true;
@@ -625,6 +757,45 @@ public:
                 reply.addString("I couldn't get home :(");
             }
         }
+        else if (cmd == "retrieve_object")
+        {
+            // the "closure" accounts for how much we should
+            // close the fingers around the object:
+            // if closure == 0.0, the finger joints have to reach their minimum
+            // if closure == 1.0, the finger joints have to reach their maximum
+            double fingers_closure=0.2; // default value
+
+            // we can pass a new value via rpc
+            if (command.size()>1)
+                fingers_closure=command.get(1).asDouble();
+
+            bool ok=retrieve_object(fingers_closure);
+            // we assume the robot is not moving now
+            if (ok)
+            {
+                reply.addString("ack");
+                reply.addString("Yeah! I did it! Maybe...");
+            }
+            else
+            {
+                reply.addString("nack");
+                reply.addString("I don't see any object!");
+            }
+        }
+        else if (cmd == "home")
+        {
+            bool ok = home("right") && home("left");
+            if (ok)
+            {
+                reply.addString("ack");
+                reply.addString("Yeah! I did it! Maybe...");
+            }
+            else
+            {
+                reply.addString("nack");
+                reply.addString("I couldn't get home :(");
+            }
+        }
         else
             // the father class already handles the "quit" command
             return RFModule::respond(command,reply);
@@ -660,4 +831,3 @@ int main(int argc, char *argv[])
     rf.configure(argc,argv);
     return mod.runModule(rf);
 }
-

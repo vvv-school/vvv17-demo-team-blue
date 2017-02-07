@@ -30,18 +30,14 @@ include_directories(${YARP_INCLUDE_DIRS}
                      ${iKin_INCLUDE_DIRS}
                      ${perceptiveModels_INCLUDE_DIRS}
                      ${actionPrimitives_INCLUDE_DIRS}
-                     ${CMAKE_SOURCE_DIR}/include)
+                     include)
 
 add_executable(${PROJECT_NAME}
-               ${CMAKE_SOURCE_DIR}/src/slidingController_IDL.cpp
-               ${CMAKE_SOURCE_DIR}/src/helpers.cpp
-               ${CMAKE_SOURCE_DIR}/src/main.cpp)
+               src/slidingController_IDL.cpp
+               src/main.cpp)
 
 target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES} actionPrimitives perceptiveModels iKin ctrlLib)
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-
-# generate ad-hoc project to perform "make uninstall"
-icubcontrib_add_uninstall_target()
 
 file(GLOB conf    ${CMAKE_SOURCE_DIR}/app/conf/*.ini)
 file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)
