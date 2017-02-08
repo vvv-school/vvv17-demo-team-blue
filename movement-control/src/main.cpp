@@ -490,7 +490,7 @@ protected:
 
             Vector approachFromAbove = x;
             approachFromAbove[2] += 0.05; // be higher than object
-            approachFromAbove[0] -= 0.00; // be behind object
+            approachFromAbove[0] -= 0.02; // be behind object
             drvArmR.view(iarm);
             iarm->goToPose(approachFromAbove,handOrientation,5.0);
             iarm->waitMotionDone();
@@ -692,7 +692,7 @@ public:
         drvGaze.view(igaze);
         igaze->storeContext(&startup_ctxt_gaze);
 
-        rpcPort.open("/service");
+        rpcPort.open("/movement-control/command");
         attach(rpcPort);
         return true;
     }
