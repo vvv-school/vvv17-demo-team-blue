@@ -29,6 +29,11 @@ class CardTracker(BaseModule):
     O_HORIZONTAL = 0
     O_VERTICAL   = 1
 
+    CLAHE        = cv2.createCLAHE( clipLimit = 2.0, tileGridSize = (8, 8) )
+
+
+    debug = False
+
 
     def __init__(self, args):
         BaseModule.__init__(self, args)
@@ -60,9 +65,11 @@ class CardTracker(BaseModule):
 
         self.imgInPort       = self.createInputPort('image')
         self.imgOutPort      = self.createOutputPort('image')
+        self.dbgOutPort      = self.createOutputPort('debug')
 
         self.bufImageIn,  self.bufArrayIn  = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
         self.bufImageOut, self.bufArrayOut = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 3)
+        self.bufImageDbg, self.bufArrayDbg = self.createImageBuffer(self.D_WIDTH, self.D_HEIGHT, 1)
 
         self.order           = CardTracker.O_HORIZONTAL
         self.orderIsReversed = False
@@ -92,6 +99,10 @@ class CardTracker(BaseModule):
 
             # Send the result to the output port
             self.imgOutPort.write(self.bufImageOut)
+
+            # Send the result to the debug output port
+            self.bufArrayDbg[:,:] = self.image
+            self.dbgOutPort.write(self.bufImageDbg)
 
         return True
 
@@ -220,7 +231,6 @@ class CardTracker(BaseModule):
         # we only care for one contour
         cards     = dict([ (card.tid, card) for card in self.detect_cards(cv2_image) if card ])
         card_list = [ cards[tid] for tid in cards ]
-        print len(cards)
 
         # handle memory
         if self.memory_length > 0:
@@ -241,7 +251,7 @@ class CardTracker(BaseModule):
         self.sendTranslation(card_list)
         self.sendSimpleBottle(card_list)
 
-        return self.image
+        return cv2_image
 
 
     def respond(self, command, reply):
@@ -287,31 +297,41 @@ class CardTracker(BaseModule):
 
         @result list of Patch objects
         """
+        
+        rChannel = CardTracker.CLAHE.apply(image[:,:,2])
+        gChannel = CardTracker.CLAHE.apply(image[:,:,1])
+        bChannel = CardTracker.CLAHE.apply(image[:,:,0])
 
-        rgray = image[:,:,2]
-        clahe = cv2.createCLAHE( clipLimit=2.0, tileGridSize=(8, 8) )
-        rgray = clahe.apply(rgray)
-        self.image = cv2.cvtColor(rgray, cv2.COLOR_GRAY2BGR)
+        _, rThreshed  = cv2.threshold(rChannel, 190, 255, cv2.THRESH_BINARY)
+        _, gThreshed  = cv2.threshold(gChannel, 127, 255, cv2.THRESH_BINARY)
+        _, bThreshed  = cv2.threshold(bChannel, 127, 255, cv2.THRESH_BINARY)
 
         # convert to gray
-        gray    = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        gray      = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # filter
-        gray    = cv2.bilateralFilter(gray, 11, 17, 17)
-        edged   = cv2.Canny(gray, 30, 200)
+        rThreshed = cv2.bilateralFilter(rThreshed, 11, 17, 17)
+        edged     = cv2.Canny(rThreshed, 30, 200)
 
         # get contours
-        (cnts, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        (cnts, _) = cv2.findContours(gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         contours  = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
 
 
         # convert to patches
-        patches   = [Patch(contour, image) for contour in contours]
-        print 'patches', len(contours)
+        patches   = [Patch(contour, image, rThreshed, gThreshed, bThreshed) for contour in contours]
+
+        # find
+        for patch in patches:
+            print 'bpx', patch.countPixels(), cv2.arcLength(patch.contour, True), patch.label
+            
+
 
         # return patches that represent a card
-        return [patch for patch in patches if patch.isCard()]
+        result      = [patch for patch in patches if patch.isCard()]
+        self.image  = rThreshed
 
+        return result
 
 
 def createArgParser():
