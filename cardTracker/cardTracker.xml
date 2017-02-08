@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="yarpmanifest.xsl"?>
+
+<module>
+  <name>cardDetector</name>
+  <description>Detects cards with color and number within an image.</description>
+  <version>1.0</version>
+
+  <description-long>
+
+  </description-long>
+
+  <authors>
+    <author email="brutusthetschiepel@gmail.com"> BrutusTT </author>
+  </authors>
+
+  <data>
+
+    <input>
+      <type>yarp::sig::Image</type>
+      <port carrier="udp">/CardDetector/image:i</port>
+      <description>
+        Expects an segmented image from the lbpExtract module.
+      </description>
+    </input>
+
+    <input>
+      <type>*</type>
+      <port carrier="udp">/CardDetector/rpc</port>
+      <description>
+        RPC port to control the modules parameters.
+      </description>
+    </input>
+
+    <output>
+      <type>yarp::sig::Image</type>
+      <port carrier="udp">/CardDetector/image:o</port>
+      <description>
+        Streams out the image with the cards information.
+      </description>
+    </output>
+
+    <output>
+      <type>yarp::sig::Image</type>
+      <port carrier="udp">/CardDetector/debug:o</port>
+      <description>
+        Streams out the image with the binary segmentation which is used for color estimation.
+      </description>
+    </output>
+
+    <output>
+      <type>*</type>
+      <port carrier="udp">/CardDetector/simple:o</port>
+      <description>
+        Streams the card information. Bottle Format: ( center-x:Double center-y:Double center-z:Double owner:String number:Int )
+      </description>
+    </output>
+
+    <output>
+      <type>*</type>
+      <port carrier="udp">/CardDetector/convert2D:rpc</port>
+      <description>
+        Port used for the conversion between 2D image coordinates and 3D world coordinates. This
+        port needs to be connected to /iKinGazeCtrl/rpc .
+      </description>
+    </output>
+
+    <output>
+      <type>*</type>
+      <port carrier="udp">/CardDetector/cards:o</port>
+      <description>
+        Streams the card information with additional information.
+      </description>
+    </output>
+
+    <output>
+      <type>*</type>
+      <port carrier="udp">/CardDetector/order:o</port>
+      <description>
+        Streams the order of the cards. 
+      </description>
+    </output>
+
+    <output>
+      <type>*</type>
+      <port carrier="udp">/CardDetector/translate:o</port>
+      <description>
+        Streams a text representation of the detected cards.
+      </description>
+    </output>
+
+  </data>
+
+
+</module>
