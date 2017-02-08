@@ -37,7 +37,7 @@ bool Mood::configure(yarp::os::ResourceFinder &rf) {
     }
     hashit["starting"] = s_starting;
     hashit["looking at cards"] = s_looking_at_cards;
-    hashit["bet"] = s_bet;
+    hashit["pull duck"] = s_bet;
     hashit["don't bet"] = s_dont_bet;
     hashit["look up"] = s_looking_of_human;
     hashit["won"] = s_won;
