@@ -21,10 +21,12 @@ class gazeControlModule: public RFModule
 {
 protected:
     PolyDriver drvGaze;
-    IGazeControl      *igaze;
+    IGazeControl *igaze;
 
     RpcServer port;
 
+    // BufferedPort<ImageOf<PixelRgb> > imgLPortIn, imgRPortIn;
+    // BufferedPort<ImageOf<PixelRgb> > imgLPortOut, imgRPortOut;
 
     /***************************************************/
     void look_down()
@@ -75,6 +77,11 @@ public:
         port.open("/gaze-module/look");
         attach(port);
 
+        // imgLPortIn.open("/imgL:i");
+        // imgRPortIn.open("/imgR:i");
+        // imgLPortOut.open("/imgL:o");
+        // imgRPortOut.open("/imgR:o");
+
         return true;
     }
 
@@ -89,6 +96,10 @@ public:
     {
         drvGaze.close();
         port.close();
+        // imgLPortIn.close();
+        // imgRPortIn.close();
+        // imgLPortOut.close();
+        // imgRPortOut.close();
         return true;
     }
 
@@ -99,33 +110,50 @@ public:
     }
 
     /***************************************************/
-    bool updateModule()
+    bool respond(const Bottle &command, Bottle &response)
     {
-        // prepare input and output bottles
-        Bottle cmd; // La commande
-        Bottle response; // La reponse
-        port.read(cmd,true);
+        // ImageOf<PixelRgb> *imgL = imgLPortIn.read();
+        // ImageOf<PixelRgb> *imgR = imgRPortIn.read();
+
+        // // prepare input and output bottles
+        // Bottle cmd; // La commande
+        // Bottle response; // La reponse
+        // port.read(cmd,true);
 
         // get states
-        string state = cmd.get(0).asString();
+        string state = command.get(0).asString();
 
-        if (state==NULL)
-           return false;
-        else if (state == "look down"){
-           response.append(cmd);
+        if (state == "look down"){
            look_down() ;
            response.clear();
            response.addString("look down ok"); // 1 if look_down
         }
         else if (state == "look up"){
-          response.append(cmd);
           look_up() ;
           response.clear();
           response.addString("look up ok"); // 1 if look_down           
         }
+        else
+        {
+            response.addString("zut");
+        }
 
-        port.reply(response); // Il envoit la reponse
+        // imgLPortOut.prepare() = *imgL;
+        // imgRPortOut.prepare() = *imgR;
 
+        // imgLPortOut.write();
+        // imgRPortOut.write();
+
+        // port.reply(response); // Il envoit la reponse
+
+        return true;
+    }
+
+
+
+    /***************************************************/
+    bool updateModule()
+    {
         return true;
     }
 };

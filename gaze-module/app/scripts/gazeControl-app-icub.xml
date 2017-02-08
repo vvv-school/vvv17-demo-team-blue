@@ -3,13 +3,13 @@
   <name>gazeControl App icub</name>
 
   <module>
-      <name>gazeControl</name>
+      <name>blue-gaze-module</name>
       <parameters>--robot icub</parameters>
       <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
       <node>localhost</node>
   </module>
 
-  <module>
+<!--   <module>
       <name>yarpview</name>
       <parameters>--name /viewerL --x 10 --y 10</parameters>
       <node>localhost</node>
@@ -19,9 +19,9 @@
       <name>yarpview</name>
       <parameters>--name /viewerR --x 360 --y 10</parameters>
       <node>localhost</node>
-  </module>
+  </module> -->
 
-  <connection>
+<!--   <connection>
       <from>/location</from>
       <to>/memory/rpc</to>
       <protocol>tcp</protocol>
@@ -31,6 +31,6 @@
       <from>/calibration</from>
       <to>/iolReachingCalibration/rpc</to>
       <protocol>tcp</protocol>
-  </connection>
+  </connection> -->
 
 </application>

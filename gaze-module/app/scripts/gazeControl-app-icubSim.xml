@@ -3,13 +3,19 @@
   <name>gazeControl App icubSim</name>
 
   <module>
-      <name>gazeControl</name>
+      <name>blue-gaze-module</name>
       <parameters>--robot icubSim</parameters>
       <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
       <node>localhost</node>
   </module>
+<!-- 
+  <connection>
+      <from>/location</from>
+      <to>/icubSim/world</to>
+      <protocol>tcp</protocol>
+  </connection> -->
 
-  <module>
+<!--   <module>
       <name>yarpview</name>
       <parameters>--name /viewerL --x 10 --y 10</parameters>
       <node>localhost</node>
@@ -19,9 +25,9 @@
       <name>yarpview</name>
       <parameters>--name /viewerR --x 360 --y 10</parameters>
       <node>localhost</node>
-  </module>
+  </module> -->
 
-  <!-- <connection>
+<!--   <connection>
       <from>/icubSim/cam/left</from>
       <to>/imgL:i</to>
       <protocol>udp</protocol>
@@ -31,9 +37,9 @@
       <from>/icubSim/cam/right</from>
       <to>/imgR:i</to>
       <protocol>udp</protocol>
-  </connection>
+  </connection> -->
 
-  <connection>
+<!--   <connection>
       <from>/imgL:o</from>
       <to>/viewerL</to>
       <protocol>udp</protocol>
