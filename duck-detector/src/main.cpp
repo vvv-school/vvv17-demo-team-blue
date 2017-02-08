@@ -42,12 +42,14 @@ class Processing : public yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::P
 
     yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> > outPort;
     yarp::os::Port positionPort;
+    yarp::os::Port position2DPort;
 
     std::vector<int32_t> lowBound;
     std::vector<int32_t> highBound;
 
     yarp::os::RpcClient rpc;
     yarp::os::RpcClient sfm_rpc_port;
+
 
     yarp::os::Mutex mutex;
 
@@ -73,7 +75,8 @@ public:
         BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::open( "/" + moduleName + "/rgb:i" );
         outPort.open("/"+ moduleName + "/output");
         positionPort.open("/" + moduleName + "/position:o");
-        sfm_rpc_port.open("/SFM/rpc");
+        position2DPort.open("/" + moduleName + "/position2D:o");
+        sfm_rpc_port.open("/" + moduleName +"/SFMrpc");
 
         //magical values
         lowBound.push_back(90);
@@ -94,6 +97,7 @@ public:
     {
         outPort.close();
         positionPort.close();
+        position2DPort.close();
         sfm_rpc_port.close();
         BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::close();
     }
@@ -155,6 +159,8 @@ public:
         point2D.addDouble(mc[max_i].x);
         point2D.addDouble(mc[max_i].y);
 
+        position2DPort.write(point2D);
+        
         yarp::os::Bottle point3D;
         sfm_rpc_port.write(point2D, point3D);
 

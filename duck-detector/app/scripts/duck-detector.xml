@@ -26,18 +26,23 @@
     </module>
 
     <connection>
-        <from>/icub/camcalib/left/out</from>
+        <from>/icub/cam/left</from>
         <to>/SFM/left:i</to>
         <protocol>udp</protocol>
     </connection>
     <connection>
-        <from>/icub/camcalib/right/out</from>
+        <from>/icub/cam/right</from>
         <to>/SFM/right:i</to>
         <protocol>udp</protocol>
     </connection>
     <connection>
-        <from>/icub/camcalib/left/out</from>
+        <from>/icub/cam/left</from>
         <to>/duck-detector/rgb:i</to>
+        <protocol>udp</protocol>
+    </connection>
+    <connection>
+        <from>/duck-detector/SFMrpc</from>
+        <to>/SFM/rpc</to>
         <protocol>udp</protocol>
     </connection>
     <connection>
