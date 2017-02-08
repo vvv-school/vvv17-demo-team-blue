@@ -1,4 +1,24 @@
+import argparse
 import os
+
+
+# def createArgParser():
+#     """ This method creates a base argument parser.
+# 
+#     @return Argument Parser object
+#     """
+#     parser = argparse.ArgumentParser(description='Install the cardTracker')
+#     parser.add_argument( '-c', '--contrib_dir',
+#                          dest       = 'contrib_dir',
+#                          default    = '',
+#                          help       = 'Sets the ICUBcontrib_DIR')
+#     args, _ = parser.parse_known_args()
+#     return args
+# 
+# 
+# args = createArgParser()
+# 
+# print args.contrib_dir
 
 from setuptools import setup, find_packages
 
@@ -33,5 +53,11 @@ setup( name                 = 'cardTracker',
 
        scripts = [
         'scripts/cardTracker',
-       ]
-     )
+       ],
+
+       # install the XML description files
+        data_files=[ 
+           ( '/share/ICUBcontrib/modules', ['cardTracker.xml'] ),
+           ( '/share/ICUBcontrib/applications', ['app/scripts/cardTrackerTest.xml'] )
+           ]
+        )

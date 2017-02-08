@@ -31,6 +31,8 @@ class CardTracker(BaseModule):
 
     CLAHE        = cv2.createCLAHE( clipLimit = 2.0, tileGridSize = (8, 8) )
 
+    # 10cm below (0, 0, 0)
+    DEPTH        = -0.1
 
     debug = False
 
@@ -62,7 +64,7 @@ class CardTracker(BaseModule):
         self.simplePort      = self.createOutputPort('simple')
         self.orderPort       = self.createOutputPort('order')
         self.translationPort = self.createOutputPort('translation')
-        self.sfmPort         = self.createRpcClientPort('sfm_rpc')
+        self.sfmPort         = self.createRpcClientPort('convert2D')
 
         self.imgInPort       = self.createInputPort('image')
         self.imgOutPort      = self.createOutputPort('image')
@@ -112,8 +114,6 @@ class CardTracker(BaseModule):
         
         # check we send a bottle with the correct input
         assert isinstance(msg, yarp.Bottle)
-        assert msg.get(0) == 'Root'
-        assert msg.size() == 3
         
         ans = yarp.Bottle()     
         ans.clear()
@@ -122,7 +122,6 @@ class CardTracker(BaseModule):
 
         # check we get a return and has content        
         assert ans
-        assert ans.size() > 0
 
         return ans
 
@@ -188,7 +187,9 @@ class CardTracker(BaseModule):
         bottle  = yarp.Bottle()
         bottle.clear()
 
-        cards_list = bottle.addList()
+
+        # this is a quick fix for the message format
+        card_values = bottle
 
         # send all cards
         for card in cards:
@@ -196,14 +197,13 @@ class CardTracker(BaseModule):
             point3D = self.convert(card.center[0], card.center[1])
 
             # id and center
-            card_values = cards_list.addList()
             card_values.addDouble(point3D[0])
             card_values.addDouble(point3D[1])
             card_values.addDouble(point3D[2])
             card_values.addString(card.belongsTo())
             card_values.addInt(card.getEstimatedNumber())
 
-        self.simplePort.write(bottle)
+        self.simplePort.write(card_values)
 
     
     def sendCards(self, cards):
@@ -244,15 +244,21 @@ class CardTracker(BaseModule):
 
 
     def convert(self, x, y):
+        
         msg = yarp.Bottle()
-        msg.addString('Root')
-        msg.addInt(x)
-        msg.addInt(y)
+        msg.addString('get')
+        msg.addString('3D')
+        msg.addString('mono')
+        _list = msg.addList()
+        _list.addString('left')
+        _list.addDouble(x)
+        _list.addDouble(y)
+        _list.addDouble(self.DEPTH)
 
         answer = self._sendMessage(msg)
 
-        z = 0.08
-        return (answer.get(0).asDouble(), answer.get(1).asDouble(), z)
+        return (answer.get(0).asDouble(), answer.get(1).asDouble(), self.DEPTH)
+        return (-0.5, 0.0, -0.1)
 
 
     def onImage(self, cv2_image):
