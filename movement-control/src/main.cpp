@@ -129,19 +129,6 @@ protected:
         impedanceSw=enable;
     }
 
-    void fixate(const Vector &x)
-    {
-        // simply look at x,
-        // but when the movement is over
-        // ensure that we'll still be looking at x
-
-        igaze->setTrackingMode(true);
-        igaze->lookAtFixationPoint(x);
-        igaze->waitMotionDone();
-    }
-
-
-
     /***************************************************/
     Vector computeHandOrientation(const string &hand)
     {
@@ -379,32 +366,17 @@ protected:
         }
 
 
-        iarm->goToPoseSync(homeX, homeO);
+        iarm->goToPoseSync(homeX, homeO, 30);
         iarm->waitMotionDone();
 
         yInfo() << "Moved arms home";
 
-        igaze->lookAtAbsAngles(Vector(3,0.0));
-        igaze->setTrackingMode(false);
+        //igaze->lookAtAbsAngles(Vector(3,0.0));
+        //igaze->setTrackingMode(false);
         //igaze->waitMotionDone();
 
 
         return true;
-    }
-
-    /***************************************************/
-    void look_down()
-    {
-        // we ask the controller to keep the vergence
-        // from now on fixed at 5.0 deg, which is the
-        // configuration where we calibrated the stereo-vision;
-        // without that, we cannot retrieve good 3D positions
-        // with the real robot
-        igaze->blockEyes(5.0);
-        Vector ang(3,0.0);
-        ang[1]=-60.0;
-        igaze->lookAtAbsAngles(ang);
-        igaze->waitMotionDone();
     }
 
     bool push_object(const Vector &pos)
@@ -421,7 +393,7 @@ protected:
             return false;*/
         Vector x=pos;
         string hand="right";
-        //fixate(x);
+
         yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
 
         // refine the localization of the object
@@ -461,9 +433,6 @@ protected:
         Vector x; string hand;
         x = pos;
         hand = "right";
-
-        //fixate(x);
-        yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
 
         // refine the localization of the object
         // with a proper hand-related map
@@ -742,8 +711,6 @@ public:
         std::string hand="right";
         yInfo() << "Choosing hand: " << hand;
 
-        fixate(cardPos);
-
         Vector handOrientation(4, 0.0);
         {
             Matrix Rot(3,3);
@@ -846,8 +813,6 @@ public:
         std::string hand="right";
         yInfo() << "Choosing hand: " << hand;
 
-        fixate(cardPos);
-
         Vector handOrientation(4, 0.0);
         {
             Matrix Rot(3,3);
@@ -928,13 +893,6 @@ public:
             reply.addString("- look_down");
             reply.addString("- push_object");
             reply.addString("- approach_card");
-        }
-        else if (cmd=="look_down")
-        {
-            look_down();
-            // we assume the robot is not moving now
-            reply.addString("ack");
-            reply.addString("Yep! I'm looking down now!");
         }
         else if (cmd == "push_object")
         {
