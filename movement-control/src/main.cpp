@@ -657,6 +657,7 @@ public:
         }
         // Activate the torso for arm movements
         Vector dof(10,1.0),dummy;
+        dof[1] = 0.0;
         iarm->setDOF(dof,dummy);
 
         drvArmL.view(iarm);
@@ -945,10 +946,6 @@ public:
             cardPos[0] = command.get(1).asDouble();
             cardPos[1] = command.get(2).asDouble();
             cardPos[2] = command.get(3).asDouble();
-            Vector dof(10,1.0),dummy;
-            dof[1] = 0.0;
-            dof[2] = 0.0;
-            iarm->setDOF(dof,dummy);
 
             // reach the first via-point
             // located 5 cm above the target x
@@ -1025,8 +1022,6 @@ public:
             cardPos[0] = command.get(1).asDouble();
             cardPos[1] = command.get(2).asDouble();
             cardPos[2] = command.get(3).asDouble();
-            //Vector dof(10,1.0),dummy;
-            //iarm->setDOF(dof,dummy);
 
             // reach the first via-point
             // located 5 cm above the target x
