@@ -220,12 +220,12 @@ protected:
 
         Vector approach = x;
         approach[2] += 0.02;
-        iarm->goToPoseSync(approach, o);
+        iarm->goToPose(approach, o,5.0);
         iarm->waitMotionDone();
 
         // reach the final target x;
 
-        iarm->goToPoseSync(x, o);
+        iarm->goToPose(x, o,5.0);
         iarm->waitMotionDone();
     }
 
@@ -252,19 +252,20 @@ protected:
         Vector approach = x;
         approach[0] += 0.10;
         approach[2] += 0.02;
-        iarm->goToPoseSync(approach, o);
+
+        iarm->goToPose(approach, o,5);
         iarm->waitMotionDone();
 
         // reach the final target x;
 
         Vector afterPush = x;
         afterPush[0] -= 0.03;
-        iarm->goToPoseSync(afterPush, o);
+        iarm->goToPose(afterPush, o,5.0);
         iarm->waitMotionDone();
 
         Vector goUp = x;
         goUp[2] += 0.08;
-        iarm->goToPoseSync(goUp, o);
+        iarm->goToPose(goUp, o,5.0);
         iarm->waitMotionDone();
     }
 
@@ -284,7 +285,7 @@ protected:
         if (iarm->getPose(x, o))
         {
             x[2] += 0.1;
-            iarm->goToPoseSync(x, o);
+            iarm->goToPose(x, o,5.0);
             iarm->waitMotionDone();
         }
     }
@@ -366,7 +367,7 @@ protected:
         }
 
 
-        iarm->goToPoseSync(homeX, homeO, 30);
+        iarm->goToPose(homeX, homeO, 5);
         iarm->waitMotionDone();
 
         yInfo() << "Moved arms home";
@@ -472,21 +473,21 @@ protected:
             approachFromAbove[2] += 0.05; // be higher than object
             approachFromAbove[0] -= 0.00; // be behind object
             drvArmR.view(iarm);
-            iarm->goToPoseSync(approachFromAbove,handOrientation,30);
+            iarm->goToPose(approachFromAbove,handOrientation,5.0);
             iarm->waitMotionDone();
             Vector goDown = approachFromAbove;
             goDown[2] = x[2];
-            iarm->goToPoseSync(goDown,handOrientation,30);
+            iarm->goToPose(goDown,handOrientation,5.0);
             iarm->waitMotionDone();
             Vector pullBack;
             pullBack = goDown;
             pullBack[0] += 0.1;
-            iarm->goToPoseSync(pullBack,handOrientation,30);
+            iarm->goToPose(pullBack,handOrientation,5.0);
             iarm->waitMotionDone();
 
             Vector goUp = pullBack;
             goUp[2] += 0.06;
-            iarm->goToPoseSync(goUp, handOrientation, 30);
+            iarm->goToPose(goUp, handOrientation, 5.0);
             iarm->waitMotionDone();
 
             home("right");
@@ -569,7 +570,7 @@ public:
         arm=rf.check("arm",Value("right")).asString().c_str();
         string name=rf.check("name",Value("movement-controller")).asString().c_str();
         inSimulation = robot == "icubSim";
-
+        exploration_max_force=rf.check("exploration_max_force",Value(40.0)).asDouble();
         if (!openCartesian(robot,"right_arm"))
             return false;
 
@@ -659,6 +660,7 @@ public:
         Vector dof(10,1.0),dummy;
         dof[1] = 0.0;
         iarm->setDOF(dof,dummy);
+        iarm->setTrajTime(3.0);
 
         drvArmL.view(iarm);
         iarm->storeContext(&startup_ctxt_arm_left);
@@ -792,8 +794,8 @@ public:
                 done = done && jointDone;
             }
         } while (!done);
-
-        if (!iarm->goToPoseSync(approachPos, handOrientation, 20.0))
+        iarm->setTrajTime(3.0);
+        if (!iarm->goToPose(approachPos, handOrientation, 5.0))
         {
             yError() << "Could not move to approach position";
             return false;
@@ -827,8 +829,8 @@ public:
         }
 
         // wait until all fingers have attained their set-points
-
-        if (!iarm->goToPoseSync(approachPos, handOrientation, 20.0))
+        iarm->setTrajTime(3.0);
+        if (!iarm->goToPose(approachPos, handOrientation, 5.0))
         {
             yError() << "Could not move to approach position";
             return false;
@@ -872,7 +874,7 @@ public:
             handOrientation = dcm2axis(Rot);
         }
 
-        if (!iarm->goToPoseSync(approachPos, handOrientation, 20.0))
+        if (!iarm->goToPose(approachPos, handOrientation, 5.0))
         {
             yError() << "Could not move to approach position";
             return false;
