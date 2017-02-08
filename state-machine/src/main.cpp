@@ -25,9 +25,9 @@ struct Position3D
 {
     double x,y,z;
     Position3D()
-     : x(0) , y(0) , z(0) { }
+        : x(0) , y(0) , z(0) { }
     Position3D(double x_, double y_, double z_ = 0.0)
-     : x(x_) , y(y_) , z(z_) { }
+        : x(x_) , y(y_) , z(z_) { }
 };
 
 /***************************************************/
@@ -42,6 +42,7 @@ protected:
     yarp::os::BufferedPort<yarp::os::Bottle> stateOutPort;
     yarp::os::BufferedPort<yarp::os::Bottle> cardInport;
     yarp::os::BufferedPort<yarp::os::Bottle> duckInport;
+    yarp::os::BufferedPort<yarp::os::Bottle> alertInport;
 
     bool  closing;
 
@@ -73,6 +74,11 @@ public:
             return false;
         }
 
+        if(!alertInport.open("/state-machine/alert:i")) {
+            yError()<<"Cannot open the cardInport";
+            return false;
+        }
+
         rpcPort.open("/state-machine/command");
         attach(rpcPort);
 
@@ -100,6 +106,7 @@ public:
         else if (cmd=="start")
         {
             // Let's start !
+            score_human = score_robot = 0;
             string currentGaze ;
 
             publishState("starting");
@@ -127,13 +134,15 @@ public:
                 Bottle move_cmd ;
                 move_cmd.clear();
                 move_cmd.addString("push duck");
-                for (int i=0; i<3; i++){
-                  move_cmd.addDouble(duck_position->get(i).asDouble());
+                for (int i=0; i<3; i++)
+                {
+                    move_cmd.addDouble(duck_position->get(i).asDouble());
                 }
 
-                Bottle response ;
                 publishState("push duck");
-                if(!movementPort.write(move_cmd,response))
+                Bottle response ;
+                //  if(movementPort.getOutputCount() > 0)
+                if(movementPort.write(move_cmd,response))
                 {
                     publishState("movement rpc call failed");
                 }
@@ -143,15 +152,15 @@ public:
                 publishState("don't bet");
 
                 // COMMENT HERE TO DISABLE PUSH CARD
-                Bottle move_cmd ;
-                move_cmd.addString("push card");
-                move_cmd.addDouble(last_card_locations["icub"].x);
-                move_cmd.addDouble(last_card_locations["icub"].y);
-                move_cmd.addDouble(last_card_locations["icub"].z);
+                //                Bottle move_cmd ;
+                //                move_cmd.addString("push card");
+                //                move_cmd.addDouble(last_card_locations["icub"].x);
+                //                move_cmd.addDouble(last_card_locations["icub"].y);
+                //                move_cmd.addDouble(last_card_locations["icub"].z);
 
-                Bottle response ;
-                publishState("push card");
-                movementPort.write(move_cmd,response) ;
+                //                Bottle response ;
+                //                publishState("push card");
+                //                movementPort.write(move_cmd,response) ;
             }
 
             if (currentGaze == "look down ok")
@@ -180,7 +189,7 @@ public:
                 Bottle move_cmd ;
                 move_cmd.addString("pull duck");
                 for (int i=0; i<3; i++){
-                  move_cmd.addDouble(duck_position->get(i).asDouble());
+                    move_cmd.addDouble(duck_position->get(i).asDouble());
                 }
 
                 Bottle response ;
@@ -196,7 +205,7 @@ public:
                 reply.addString("I've lost :(");
             }
 
-            publishState("A good state machine never prints this.");
+            publishState("Game over");
             return RFModule::respond(command,reply);
         }
         else if( cmd == "demo")
@@ -207,7 +216,7 @@ public:
             yarp::os::Time::delay(1.0);
             publishState("looking at cards");
             yarp::os::Time::delay(1.0);
-            publishState("bet");
+            publishState("push duck");
             yarp::os::Time::delay(1.0);
             publishState("don't bet");
             yarp::os::Time::delay(1.0);
@@ -215,7 +224,7 @@ public:
             yarp::os::Time::delay(1.0);
             publishState("looking at cards");
             yarp::os::Time::delay(1.0);
-            publishState("pull object");
+            publishState("pull duck");
             yarp::os::Time::delay(1.0);
             publishState("won");
             yarp::os::Time::delay(1.0);
@@ -275,6 +284,7 @@ public:
         stateOutPort.interrupt();
         cardInport.interrupt();
         duckInport.interrupt();
+        alertInport.interrupt();
         return true;
     }
 
@@ -287,6 +297,7 @@ public:
         stateOutPort.close();
         cardInport.close();
         duckInport.close();
+        alertInport.close();
         return true;
     }
 
@@ -328,19 +339,19 @@ public:
         output.clear();
         output.addString(look.c_str());
         bool success = gazePort.write(output,response);
+
         if(success)
         {
             publishState("Yaaaaaaaaaaaaaaaaaaaaaaaay we are looking down");
         }
         else
         {
-            publishState("Failed RPC call, bye bye");
+            publishState("Failed RPC call to gaze");
         }
 
-//        return response.get(0).asString();
+        //        return response.get(0).asString();
 
         // here we fake away this RPC call
-
         return look + std::string(" ok");
     }
 };

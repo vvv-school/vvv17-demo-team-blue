@@ -248,17 +248,18 @@ class CardTracker(BaseModule):
         msg = yarp.Bottle()
         msg.addString('get')
         msg.addString('3D')
-        msg.addString('mono')
+        msg.addString('proj')
         _list = msg.addList()
         _list.addString('left')
         _list.addDouble(x)
         _list.addDouble(y)
-        _list.addDouble(self.DEPTH)
+        _list.addDouble(0.0)
+        _list.addDouble(0.0)
+        _list.addDouble(1.0)
+        _list.addDouble(-1.0 * self.DEPTH)
 
         answer = self._sendMessage(msg)
-
         return (answer.get(0).asDouble(), answer.get(1).asDouble(), self.DEPTH)
-        return (-0.5, 0.0, -0.1)
 
 
     def onImage(self, cv2_image):
@@ -298,10 +299,12 @@ class CardTracker(BaseModule):
         # highlight markers in output image
         _ = [card.highlite(cv2_image) for card in card_list]
 
-        self.sendCards(card_list)
-        self.sendOrder(card_list)
-        self.sendTranslation(card_list)
-        self.sendSimpleBottle(card_list)
+        if len(card_list):
+            print 'send'
+            self.sendCards(card_list)
+            self.sendOrder(card_list)
+            self.sendTranslation(card_list)
+            self.sendSimpleBottle(card_list)
 
         return cv2_image
 
