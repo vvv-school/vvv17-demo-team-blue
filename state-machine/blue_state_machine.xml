@@ -25,19 +25,19 @@
 
         <input port_type="service">
             <type>yarp::os::Bottle</type>
-            <port carrier="tcp">/mood/rpc</port>
+            <port carrier="tcp">/state-machine/command</port>
             <description>receives rpc commands: [quit],...</description>
         </input>
 
-        <output port_type="stream">
+        <output port_type="service">
             <type>yarp::os::Bottle</type>
-            <port carrier="udp">/state-machine/speech_out</port>
-            <description>Output to speech module</description>
+            <port carrier="tcp">/state-machine/movement-command</port>
+            <description>Call movement module</description>
         </output>
 
         <output port_type="stream">
             <type>yarp::os::Bottle</type>
-            <port carrier="udp">/state-machine/state:o</port>
+            <port carrier="tcp">/state-machine/state:o</port>
             <description>Output of current state as string</description>
         </output>
 
