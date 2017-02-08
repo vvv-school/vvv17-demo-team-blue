@@ -1,2 +1,0 @@
-duckDetector_IDL.h
-duckDetector_IDL.cpp
