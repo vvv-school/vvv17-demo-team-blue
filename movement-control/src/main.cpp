@@ -198,7 +198,7 @@ protected:
         o[0] = 0.0;
         o[1] = -1.0;
         o[2] = 0.0;
-        o[3] = 50.0 * (M_PI / 180.0);
+        o[3] = 30.0 * (M_PI / 180.0);
 
         Matrix RotY = axis2dcm(o).submatrix(0, 2, 0, 2);
 
@@ -418,14 +418,14 @@ protected:
         else
             return false;*/
         Vector x=pos;
-        string hand=(x[1]>0.0?"right":"left");
-        fixate(x);
+        string hand="right";
+        //fixate(x);
         yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
 
         // refine the localization of the object
         // with a proper hand-related map
-        if (x[1]>0.0)
-        {
+//        if (x[1]>0.0)
+//        {
             yInfo()<<"refined 3D location = ("<<x.toString(3,3)<<")";
 
             Vector o=computeHandOrientation(hand);
@@ -448,35 +448,36 @@ protected:
             yInfo()<<"approached object";
 
             return true;
-        }
+//        }
         return false;
     }
 
-    bool retrieve_object(double fingers_closure)
+    bool retrieve_object(const Vector &pos)
     {
         Vector x; string hand;
-        if (object.getLocation(x))
-        {
-            yInfo()<<"retrieved 3D location = ("<<x.toString(3,3)<<")";
+        x = pos;
+        hand = "right";
 
-            // we select the hand accordingly
-            hand=(x[1]>0.0?"right":"left");
-            yInfo()<<"selected hand = \""<<hand<<'\"';
-        }
-        else
-            return false;
-
-        fixate(x);
+        //fixate(x);
         yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
 
         // refine the localization of the object
         // with a proper hand-related map
-        if (object.getLocation(x,hand))
-        {
+
             yInfo()<<"refined 3D location = ("<<x.toString(3,3)<<")";
 
-            Vector o=computeHandOrientationForRetrieve(hand);
-            yInfo()<<"computed orientation = ("<<o.toString(3,3)<<")";
+            Vector handOrientation(4, 0.0);
+            {
+                Matrix Rot(3,3);
+
+                Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
+                Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
+                Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)= -1.0;
+
+                handOrientation = dcm2axis(Rot);
+            }
+
+            yInfo()<<"computed orientation = ("<<handOrientation.toString(3,3)<<")";
 
             // we set up here the lists of joints we need to actuate
             VectorOf<int> abduction,thumb,fingers;
@@ -494,8 +495,24 @@ protected:
             //approach_target_for_push(hand,x,o);
             yInfo()<<"approached object";
 
+            Vector approachFromAbove = x;
+            approachFromAbove[2] += 0.05; // be higher than object
+            approachFromAbove[0] -= 0.08; // be behind object
+            drvArmR.view(iarm);
+            iarm->goToPoseSync(approachFromAbove,handOrientation,30);
+            iarm->waitMotionDone();
+            Vector goDown = approachFromAbove;
+            goDown[2] = x[2];
+            iarm->goToPoseSync(goDown,handOrientation,30);
+            iarm->waitMotionDone();
+            Vector pullBack;
+            pullBack = goDown;
+            pullBack[0] += 0.2;
+            iarm->goToPoseSync(pullBack,handOrientation,30);
+            iarm->waitMotionDone();
+
             return true;
-        }
+
         return false;
     }
 
@@ -623,7 +640,7 @@ public:
         graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
         yInfo() << "home path: " << rf.getHomeContextPath();
         robot=rf.check("robot",Value("icubSim")).asString();
-        if (inSimulation)
+        if (!inSimulation)
         {
             if (!action.open(optionAction))
             {
@@ -970,17 +987,18 @@ public:
         }
         else if (cmd == "retrieve_object")
         {
-            // the "closure" accounts for how much we should
-            // close the fingers around the object:
-            // if closure == 0.0, the finger joints have to reach their minimum
-            // if closure == 1.0, the finger joints have to reach their maximum
-            double fingers_closure=0.2; // default value
+            Vector cardPos(3, 0.0);
+            cardPos[0] = command.get(1).asDouble();
+            cardPos[1] = command.get(2).asDouble();
+            cardPos[2] = command.get(3).asDouble();
+            //Vector dof(10,1.0),dummy;
+            //iarm->setDOF(dof,dummy);
 
-            // we can pass a new value via rpc
-            if (command.size()>1)
-                fingers_closure=command.get(1).asDouble();
+            // reach the first via-point
+            // located 5 cm above the target x
+            //iarm->goToPoseSync(approach,o);
 
-            bool ok=retrieve_object(fingers_closure);
+            bool ok = retrieve_object(cardPos);
             // we assume the robot is not moving now
             if (ok)
             {
@@ -990,7 +1008,7 @@ public:
             else
             {
                 reply.addString("nack");
-                reply.addString("I don't see any object!");
+                reply.addString("I don't see any card!");
             }
         }
         else if (cmd == "home")
