@@ -42,6 +42,7 @@ protected:
     yarp::os::BufferedPort<yarp::os::Bottle> stateOutPort;
     yarp::os::BufferedPort<yarp::os::Bottle> cardInport;
     yarp::os::BufferedPort<yarp::os::Bottle> duckInport;
+    yarp::os::BufferedPort<yarp::os::Bottle> alertInport;
 
     bool  closing;
 
@@ -69,6 +70,11 @@ public:
         }
 
         if(!duckInport.open("/state-machine/duck:i")) {
+            yError()<<"Cannot open the cardInport";
+            return false;
+        }
+
+        if(!alertInport.open("/state-machine/alert:i")) {
             yError()<<"Cannot open the cardInport";
             return false;
         }
@@ -275,6 +281,7 @@ public:
         stateOutPort.interrupt();
         cardInport.interrupt();
         duckInport.interrupt();
+        alertInport.interrupt();
         return true;
     }
 
@@ -287,6 +294,7 @@ public:
         stateOutPort.close();
         cardInport.close();
         duckInport.close();
+        alertInport.close();
         return true;
     }
 
