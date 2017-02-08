@@ -23,12 +23,9 @@ protected:
     PolyDriver drvGaze;
     IGazeControl      *igaze;
 
-    // BufferedPort<ImageOf<PixelRgb> > imgLPortIn,imgRPortIn;
-    // BufferedPort<ImageOf<PixelRgb> > imgLPortOut,imgRPortOut;
+    BufferedPort<Bottle> stateInport;
+    BufferedPort<Bottle> gazeOutport;
 
-    RpcServer rpcPort;
-
-    bool ok_look_down ;
 
     /***************************************************/
     void look_down()
@@ -41,8 +38,6 @@ protected:
         // set trajectory time
         igaze->setNeckTrajTime(0.6);
         igaze->setEyesTrajTime(0.4); // Faster than the neck
-
-        ok_look_down = true ;
     }
 
     /***************************************************/
@@ -56,8 +51,6 @@ protected:
         // set trajectory time
         igaze->setNeckTrajTime(0.6);
         igaze->setEyesTrajTime(0.4); // Faster than the neck
-
-        ok_look_down = false ;
     }
 
 
@@ -80,16 +73,8 @@ public:
         // open the view
         drvGaze.view(igaze);
 
-        // imgLPortIn.open("/imgL:i");
-        // imgRPortIn.open("/imgR:i");
-        //
-        // imgLPortOut.open("/imgL:o");
-        // imgRPortOut.open("/imgR:o");
-
-        rpcPort.open("/gaze-control/command");
-        attach(rpcPort);
-
-        ok_look_down = false ;
+        stateInport.open("/gaze-control/state:i");
+        gazeOutport.open("/gaze-control/look:o");
 
         return true;
     }
@@ -97,8 +82,8 @@ public:
     /***************************************************/
     bool interruptModule()
     {
-        // imgLPortIn.interrupt();
-        // imgRPortIn.interrupt();
+        stateInport.interrupt();
+        gazeOutport.interrupt();
         return true;
     }
 
@@ -106,40 +91,8 @@ public:
     bool close()
     {
         drvGaze.close();
-        // imgLPortIn.close();
-        // imgRPortIn.close();
-        // imgLPortOut.close();
-        // imgRPortOut.close();
-        rpcPort.close();
-        return true;
-    }
-
-    /***************************************************/
-    bool respond(const Bottle &command, Bottle &reply) // list of instruction that are required to implemet
-    {
-        string cmd=command.get(0).asString();
-        if (cmd=="help")
-        {
-            reply.addVocab(Vocab::encode("many"));
-            reply.addString("Available commands:");
-            reply.addString("- look_down");
-            reply.addString("- look_up");
-            reply.addString("- quit");
-        }
-        else if (cmd=="look_up")
-        {
-            look_up();
-            if (!ok_look_down){ reply.addString("Yep! I'm looking up now!"); }
-        }
-        else if (cmd=="look_down")
-        {
-          look_down();
-          if (ok_look_down) { reply.addString("Yep! I'm looking down now!"); }
-        }
-        else
-            // the father class already handles the "quit" command
-            return RFModule::respond(command,reply);
-
+        stateInport.close();
+        gazeOutport.close();
         return true;
     }
 
@@ -152,19 +105,27 @@ public:
     /***************************************************/
     bool updateModule()
     {
-        // // get fresh images
-        // ImageOf<PixelRgb> *imgL=imgLPortIn.read(); // read() means read(true) by default : it means it is blocked here until it receives an image (contrary to previously which was unblocking)
-        // ImageOf<PixelRgb> *imgR=imgRPortIn.read();
-        //
-        // // interrupt sequence detected
-        // if ((imgL==NULL) || (imgR==NULL)) // when we press ctrl+c so stopped but normally pointing to valid objects so process
-        //     return false;
-        //
-        // imgLPortOut.prepare()=*imgL;
-        // imgRPortOut.prepare()=*imgR;
-        //
-        // imgLPortOut.write();
-        // imgRPortOut.write();
+        // prepare input and output bottles
+        Bottle *input = stateInport.read();
+        Bottle& output = gazeOutport.prepare() ;
+
+        // get states
+        string state = input->get(0).asString();
+
+        if (state==NULL)
+           return false;
+        else if (state == "look down"){
+           look_down() ;
+           output.clear();
+           output.addInt(1); // 1 if look_down
+        }
+        else if (state == "look up"){
+          look_up() ;
+          output.clear();
+          output.addInt(0); // 0 if look_up
+        }
+
+        gazeOutport.write();
 
         return true;
     }
