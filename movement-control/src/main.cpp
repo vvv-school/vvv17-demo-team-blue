@@ -251,21 +251,7 @@ protected:
         else
             drvArmL.view(iarm);
 
-        Model *model = NULL;
-        if (action.getGraspModel(model))
-        {
-            Value out;
-            model->getOutput(out);
-            double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
-            if (contact_force>exploration_max_force)
-            {
-                printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
 
-                //INSERT PUSH CARD HERE
-
-                //expMutex.unlock();
-            }
-        }
         // enable all dofs but the roll of the torso
 
         Vector dof(10, 1.0);
@@ -810,6 +796,57 @@ public:
         return true;
     }
 
+    bool touch_card(Vector cardPos)
+    {
+        expMutex.lock();
+        Vector approachPos = cardPos;
+        approachPos[2] -= 0.1;
+
+        // We only use the right hand
+        std::string hand="right";
+        yInfo() << "Choosing hand: " << hand;
+
+        fixate(cardPos);
+
+        Vector handOrientation(4, 0.0);
+        {
+            Matrix Rot(3,3);
+
+            Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
+            Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
+            Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)= -1.0;
+
+            handOrientation = dcm2axis(Rot);
+        }
+
+        // wait until all fingers have attained their set-points
+
+        if (!iarm->goToPoseSync(approachPos, handOrientation, 20.0))
+        {
+            yError() << "Could not move to approach position";
+            return false;
+        }
+        //iarm->waitMotionDone();
+        Model *model; action.getGraspModel(model);
+        if (model!=NULL)
+        {
+            Value out;
+            model->getOutput(out);
+            double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+            while (contact_force<exploration_max_force)
+            {
+                model->getOutput(out);
+                contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+                printf("going down... (%g>%g)\n",contact_force,exploration_max_force);//INSERT PUSH CARD HERE
+
+            }
+            iarm->stopControl();
+            printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+        }
+        expMutex.unlock();
+
+        return true;
+    }
     /***************************************************/
     bool respond(const Bottle &command, Bottle &reply)
     {
@@ -860,7 +897,7 @@ public:
             Vector cardPos(3, 0.0);
             cardPos[0] = command.get(1).asDouble();
             cardPos[1] = command.get(2).asDouble();
-            cardPos[2] = command.get(3).asDouble()+0.05;
+            cardPos[2] = command.get(3).asDouble();
 
             bool ok = approach_card(cardPos);
             // we assume the robot is not moving now
@@ -886,10 +923,9 @@ public:
 
             // reach the first via-point
             // located 5 cm above the target x
-            cardPos[2] -=0.05;
             //iarm->goToPoseSync(approach,o);
 
-            bool ok = approach_card(cardPos);
+            bool ok = touch_card(cardPos);
             // we assume the robot is not moving now
             if (ok)
             {
