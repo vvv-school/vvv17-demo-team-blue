@@ -380,13 +380,15 @@ protected:
         VectorOf<int> abduction,thumb,fingers;
         abduction.push_back(7);
         thumb.push_back(8);
+        thumb.push_back(9);
+        thumb.push_back(10);
         for (int i=9; i<16; i++)
             fingers.push_back(i);
 
         // let's put the hand in the pre-grasp configuration
         moveFingers(hand,abduction,0.7);
         moveFingers(hand,fingers,0.1);
-        moveFingers(hand,thumb,0.1);
+        moveFingers(hand,thumb,0.9);
 
         return true;
     }
@@ -426,7 +428,7 @@ protected:
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,0.2);
+            moveFingers(hand,thumb,0.9);
             moveFingers(hand,fingers,0.70);
             yInfo()<<"prepared hand";
 
@@ -473,7 +475,7 @@ protected:
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,0.8);
+            moveFingers(hand,thumb,0.9);
             moveFingers(hand,fingers,0.3);
             yInfo()<<"prepared hand";
 
