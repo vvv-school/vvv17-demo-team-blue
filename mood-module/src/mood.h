@@ -12,6 +12,7 @@
 #include <map>
 
 enum string_code {
+    s_starting,
     s_won,
     s_lost,
     s_looking_of_human,
@@ -60,6 +61,8 @@ public:
     * Close function, to perform cleanup.
     */
     virtual bool close();
+
+    void SendMessages(std::string sentence, std::string face);
 
 private:
     std::map<std::string, string_code> hashit;

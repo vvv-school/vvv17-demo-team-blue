@@ -15,14 +15,6 @@
       <node>localhost</node>
   </module>
 
-  <module>
-      <name>state_machine</name>
-      <parameters></parameters>
-      <prefix></prefix>
-      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
-      <node>localhost</node>
-  </module>
-
   <connection>
       <from>/mood/speech_out</from>
       <to external="true">/iSpeak</to>
@@ -32,13 +24,6 @@
     <connection>
         <from>/mood/face_out</from>
         <to external="true">/emotion/in</to>
-        <protocol>tcp</protocol>
-    </connection>
-
-
-    <connection>
-        <from external="true">/state-machine/state:o</from>
-        <to external="true">/mood/in</to>
         <protocol>tcp</protocol>
     </connection>
 

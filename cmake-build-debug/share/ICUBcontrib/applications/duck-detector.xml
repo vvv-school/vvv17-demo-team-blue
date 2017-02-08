@@ -1,0 +1,39 @@
+<application>
+    <name>Blue Duck detector</name>
+
+    <dependencies>
+    </dependencies>
+
+    <module>
+        <name>yarpdataplayer</name>
+        <node>localhost</node>
+    </module>
+<!--<module>
+        <name>SFM</name>
+        <parameters></parameters>
+        <node>node1</node>
+        <prefix></prefix>
+        <geometry>(Pos (x 283) (y 161.9))</geometry>
+    </module> -->
+
+    <module>
+        <name>duck-detector</name>
+        <node>localhost</node>
+    </module>
+    <module>
+        <name>yarpview</name>
+        <node>localhost</node>
+        <parameters>--name /output --x 0 --y 0 --RefreshTime 33 </parameters>
+    </module>
+
+    <connection>
+        <from>/icub/camcalib/left/out</from>
+        <to>/duck-detector/rgb:i</to>
+        <protocol>udp</protocol>
+    </connection>
+    <connection>
+        <from>/duck-detector/output</from>
+        <to>/output</to>
+        <protocol>udp</protocol>
+    </connection>
+</application>

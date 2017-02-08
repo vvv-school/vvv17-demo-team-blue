@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="blue_mood_module"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\robot-install\;CMake Files\..\..\robot-install\lib\;CMake Files\..\..\robot-install\lib\ICUBcontrib\;CMake Files\..\..\robot-install\lib\YARP\;CMake Files\..\..\robot-install\lib\ICUB\;CMake Files\..\..\robot-install\share\;CMake Files\..\..\robot-install\share\yarp\;CMake Files\..\..\robot-install\share\yarp\cmake\;CMake Files\..\..\robot-install\share\ICUBcontrib\;CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\;CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\templates\;CMake Files\..\..\robot-code\;CMake Files\..\..\robot-code\codyco-superbuild\;CMake Files\..\..\robot-code\codyco-superbuild\build\;CMake Files\..\..\robot-code\codyco-superbuild\build\install\;CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\;CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\;CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\;CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\;CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\;CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\find-modules\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\opt\;CMake Files\..\..\..\..\opt\ros\;CMake Files\..\..\..\..\opt\ros\kinetic\;CMake Files\..\..\..\..\opt\ros\kinetic\share\;CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\;CMake Files\duck-detector\;CMake Files\duck-detector\app\;CMake Files\mood-module\;CMake Files\movement-control\;CMake Files\slide-module\;CMake Files\state-machine\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="blue_mood_module">
+				<Option output="/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/bin/blue_mood_module" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/maz/robot-install/include"/>
+					<Add directory="/home/maz/Desktop/vvv17-demo-team-blue/mood-module/src"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 blue_mood_module"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="blue_mood_module/fast">
+				<Option output="/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/bin/blue_mood_module" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/bin"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/maz/robot-install/include"/>
+					<Add directory="/home/maz/Desktop/vvv17-demo-team-blue/mood-module/src"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+					<Add directory="/usr/include/c++/5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/5"/>
+					<Add directory="/usr/include/c++/5/backward"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 blue_mood_module/fast"/>
+					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j4 -f &quot;/home/maz/Desktop/vvv17-demo-team-blue/cmake-build-debug/mood-module/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/mood-module/src/main.cpp">
+			<Option target="blue_mood_module"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/mood-module/src/mood.cpp">
+			<Option target="blue_mood_module"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/mood-module/src/mood.h">
+			<Option target="blue_mood_module"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUBcontrib/ICUBcontribConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUBcontrib\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPTargets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/YARP/YARPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\YARP\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-inst-includes.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-inst-includes.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-inst-includes.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-install-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/lib/ICUB/icub-export-inst-includes.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\lib\ICUB\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpIDL.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/yarp/cmake/YarpInstallationHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\yarp\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribHelpers.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/ICUBcontribOptions.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-install/share/ICUBcontrib/cmake/templates/icubcontrib-config-uninstall.cmake.in">
+			<Option virtualFolder="CMake Files\..\..\robot-install\share\ICUBcontrib\cmake\templates\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake/YCMConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/FindPackageHandleStandardArgs.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/FindPackageMessage.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/FindPackageHandleStandardArgs.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/FindPackageMessage.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/cmake-next/Modules/CMakeParseArguments.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\cmake-next\Modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/find-modules/FindOpenCV.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\find-modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../robot-code/codyco-superbuild/build/install/share/YCM/find-modules/FindOpenCV.cmake">
+			<Option virtualFolder="CMake Files\..\..\robot-code\codyco-superbuild\build\install\share\YCM\find-modules\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVModules-none.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/../../../../opt/ros/kinetic/share/OpenCV-3.1.0-dev/OpenCVModules-none.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\OpenCV-3.1.0-dev\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/duck-detector/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\duck-detector\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/duck-detector/duck-detector.thrift">
+			<Option virtualFolder="CMake Files\duck-detector\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/duck-detector/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\duck-detector\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/duck-detector/duck-detector.thrift">
+			<Option virtualFolder="CMake Files\duck-detector\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/duck-detector/app/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\duck-detector\app\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/duck-detector/app/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\duck-detector\app\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/mood-module/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\mood-module\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/mood-module/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\mood-module\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/movement-control/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\movement-control\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/movement-control/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\movement-control\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/slide-module/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\slide-module\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/slide-module/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\slide-module\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/state-machine/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\state-machine\"/>
+		</Unit>
+		<Unit filename="/home/maz/Desktop/vvv17-demo-team-blue/state-machine/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\state-machine\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
