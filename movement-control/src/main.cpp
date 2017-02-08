@@ -473,7 +473,7 @@ protected:
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,0.0);
+            moveFingers(hand,thumb,0.8);
             moveFingers(hand,fingers,0.3);
             yInfo()<<"prepared hand";
 

@@ -5,7 +5,15 @@ world set ball 100 0 0
 world mk box 0.05 0.05 0.05 0.0 -0.65 0.4 0.0 0.0 1.0
 world set box 1 -0.1 -0.64 0.35
 
-// Box position in robot frame 
+
+// Box position in robot frame
+"push duck" -0.426000 0.100000 -0.008629
+"pull duck" -0.426000 0.100000 -0.008629
+"push card" -0.426000 0.100000 -0.008629
+approach_card -0.426000 0.100000 -0.008629
+touch_card -0.426000 0.100000 -0.008629
+
+// Box position in robot frame
 "push duck" -0.346000 0.100000 -0.008629
 "pull duck" -0.346000 0.100000 -0.00862
 "push card" -0.346000 0.100000 -0.00862
