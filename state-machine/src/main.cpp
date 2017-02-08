@@ -106,6 +106,7 @@ public:
         else if (cmd=="start")
         {
             // Let's start !
+            score_human = score_robot = 0;
             string currentGaze ;
 
             publishState("starting");
