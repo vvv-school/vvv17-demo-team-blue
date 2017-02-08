@@ -238,13 +238,24 @@ class CardTracker(BaseModule):
             # set all current marker information
             cur_time = time.time()
             for card in card_list:
+
+                # rectify patch tids
+                for mcard, _ in self.memory.values():
+                    if card.overlaps(mcard):
+                        card.tid = mcard.tid
+                        card.num_hist += mcard.num_hist[:20]
+                        print 'found match', card.num_hist, card.getEstimatedNumber()
+                        break
+                
                 self.memory[card.tid] = ( card, cur_time )
 
             # create new card list and only include card which are within the time frame
             card_list = [ self.memory[tid][0] for tid in self.memory if cur_time - self.memory[tid][1] < self.memory_length ]
 
         # highlight markers in output image
-        _ = [card.highlite() for card in card_list]
+        _ = [card.highlite(cv2_image) for card in card_list]
+
+
 
         self.sendCards(card_list)
         self.sendOrder(card_list)
@@ -315,22 +326,29 @@ class CardTracker(BaseModule):
 
         # get contours
         (cnts, _) = cv2.findContours(gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        
+        # reverse sorting to find the 10 most outer ones
         contours  = sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
 
 
         # convert to patches
         patches   = [Patch(contour, image, rThreshed, gThreshed, bThreshed) for contour in contours]
 
-        # find
-        for patch in patches:
-            print 'bpx', patch.countPixels(), cv2.arcLength(patch.contour, True), patch.label
             
 
 
         # return patches that represent a card
         result      = [patch for patch in patches if patch.isCard()]
-        self.image  = rThreshed
 
+        # find
+        for patch in result:
+            print 'bpx', patch.countPixels(), patch.countPixels() / patch.area, patch.label
+
+
+        self.image = (gThreshed + bThreshed) / 2
+        _, self.image  = cv2.threshold(self.image, 10, 255, cv2.THRESH_BINARY)
+        
+        
         return result
 
 
