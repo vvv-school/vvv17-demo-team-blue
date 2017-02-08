@@ -6,55 +6,55 @@
         <name>blue-gaze-module</name>
         <parameters>--robot icub</parameters>
         <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
-        <node></node>
+        <node>localhost</node>
         <prefix></prefix>
         <geometry>(Pos (x 1311.25) (y 610.011))</geometry>
     </module>
     <module>
         <name>blue_mood_module</name>
         <parameters></parameters>
-        <node></node>
+        <node>localhost</node>
         <prefix></prefix>
         <geometry>(Pos (x 1320.8) (y 747.811))</geometry>
     </module>
     <module>
         <name>blue_movement_module</name>
         <parameters></parameters>
-        <node></node>
+        <node>localhost</node>
         <prefix></prefix>
         <geometry>(Pos (x 1328.16) (y 674.228))</geometry>
     </module>
     <module>
         <name>blue_state_machine</name>
         <parameters></parameters>
-        <node></node>
+        <node>localhost</node>
         <prefix></prefix>
         <geometry>(Pos (x 881.932) (y 665.836))</geometry>
     </module>
     <module>
         <name>blue_watchdog_module</name>
         <parameters></parameters>
-        <node></node>
+        <node>localhost</node>
         <prefix></prefix>
         <geometry>(Pos (x 381.226) (y 1046.03))</geometry>
     </module>
     <module>
         <name>cardTracker</name>
         <parameters></parameters>
-        <node></node>
+        <node>localhost</node>
         <geometry>(Pos (x 407.977) (y 794.44))</geometry>
     </module>
     <module>
         <name>duck-detector</name>
         <parameters></parameters>
-        <node></node>
+        <node>localhost</node>
         <prefix></prefix>
         <geometry>(Pos (x 405.77) (y 604.953))</geometry>
     </module>
     <module>
         <name>yarpview</name>
         <parameters></parameters>
-        <node></node>
+        <node>localhost</node>
         <geometry>(Pos (x 875.136) (y 848.137))</geometry>
     </module>
     <connection>
