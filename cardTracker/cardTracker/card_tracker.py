@@ -265,7 +265,7 @@ class CardTracker(BaseModule):
             return (_list.get(0).asDouble(), _list.get(1).asDouble(), self.DEPTH)
 
         else:
-            return (0.0, 0.0, 0.0)
+            return (-0.5, 0.0, 0.0)
 
 
     def onImage(self, cv2_image):
