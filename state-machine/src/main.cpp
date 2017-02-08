@@ -109,7 +109,7 @@ public:
             publishState("look down");
             currentGaze = gazeState("look down");
 
-            if (currentGaze == "look_down ok"){
+            if (currentGaze == "look down ok"){
                 publishState("looking at cards");
                 Bottle *card_input = cardInport.read();
                 readCardsAndUpdateScore(card_input);
@@ -125,6 +125,7 @@ public:
                 Bottle *duck_position = duckInport.read();
 
                 Bottle move_cmd ;
+                move_cmd.clear();
                 move_cmd.addString("push duck");
                 for (int i=0; i<3; i++){
                   move_cmd.addDouble(duck_position->get(i).asDouble());
@@ -132,11 +133,16 @@ public:
 
                 Bottle response ;
                 publishState("push duck");
-                movementPort.write(move_cmd,response) ;
+                if(!movementPort.write(move_cmd,response))
+                {
+                    publishState("movement rpc call failed");
+                }
             }
             else
             {
                 publishState("don't bet");
+
+                // COMMENT HERE TO DISABLE PUSH CARD
                 Bottle move_cmd ;
                 move_cmd.addString("push card");
                 move_cmd.addDouble(last_card_locations["icub"].x);
@@ -148,7 +154,7 @@ public:
                 movementPort.write(move_cmd,response) ;
             }
 
-            if (currentGaze == "look_down ok")
+            if (currentGaze == "look down ok")
             {
                 publishState("look up");
                 currentGaze = gazeState("look up");
@@ -189,6 +195,8 @@ public:
                 publishState("lost");
                 reply.addString("I've lost :(");
             }
+
+            publishState("A good state machine never prints this.");
             return RFModule::respond(command,reply);
         }
         else if( cmd == "demo")
@@ -326,10 +334,14 @@ public:
         }
         else
         {
-            publishState("Failed RPC call, bai bai");
+            publishState("Failed RPC call, bye bye");
         }
 
-        return response.get(0).asString();
+//        return response.get(0).asString();
+
+        // here we fake away this RPC call
+
+        return look + std::string(" ok");
     }
 };
 
