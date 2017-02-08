@@ -889,6 +889,34 @@ public:
 
         return true;
     }
+    bool push_card(const Vector &pos)
+    {
+        Vector approachPos=pos;
+        string hand="right";
+
+        Vector handOrientation(4, 0.0);
+        {
+            Matrix Rot(3,3);
+
+            Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
+            Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
+            Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)= -1.0;
+
+            handOrientation = dcm2axis(Rot);
+        }
+
+        if (!iarm->goToPoseSync(approachPos, handOrientation, 20.0))
+        {
+            yError() << "Could not move to approach position";
+            return false;
+        }
+        else{
+          iarm->waitMotionDone();
+          yInfo()<<"pushing card";
+          return true;
+        }
+
+    }
     /***************************************************/
     bool respond(const Bottle &command, Bottle &reply)
     {
@@ -968,6 +996,30 @@ public:
             //iarm->goToPoseSync(approach,o);
 
             bool ok = touch_card(cardPos);
+            // we assume the robot is not moving now
+            if (ok)
+            {
+                reply.addString("ack");
+                reply.addString("Yeah! I did it! Maybe...");
+            }
+            else
+            {
+                reply.addString("nack");
+                reply.addString("I don't see any card!");
+            }
+        }
+        else if (cmd == "push_card")
+        {
+            Vector cardPos(3, 0.0);
+            cardPos[0] = command.get(1).asDouble()-0.05;//moves 5 cm the cart to the front
+            cardPos[1] = command.get(2).asDouble();
+            cardPos[2] = command.get(3).asDouble();
+
+            // reach the first via-point
+            // located 5 cm above the target x
+            //iarm->goToPoseSync(approach,o);
+
+            bool ok = push_card(cardPos);
             // we assume the robot is not moving now
             if (ok)
             {

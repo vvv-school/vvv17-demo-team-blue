@@ -23,8 +23,7 @@ protected:
     PolyDriver drvGaze;
     IGazeControl      *igaze;
 
-    BufferedPort<Bottle> stateInport;
-    BufferedPort<Bottle> gazeOutport;
+    RpcServer port;
 
 
     /***************************************************/
@@ -73,8 +72,8 @@ public:
         // open the view
         drvGaze.view(igaze);
 
-        stateInport.open("/gaze-control/state:i");
-        gazeOutport.open("/gaze-control/look:o");
+        port.open("/gaze-module/look");
+        attach(port);
 
         return true;
     }
@@ -82,8 +81,6 @@ public:
     /***************************************************/
     bool interruptModule()
     {
-        stateInport.interrupt();
-        gazeOutport.interrupt();
         return true;
     }
 
@@ -91,8 +88,7 @@ public:
     bool close()
     {
         drvGaze.close();
-        stateInport.close();
-        gazeOutport.close();
+        port.close();
         return true;
     }
 
@@ -106,26 +102,29 @@ public:
     bool updateModule()
     {
         // prepare input and output bottles
-        Bottle *input = stateInport.read();
-        Bottle& output = gazeOutport.prepare() ;
+        Bottle cmd; // La commande
+        Bottle response; // La reponse
+        port.read(cmd,true);
 
         // get states
-        string state = input->get(0).asString();
+        string state = cmd.get(0).asString();
 
         if (state==NULL)
            return false;
         else if (state == "look down"){
+           response.append(cmd);
            look_down() ;
-           output.clear();
-           output.addInt(1); // 1 if look_down
+           response.clear();
+           response.addString("look down ok"); // 1 if look_down
         }
         else if (state == "look up"){
+          response.append(cmd);
           look_up() ;
-          output.clear();
-          output.addInt(0); // 0 if look_up
+          response.clear();
+          response.addString("look up ok"); // 1 if look_down           
         }
 
-        gazeOutport.write();
+        port.reply(response); // Il envoit la reponse
 
         return true;
     }
