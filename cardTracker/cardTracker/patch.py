@@ -79,7 +79,7 @@ class Patch(object):
 
 
     def belongsTo(self):
-        return 'iCub' if self.center[1] > 160 else 'human'
+        return 'icub' if self.center[1] > 160 else 'human'
 
     
     def isConvex(self):

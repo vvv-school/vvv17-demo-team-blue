@@ -179,7 +179,7 @@ class CardTracker(BaseModule):
             card_values.addInt(card.center[0])
             card_values.addInt(card.center[1])
             card_values.addString(card.belongsTo())
-            card_values.addString(card.label)
+            card_values.addInt(card.getEstimatedNumber())
 
         self.simplePort.write(bottle)
 
