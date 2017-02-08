@@ -260,8 +260,8 @@ class CardTracker(BaseModule):
 
         answer = self._sendMessage(msg)
         
-        if answer:
-            _list  = answer.get(1).asList()
+        _list  = answer.get(1).asList()
+        if _list:
             return (_list.get(0).asDouble(), _list.get(1).asDouble(), self.DEPTH)
 
         else:
