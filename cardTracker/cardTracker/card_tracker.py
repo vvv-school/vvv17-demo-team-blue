@@ -259,10 +259,13 @@ class CardTracker(BaseModule):
         _list.addDouble(-1.0 * self.DEPTH)
 
         answer = self._sendMessage(msg)
-        _list  = answer.get(1).asList()
         
+        if answer:
+            _list  = answer.get(1).asList()
+            return (_list.get(0).asDouble(), _list.get(1).asDouble(), self.DEPTH)
 
-        return (_list.get(0).asDouble(), _list.get(1).asDouble(), self.DEPTH)
+        else:
+            return (0.0, 0.0, 0.0)
 
 
     def onImage(self, cv2_image):
