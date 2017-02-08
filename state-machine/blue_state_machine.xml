@@ -31,9 +31,34 @@
 
         <output port_type="service">
             <type>yarp::os::Bottle</type>
-            <port carrier="tcp">/state-machine/movement-command</port>
-            <description>Call movement module</description>
+            <port carrier="tcp">/state-machine/look</port>
+            <description>exchanges commands and replies with gaze-module</description>
         </output>
+
+        <output port_type="service">
+            <type>yarp::os::Bottle</type>
+            <port carrier="tcp">/state-machine/position</port>
+            <description>exchanges commands and replies with movement-module</description>
+        </output>
+
+
+        <input port_type="stream">
+            <type>yarp::os::Bottle</type>
+            <port carrier="tcp">/state-machine/duck:i</port>
+            <description>Receives duck position</description>
+        </input>
+
+        <input port_type="stream">
+            <type>yarp::os::Bottle</type>
+            <port carrier="tcp">/state-machine/card:i</port>
+            <description>Receives card position</description>
+        </input>
+
+        <input port_type="stream">
+            <type>yarp::os::Bottle</type>
+            <port carrier="tcp">/state-machine/alert:i</port>
+            <description>Receives alert from watch dog</description>
+        </input>
 
         <output port_type="stream">
             <type>yarp::os::Bottle</type>
