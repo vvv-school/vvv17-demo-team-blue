@@ -1,5 +1,5 @@
 <application>
-    <name>blue-card-demo</name>
+    <name>blue-card-demo(1)</name>
     <description>Description</description>
     <version>1.0</version>
     <module>
@@ -17,6 +17,13 @@
         <geometry>(Pos (x 1065.35) (y 319.983))</geometry>
     </module>
     <module>
+        <name>blue_movement_module</name>
+        <parameters></parameters>
+        <node></node>
+        <prefix>/blue-card-demo(1):blue_movement_module:1</prefix>
+        <geometry>(Pos (x 1070.85) (y 238.848))</geometry>
+    </module>
+    <module>
         <name>blue_state_machine</name>
         <parameters></parameters>
         <node></node>
@@ -28,7 +35,14 @@
         <parameters></parameters>
         <node></node>
         <prefix>/blue-card-demo:blue_watchdog_module:1</prefix>
-        <geometry>(Pos (x 176.932) (y 364.854))</geometry>
+        <geometry>(Pos (x 183.12) (y 764.593))</geometry>
+    </module>
+    <module>
+        <name>cardDetector</name>
+        <parameters></parameters>
+        <node></node>
+        <prefix>/blue-card-demo(1):cardDetector:1</prefix>
+        <geometry>(Pos (x 148.51) (y 379.938))</geometry>
     </module>
     <module>
         <name>duck-detector</name>
@@ -60,5 +74,17 @@
         <to>/blue-card-demo:blue_state_machine:1/state-machine/alert:i</to>
         <protocol>tcp</protocol>
         <geometry>(Pos ((x -1) (y -1)) ((x 116) (y 0)) ((x -111) (y 48))  )</geometry>
+    </connection>
+    <connection>
+        <from>/blue-card-demo(1):cardDetector:1/CardDetector/simple:o</from>
+        <to>/blue-card-demo:blue_state_machine:1/state-machine/card:i</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 89) (y -32)) ((x -111) (y 16))  )</geometry>
+    </connection>
+    <connection>
+        <from>/blue-card-demo:blue_state_machine:1/state-machine/position</from>
+        <to>/blue-card-demo(1):blue_movement_module:1/movement-controller/command</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y -16)) ((x -123) (y 0))  )</geometry>
     </connection>
 </application>
