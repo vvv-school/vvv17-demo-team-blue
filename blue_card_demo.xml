@@ -1,90 +1,125 @@
 <application>
-    <name>blue-card-demo(1)</name>
+    <name>blue-card-demo</name>
     <description>Description</description>
     <version>1.0</version>
     <module>
         <name>blue-gaze-module</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo:blue-gaze-module:1</prefix>
-        <geometry>(Pos (x 1055.8) (y 182.183))</geometry>
+        <prefix></prefix>
+        <geometry>(Pos (x 1311.25) (y 610.011))</geometry>
     </module>
     <module>
         <name>blue_mood_module</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo:blue_mood_module:1</prefix>
-        <geometry>(Pos (x 1065.35) (y 319.983))</geometry>
+        <prefix></prefix>
+        <geometry>(Pos (x 1320.8) (y 747.811))</geometry>
     </module>
     <module>
         <name>blue_movement_module</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo(1):blue_movement_module:1</prefix>
-        <geometry>(Pos (x 1070.85) (y 238.848))</geometry>
+        <prefix></prefix>
+        <geometry>(Pos (x 1328.16) (y 674.228))</geometry>
     </module>
     <module>
         <name>blue_state_machine</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo:blue_state_machine:1</prefix>
-        <geometry>(Pos (x 626.481) (y 238.008))</geometry>
+        <prefix></prefix>
+        <geometry>(Pos (x 881.932) (y 665.836))</geometry>
     </module>
     <module>
         <name>blue_watchdog_module</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo:blue_watchdog_module:1</prefix>
-        <geometry>(Pos (x 183.12) (y 764.593))</geometry>
+        <prefix></prefix>
+        <geometry>(Pos (x 381.226) (y 1046.03))</geometry>
     </module>
     <module>
-        <name>cardDetector</name>
+        <name>cardTracker</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo(1):cardDetector:1</prefix>
-        <geometry>(Pos (x 148.51) (y 379.938))</geometry>
+        <geometry>(Pos (x 407.977) (y 794.44))</geometry>
     </module>
     <module>
         <name>duck-detector</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo:duck-detector:2</prefix>
-        <geometry>(Pos (x 150.319) (y 177.125))</geometry>
+        <prefix></prefix>
+        <geometry>(Pos (x 405.77) (y 604.953))</geometry>
+    </module>
+    <module>
+        <name>yarpview</name>
+        <parameters></parameters>
+        <node></node>
+        <geometry>(Pos (x 875.136) (y 848.137))</geometry>
     </module>
     <connection>
-        <from>/blue-card-demo:blue_state_machine:1/state-machine/state:o</from>
-        <to>/blue-card-demo:blue_mood_module:1/mood/in</to>
-        <protocol>udp</protocol>
-        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y 16)) ((x -111) (y -16))  )</geometry>
-    </connection>
-    <connection>
-        <from>/blue-card-demo:blue_state_machine:1/state-machine/look</from>
-        <to>/blue-card-demo:blue-gaze-module:1/gaze-module/look</to>
-        <protocol>tcp</protocol>
-        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y -48)) ((x -101) (y 0))  )</geometry>
-    </connection>
-    <connection>
-        <from>/blue-card-demo:duck-detector:2/duck-detector/output</from>
-        <to>/blue-card-demo:blue_state_machine:1/state-machine/duck:i</to>
+        <from>/duck-detector/output</from>
+        <to>/state-machine/duck:i</to>
         <protocol>tcp</protocol>
         <geometry>(Pos ((x -1) (y -1)) ((x 94) (y 0)) ((x -111) (y -16))  )</geometry>
     </connection>
     <connection>
-        <from>/blue-card-demo:blue_watchdog_module:1/blue_watchdog/alert:o</from>
-        <to>/blue-card-demo:blue_state_machine:1/state-machine/alert:i</to>
+        <from>/state-machine/look</from>
+        <to>/gaze-module/look</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y -48)) ((x -101) (y 0))  )</geometry>
+    </connection>
+    <connection>
+        <from>/state-machine/position</from>
+        <to>/movement-controller/command</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y -16)) ((x -123) (y 0))  )</geometry>
+    </connection>
+    <connection>
+        <from>/blue_watchdog/alert:o</from>
+        <to>/state-machine/alert:i</to>
         <protocol>tcp</protocol>
         <geometry>(Pos ((x -1) (y -1)) ((x 116) (y 0)) ((x -111) (y 48))  )</geometry>
     </connection>
     <connection>
-        <from>/blue-card-demo(1):cardDetector:1/CardDetector/simple:o</from>
-        <to>/blue-card-demo:blue_state_machine:1/state-machine/card:i</to>
-        <protocol>tcp</protocol>
-        <geometry>(Pos ((x -1) (y -1)) ((x 89) (y -32)) ((x -111) (y 16))  )</geometry>
+        <from>/state-machine/state:o</from>
+        <to>/mood/in</to>
+        <protocol>udp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y 16)) ((x -111) (y -16))  )</geometry>
     </connection>
     <connection>
-        <from>/blue-card-demo:blue_state_machine:1/state-machine/position</from>
-        <to>/blue-card-demo(1):blue_movement_module:1/movement-controller/command</to>
+        <from>/CardTracker/simple:o</from>
+        <to>/state-machine/card:i</to>
         <protocol>tcp</protocol>
-        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y -16)) ((x -123) (y 0))  )</geometry>
+        <geometry>(Pos ((x -1) (y -1)) ((x 82) (y -32)) ((x -111) (y 16))  )</geometry>
+    </connection>
+    <connection>
+        <from external="true">/lbpExtract/segmentedlbp:o</from>
+        <to>/CardTracker/image:i</to>
+        <protocol>udp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 99.6165) (y 698.247)) ((x -82) (y -96))  )</geometry>
+    </connection>
+    <connection>
+        <from>/CardTracker/convert2D:rpc</from>
+        <to external="true">/iKinGazeCtrl/rpc</to>
+        <protocol>udp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 82) (y 0)) ((x 855.585) (y 794.139))  )</geometry>
+    </connection>
+    <connection>
+        <from>/CardTracker/image:o</from>
+        <to>/yarpview/img:i</to>
+        <protocol>udp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 82) (y -96)) ((x 648.904) (y 697.316)) ((x -74) (y 0))  )</geometry>
+    </connection>
+    <connection>
+        <from external="true">/icub/camcalib/left/out</from>
+        <to>/duck-detector/rgb:i</to>
+        <protocol>udp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 121.96) (y 587.458)) ((x -94) (y -16))  )</geometry>
+    </connection>
+    <connection>
+        <from>/mood/speech_out</from>
+        <to external="true">/iSpeak</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y -16)) ((x 1571.85) (y 731.142))  )</geometry>
     </connection>
 </application>
