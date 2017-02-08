@@ -692,7 +692,7 @@ public:
         drvGaze.view(igaze);
         igaze->storeContext(&startup_ctxt_gaze);
 
-        rpcPort.open("/service");
+        rpcPort.open("/movement-control/command");
         attach(rpcPort);
         return true;
     }
