@@ -101,7 +101,7 @@ public:
             publishState("look down");
             currentGaze = gazeState("look down");
 
-            if (currentGaze == "look_down"){
+            if (currentGaze == "look_down ok"){
                 publishState("looking at cards");
                 Bottle *card_input = cardInport.read();
                 readCardsAndUpdateScore(card_input);
@@ -138,7 +138,7 @@ public:
                 movementPort.write(move_cmd,response) ;
             }
 
-            if (currentGaze == "look_down")
+            if (currentGaze == "look_down ok")
             {
                 publishState("look up");
                 currentGaze = gazeState("look up");
@@ -147,7 +147,7 @@ public:
             // The dealer distributes cards in the meantime
             Time::delay(2.0);
 
-            if (currentGaze == "look up")
+            if (currentGaze == "look up ok")
             {
                 publishState("look down");
                 currentGaze = gazeState("look down");
