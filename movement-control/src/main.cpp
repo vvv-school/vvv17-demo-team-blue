@@ -473,7 +473,7 @@ protected:
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,0.0);
+            moveFingers(hand,thumb,0.8);
             moveFingers(hand,fingers,0.3);
             yInfo()<<"prepared hand";
 
@@ -822,7 +822,7 @@ public:
     {
         expMutex.lock();
         Vector approachPos = cardPos;
-        approachPos[2] -= 0.1;
+        //approachPos[2] -= 0.1;
 
         // We only use the right hand
         std::string hand="right";
@@ -848,22 +848,26 @@ public:
         }
         //iarm->waitMotionDone();
         Model *model; action.getGraspModel(model);
-        if(!inSimulation){
-        if (model!=NULL)
+        if(inSimulation)
         {
-            Value out;
-            model->getOutput(out);
-            double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
-            while (contact_force<exploration_max_force)
-            {
-                model->getOutput(out);
-                contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
-                printf("going down... (%g>%g)\n",contact_force,exploration_max_force);//INSERT PUSH CARD HERE
-
-            }
-            iarm->stopControl();
-            printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+            iarm->waitMotionDone();
         }
+        else
+        {
+            if (model!=NULL)
+            {
+                Value out;
+                model->getOutput(out);
+                double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+                while (contact_force<exploration_max_force)
+                {
+                    model->getOutput(out);
+                    contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+                    printf("going down... (%g>%g)\n",contact_force,exploration_max_force);//INSERT PUSH CARD HERE
+                }
+                iarm->stopControl();
+                printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+            }
         }
         expMutex.unlock();
 
@@ -872,6 +876,7 @@ public:
     bool push_card(const Vector &pos)
     {
         Vector approachPos=pos;
+        approachPos[0] -= 0.05;
         string hand="right";
 
         Vector handOrientation(4, 0.0);
@@ -968,6 +973,7 @@ public:
             bool ok = approach_card(cardPos);
             ok = ok && touch_card(cardPos);
             ok = ok && push_card(cardPos);
+            ok = ok && home("right");
 
             // we assume the robot is not moving now
             if (ok)
