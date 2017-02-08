@@ -159,7 +159,7 @@ class CardTracker(BaseModule):
     def sendSimpleBottle(self, cards):
         """ This method sends the simple card information to the simple port.
 
-        Message: ( ( <id> <center-x>  <center-y> )* )
+        Message: ( ( <id> <center-x>  <center-y> <owner> <label>)* )
 
         All values are integer values.
 
@@ -178,6 +178,8 @@ class CardTracker(BaseModule):
             card_values.addInt(card.tid)
             card_values.addInt(card.center[0])
             card_values.addInt(card.center[1])
+            card_values.addString(card.belongsTo())
+            card_values.addString(card.label)
 
         self.simplePort.write(bottle)
 
@@ -254,8 +256,6 @@ class CardTracker(BaseModule):
 
         # highlight markers in output image
         _ = [card.highlite(cv2_image) for card in card_list]
-
-
 
         self.sendCards(card_list)
         self.sendOrder(card_list)
@@ -342,7 +342,7 @@ class CardTracker(BaseModule):
 
         # find
         for patch in result:
-            print 'bpx', patch.countPixels(), patch.countPixels() / patch.area, patch.label
+            print patch.belongsTo(), patch.label, patch.getEstimatedNumber()
 
 
         self.image = (gThreshed + bThreshed) / 2

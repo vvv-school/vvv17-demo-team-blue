@@ -45,16 +45,17 @@ class Patch(object):
 
         # more expensive processing
         if self.isRectangle():
-            self.label = 'r' if self.countPixels() < 5 else 'b'
             self.findBlobs()
+            self.label  = 'h' if self.countPixels() < 5 else 'p'
+            self.label  = '%s%s' % (self.label, self.getEstimatedNumber())
 
 
     def highlite(self, image):
         """ Just a convenience method that calls some draw methods."""
         self.drawCenter(image)
-#         self.drawBBox(image)
+        self.drawBBox(image)
         self.drawContours(image)
-        cv2.putText(image, str(self.number), self.center, cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0))
+        cv2.putText(image, str(self.label), (self.x, self.y), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0))
 
 
     def drawCenter(self, image):
@@ -77,6 +78,10 @@ class Patch(object):
         return self.edges == 4
 
 
+    def belongsTo(self):
+        return 'iCub' if self.center[1] > 160 else 'human'
+
+    
     def isConvex(self):
         """ Returns whether the image patch contains a convex contour."""
         return cv2.isContourConvex(self.contour)
