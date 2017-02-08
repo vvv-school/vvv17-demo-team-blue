@@ -12,6 +12,7 @@
 #include <yarp/sig/all.h>
 #include <yarp/math/Math.h>
 
+#include <iCub/ctrl/math.h>
 #include <iCub/iKin/iKinFwd.h>
 #include <iCub/perception/models.h>
 #include <iCub/action/actionPrimitives.h>
@@ -34,7 +35,7 @@ using namespace iCub::action;
 
 
 /***************************************************/
-class CtrlModule: public RFModule
+class CtrlModule: public RFModule, public slidingController_IDL
 {
 protected:
     PolyDriver drvArmR, drvArmL, drvGaze;
@@ -73,12 +74,19 @@ protected:
                 fng.addString("ring");
                 fng.addString("little");
 
-                Property prop;
+                /*Property prop;
                 prop.put("finger",fingers.get(0));
                 model->calibrate(prop);
 
                 prop.clear();
                 prop.put("finger","thumb");
+                model->calibrate(prop);
+
+                ofstream fout;
+                fout.open(graspModelFileToWrite.c_str());
+                model->toStream(fout);
+                fout.close();*/
+                Property prop("(finger all_parallel)");
                 model->calibrate(prop);
 
                 ofstream fout;
@@ -567,6 +575,8 @@ public:
 
         //string robot=rf.check("robot",Value("icub")).asString().c_str();
         string robot=rf.check("robot",Value("icubSim")).asString();
+        arm=rf.check("arm",Value("right")).asString().c_str();
+        string name=rf.check("name",Value("movement-controller")).asString().c_str();
         inSimulation = robot == "icubSim";
 
         if (!openCartesian(robot,"right_arm"))
@@ -610,8 +620,8 @@ public:
             return false;
         }
         Property optionAction;
-        string name=rf.check("name",Value("movement-controller")).asString().c_str();
 
+        robot=rf.check("robot",Value("icub")).asString().c_str();
         string grasp_model_file=(arm=="left"?"grasp_model_file_left":"grasp_model_file_right");
         optionAction.put("robot",robot.c_str());
         optionAction.put("local",(name+"/action").c_str());
@@ -626,7 +636,7 @@ public:
         graspModelFileToWrite+="/";
         graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
         yInfo() << "home path: " << rf.getHomeContextPath();
-
+        robot=rf.check("robot",Value("icubSim")).asString();
         if (!inSimulation)
         {
             if (!action.open(optionAction))

@@ -1,0 +1,10 @@
+/icub/skin/left_hand_comp
+left_forearm
+
+threshold of the force
+before call for the reset
+send port wholeBodyDynamics/rpc:i send zero
+sstationary 
+wholeBodydinamicc/left_arm/cartesianEnfEffectorWrench:o
+
+libraries action primitives src
