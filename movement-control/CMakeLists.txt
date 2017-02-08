@@ -32,13 +32,13 @@ icubcontrib_set_default_prefix()
 add_definitions(-D_USE_MATH_DEFINES)
 
 include_directories(${YARP_INCLUDE_DIRS} src include)
-add_executable(${PROJECT_NAME} src/main.cpp
+add_executable(blue_movement_module src/main.cpp
                                src/slidingController_IDL.cpp
                                src/helpers.h
                                src/helpers.cpp)
-target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES} actionPrimitives perceptiveModels iKin ctrlLib)
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+target_link_libraries(blue_movement_module ${YARP_LIBRARIES} actionPrimitives perceptiveModels iKin ctrlLib)
+install(TARGETS blue_movement_module DESTINATION bin)
+set_property(TARGET blue_movement_module PROPERTY CXX_STANDARD 11)
 
 file(GLOB conf    ${CMAKE_SOURCE_DIR}/app/conf/*.ini)
 file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)

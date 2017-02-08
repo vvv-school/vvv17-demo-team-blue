@@ -29,12 +29,13 @@ icubcontrib_set_default_prefix()
 include_directories(${YARP_INCLUDE_DIRS}
                     ${CMAKE_SOURCE_DIR}/src)
 
-add_executable(${PROJECT_NAME} 
+add_executable(blue_watchdog_module 
                src/Codec.cpp
                src/main.cpp)
 
-target_link_libraries(${PROJECT_NAME} ${YARP_LIBRARIES})
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+target_link_libraries(blue_watchdog_module ${YARP_LIBRARIES})
+install(TARGETS blue_watchdog_module DESTINATION bin)
+
 
 file(GLOB scripts ${CMAKE_SOURCE_DIR}/app/scripts/*.xml)
 yarp_install(FILES ${scripts} DESTINATION ${ICUBCONTRIB_APPLICATIONS_INSTALL_DIR})
