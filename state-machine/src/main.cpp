@@ -76,6 +76,7 @@ public:
         {
             reply.addString("Available commands:");
             reply.addString("- start");
+            reply.addString("- demo");
             reply.addString("- quit");
         }
         else if (cmd=="start")
@@ -101,11 +102,11 @@ public:
             publishState("look down");
 
             if (look_down){
-              publishState("looking at cards");
-              updateScore(ind_1,ind_2) ; // update both scores inside
+                publishState("looking at cards");
+                updateScore(ind_1,ind_2) ; // update both scores inside
             }
             else {
-              publishState("look down");
+                publishState("look down");
             }
 
             if (score_robot > score_human){
@@ -115,7 +116,8 @@ public:
                 publishState("don't bet");
             }
 
-            if (look_down){
+            if (look_down)
+            {
                 publishState("look up");
             }
 
@@ -127,7 +129,7 @@ public:
                 updateScore(ind_1, ind_2) ;  // update both scores inside
             }
 
-        if (score_robot > score_human){
+            if (score_robot > score_human){
                 publishState("pull object");
                 publishState("won");
             }
@@ -135,6 +137,29 @@ public:
             {
                 publishState("lost");
             }
+        }
+        else if( cmd == "demo")
+        {
+            publishState("starting");
+            yarp::os::Time::delay(1.0);
+            publishState("look down");
+            yarp::os::Time::delay(1.0);
+            publishState("looking at cards");
+            yarp::os::Time::delay(1.0);
+            publishState("bet");
+            yarp::os::Time::delay(1.0);
+            publishState("don't bet");
+            yarp::os::Time::delay(1.0);
+            publishState("look up");
+            yarp::os::Time::delay(1.0);
+            publishState("looking at cards");
+            yarp::os::Time::delay(1.0);
+            publishState("pull object");
+            yarp::os::Time::delay(1.0);
+            publishState("won");
+            yarp::os::Time::delay(1.0);
+            publishState("lost");
+            yarp::os::Time::delay(1.0);
         }
         else
             // the father class already handles the "quit" command
