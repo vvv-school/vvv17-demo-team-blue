@@ -65,8 +65,8 @@
   </connection>
 
   <connection>
-      <from>/BrutusTT/CardTracker/sfm_rpc</from>
-      <to>/SFM/rpc</to>
+      <from>/BrutusTT/CardTracker/convert2D:rpc</from>
+      <to>/iKinGazeCtrl/rpc</to>
   </connection>
 
 </application>
