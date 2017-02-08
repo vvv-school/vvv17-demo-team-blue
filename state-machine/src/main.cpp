@@ -4,6 +4,7 @@
 
 #include <string>
 #include <cmath>
+#include <stdlib.h>
 #include <algorithm>
 #include <map>
 
@@ -71,8 +72,8 @@ public:
 
         gazePort.open("/state-machine/look");
 
-        int score_robot = 0 ;
-        int score_human = 0 ;
+        score_robot = 0 ;
+        score_human = 0 ;
 
         return true;
     }
@@ -104,9 +105,9 @@ public:
                 publishState("looking at cards");
                 Bottle *card_input = cardInport.read();
                 readCardsAndUpdateScore(card_input);
-
             }
-            else {
+            else
+            {
                 publishState("look down");
                 currentGaze = gazeState("look down");
             }
@@ -146,16 +147,17 @@ public:
             // The dealer distributes cards in the meantime
             Time::delay(2.0);
 
-            if (currentGaze == "look up"){
+            if (currentGaze == "look up")
+            {
                 publishState("look down");
                 currentGaze = gazeState("look down");
-
                 publishState("looking at cards");
                 Bottle *card_input = cardInport.read();
                 readCardsAndUpdateScore(card_input);
             }
 
-            if (score_robot > score_human){
+            if (score_robot > score_human)
+            {
                 publishState("ask duck position");
                 Bottle *duck_position = duckInport.read();
 
@@ -170,11 +172,14 @@ public:
                 movementPort.write(move_cmd,response) ;
 
                 publishState("won");
+                reply.addString("I've won!");
             }
             else
             {
                 publishState("lost");
+                reply.addString("I've lost :(");
             }
+            return RFModule::respond(command,reply);
         }
         else if( cmd == "demo")
         {
@@ -198,6 +203,7 @@ public:
             yarp::os::Time::delay(1.0);
             publishState("lost");
             yarp::os::Time::delay(1.0);
+            return RFModule::respond(command,reply);
         }
         else
             // the father class already handles the "quit" command
@@ -209,26 +215,32 @@ public:
 
     void readCardsAndUpdateScore(Bottle* card_input)
     {
-
-        for (int i=0; i<(card_input->size() / 5); i++)
+        int message_size = 5;
+        for (int i=0; i<(card_input->size() / message_size); i++)
         {
-            int id = card_input->get(i+0).asInt();
-            double cx = card_input->get(i+1).asDouble();
-            double cy = card_input->get(i+2).asDouble();
-            std::string owner = card_input->get(i+3).asString();
-            int label = card_input->get(i+4).asInt();
+            int base_ind = message_size*i;
+            // parse messages
+            int id = card_input->get(base_ind+0).asInt();
+            double cx = card_input->get(base_ind+1).asDouble();
+            double cy = card_input->get(base_ind+2).asDouble();
+            std::string owner = card_input->get(base_ind+3).asString();
+            int label = card_input->get(base_ind+4).asInt();
 
+            // save one card location of each for later use
             last_card_locations[owner] = std::pair<double, double>(cx, cy);
 
+            // update scores
             if ( owner == "icub" )
             {
                 score_robot += label;
-                publishState(std::string("icub got ") + score_robot + " total score");
+                stringstream ss; ss << "icub got " << score_robot << " total score";
+                publishState(ss.str());
             }
             else if ( owner == "human" )
             {
                 score_human += label;
-                publishState(std::string("human got ") + score_human + " total score");
+                stringstream ss; ss << "human got " << score_human << " total score";
+                publishState(ss.str());
 
             }
             else
@@ -297,11 +309,17 @@ public:
         Bottle response ;
         output.clear();
         output.addString(look.c_str());
-        gazePort.write(output,response);
-        yarp::os::Time::delay(1.0);
+        bool success = gazePort.write(output,response);
+        if(success)
+        {
+            publishState("Yaaaaaaaaaaaaaaaaaaaaaaaay we are looking down");
+        }
+        else
+        {
+            publishState("Failed RPC call, bai bai");
+        }
 
-        string look_state = response.get(0).asString();
-        return look_state ;
+        return response.get(0).asString();
     }
 };
 
