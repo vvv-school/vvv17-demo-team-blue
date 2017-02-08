@@ -376,6 +376,17 @@ protected:
         //igaze->setTrackingMode(false);
         //igaze->waitMotionDone();
 
+        // Move fingers back
+        VectorOf<int> abduction,thumb,fingers;
+        abduction.push_back(7);
+        thumb.push_back(8);
+        for (int i=9; i<16; i++)
+            fingers.push_back(i);
+
+        // let's put the hand in the pre-grasp configuration
+        moveFingers(hand,abduction,0.7);
+        moveFingers(hand,fingers,0.1);
+        moveFingers(hand,thumb,0.1);
 
         return true;
     }
@@ -415,8 +426,8 @@ protected:
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,1.0);
-            moveFingers(hand,fingers,0.9);
+            moveFingers(hand,thumb,0.2);
+            moveFingers(hand,fingers,0.70);
             yInfo()<<"prepared hand";
 
             approach_target_for_push(hand,x,o);
@@ -1060,20 +1071,6 @@ public:
             else
             {
                 reply.addString("fail");
-            }
-        }
-        else if (cmd == "home")
-        {
-            bool ok = home("right") && home("left");
-            if (ok)
-            {
-                reply.addString("ack");
-                reply.addString("Yeah! I did it! Maybe...");
-            }
-            else
-            {
-                reply.addString("nack");
-                reply.addString("I couldn't get home :(");
             }
         }
         else
