@@ -25,8 +25,6 @@ source_group("DOC Files" FILES ${doc})
 
 include_directories(${YARP_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
-# generate ad-hoc project to perform "make uninstall"
-icubcontrib_add_uninstall_target()
 
 yarp_install(FILES ${doc} DESTINATION ${ICUBCONTRIB_MODULES_INSTALL_DIR})
 

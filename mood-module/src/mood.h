@@ -9,13 +9,26 @@
 #include <yarp/os/RpcServer.h>
 #include <yarp/os/BufferedPort.h>
 #include <yarp/os/Bottle.h>
+#include <map>
 
-class Codec : public yarp::os::RFModule
+enum string_code {
+    s_starting,
+    s_won,
+    s_lost,
+    s_looking_of_human,
+    s_looking_at_cards,
+    s_ask_for_new_card,
+    s_bet,
+    s_dont_bet
+};
+
+
+class Mood : public yarp::os::RFModule
 {
 public:
 
-    Codec();
-    virtual ~Codec();
+    Mood();
+    virtual ~Mood();
 
     /*
     * Configure function. Receive a previously initialized
@@ -49,8 +62,10 @@ public:
     */
     virtual bool close();
 
+    void SendMessages(std::string sentence, std::string face);
+
 private:
-// ADD FUNCITONS HERE IF NEEDED
+    std::map<std::string, string_code> hashit;
 
 private:
     yarp::os::RpcServer commandPort;                    // command port

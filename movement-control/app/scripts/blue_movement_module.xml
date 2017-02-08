@@ -1,22 +1,25 @@
 <application>
 
-  <description>blue movement module</description>
-  <name>Blue movement module APP</name>
+  <name>Blue Movement App icubSim</name>
 
   <dependencies>
       <port>/yarplogger</port>
+      <port>/icubSim/cartesianController/right_arm/state:o</port>
+      <port>/icubSim/cartesianController/left_arm/state:o</port>
+      <port>/iKinGazeCtrl/rpc</port>
   </dependencies>
-i
+
   <module>
       <name>blue_movement_module</name>
+      <parameters>--robot icubSim</parameters>
       <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
       <node>localhost</node>
   </module>
 
-  <!--connection>
-      <from external="true">/coder/Codec/out</from>
-      <to>/decoder/Codec/in</to>
+  <connection>
+      <from>/location</from>
+      <to>/icubSim/world</to>
       <protocol>tcp</protocol>
-  </connection-->
+  </connection>
 
 </application>

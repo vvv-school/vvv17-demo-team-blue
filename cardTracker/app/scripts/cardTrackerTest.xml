@@ -28,6 +28,12 @@
   </module>
 
   <module>
+      <name>yarpview</name>
+      <parameters> --name /BrutusTT/view/debug:i</parameters>
+      <node>localhost</node>
+  </module>
+
+  <module>
       <name>cardTracker</name>
       <prefix>/BrutusTT</prefix>
       <node>localhost</node>
@@ -46,6 +52,11 @@
   <connection>
       <from>/BrutusTT/CardTracker/image:o</from>
       <to>/BrutusTT/view/tracker:i</to>
+  </connection>
+
+  <connection>
+      <from>/BrutusTT/CardTracker/debug:o</from>
+      <to>/BrutusTT/view/debug:i</to>
   </connection>
 
   <connection>

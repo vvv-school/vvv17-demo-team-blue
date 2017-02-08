@@ -1,0 +1,4 @@
+/home/maz/robot-install/bin/blue_mood_module
+/home/maz/robot-install/share/ICUBcontrib/applications/mood-module-app.xml
+/home/maz/robot-install/share/ICUBcontrib/applications/mood-module-sys-app.xml
+/home/maz/robot-install/share/ICUBcontrib/modules/blue_MoodModule.xml
