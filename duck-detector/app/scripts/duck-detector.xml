@@ -4,17 +4,16 @@
     <dependencies>
     </dependencies>
 
-    <module>
+    <!--<module>
         <name>yarpdataplayer</name>
         <node>localhost</node>
-    </module>
-<!--<module>
+    </module>-->
+
+    <module>
         <name>SFM</name>
         <parameters></parameters>
-        <node>node1</node>
-        <prefix></prefix>
-        <geometry>(Pos (x 283) (y 161.9))</geometry>
-    </module> -->
+        <node>icub21</node>
+    </module>
 
     <module>
         <name>duck-detector</name>
@@ -26,6 +25,16 @@
         <parameters>--name /output --x 0 --y 0 --RefreshTime 33 </parameters>
     </module>
 
+    <connection>
+        <from>/icub/camcalib/left/out</from>
+        <to>/SFM/left:i</to>
+        <protocol>udp</protocol>
+    </connection>
+    <connection>
+        <from>/icub/camcalib/right/out</from>
+        <to>/SFM/right:i</to>
+        <protocol>udp</protocol>
+    </connection>
     <connection>
         <from>/icub/camcalib/left/out</from>
         <to>/duck-detector/rgb:i</to>

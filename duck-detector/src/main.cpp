@@ -47,6 +47,7 @@ class Processing : public yarp::os::BufferedPort<yarp::sig::ImageOf<yarp::sig::P
     std::vector<int32_t> highBound;
 
     yarp::os::RpcClient rpc;
+    yarp::os::RpcClient sfm_rpc_port;
 
     yarp::os::Mutex mutex;
 
@@ -72,6 +73,7 @@ public:
         BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::open( "/" + moduleName + "/rgb:i" );
         outPort.open("/"+ moduleName + "/output");
         positionPort.open("/" + moduleName + "/position:o");
+        sfm_rpc_port.open("/SFM/rpc");
 
         //magical values
         lowBound.push_back(90);
@@ -92,6 +94,7 @@ public:
     {
         outPort.close();
         positionPort.close();
+        sfm_rpc_port.close();
         BufferedPort<yarp::sig::ImageOf<yarp::sig::PixelRgb> >::close();
     }
 
@@ -129,7 +132,7 @@ public:
         std::vector<std::vector<cv::Point> > contours;
         cv::findContours(greyscale_im, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_NONE);
 
-        cv::drawContours(disp, contours, 0, cv::Scalar(255,255,0));
+        cv::drawContours(disp, contours, -1, cv::Scalar(255,255,0));
 
         std::vector<cv::Moments> mu(contours.size());
         std::vector<cv::Point> mc(contours.size());
@@ -138,14 +141,25 @@ public:
         { 
             mu[i] = moments(contours[i], false); 
             mc[i] = cv::Point(mu[i].m10/mu[i].m00 , mu[i].m01/mu[i].m00);
-            if (mc[i].x + mc[i].y > maxpoint)
+            if (mc[i].y  > maxpoint)
             {
-                maxpoint = mc[i].x + mc[i].y;
+                maxpoint = mc[i].y ;
                 max_i = i;
             }
         }
 
         cv::circle(disp, mc[max_i], 3, cv::Scalar(0,255,0), -1, 8, 0);
+
+        yarp::os::Bottle point2D;
+        point2D.addString("Root");
+        point2D.addDouble(mc[max_i].x);
+        point2D.addDouble(mc[max_i].y);
+
+        yarp::os::Bottle point3D;
+        sfm_rpc_port.write(point2D, point3D);
+
+        // point3D.get(0).asDouble();
+        
         // cv::GaussianBlur(disp, disp, cv::Size(5, 5),2,2);
  
         // Set up the detector with default parameters.
@@ -212,11 +226,12 @@ public:
         // cvCopy( &out, (IplImage *) outImage.getIplImage());
         // outPort.write();
 
-        yarp::os::Bottle position_out;
-        position_out.addDouble(mc[max_i].x);
-        position_out.addDouble(mc[max_i].y);
+        // yarp::os::Bottle position_out;
+        // position_out.addDouble(mc[max_i].x);
+        // position_out.addDouble(mc[max_i].y);
+        // position_out.addDouble(mc[max_i].y);
 
-        positionPort.write(position_out);
+        positionPort.write(point3D);
 
         IplImage out = disp;
         outImage.resize(out.width, out.height);
