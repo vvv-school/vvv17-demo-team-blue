@@ -62,6 +62,7 @@ class CardTracker(BaseModule):
         self.simplePort      = self.createOutputPort('simple')
         self.orderPort       = self.createOutputPort('order')
         self.translationPort = self.createOutputPort('translation')
+        self.sfmPort         = self.createRpcClientPort('sfm_rpc')
 
         self.imgInPort       = self.createInputPort('image')
         self.imgOutPort      = self.createOutputPort('image')
@@ -107,6 +108,25 @@ class CardTracker(BaseModule):
         return True
 
 
+    def _sendMessage(self, msg):
+        
+        # check we send a bottle with the correct input
+        assert isinstance(msg, yarp.Bottle)
+        assert msg.get(0) == 'Root'
+        assert msg.size() == 3
+        
+        ans = yarp.Bottle()     
+        ans.clear()
+
+        self.sfmPort.write(msg, ans)
+
+        # check we get a return and has content        
+        assert ans
+        assert ans.size() > 0
+
+        return ans
+
+    
     def sendOrder(self, cards):
         """ This method sends the order information to the order port.
 
@@ -159,7 +179,7 @@ class CardTracker(BaseModule):
     def sendSimpleBottle(self, cards):
         """ This method sends the simple card information to the simple port.
 
-        Message: ( ( <id> <center-x>  <center-y> <owner> <label>)* )
+        Message: ( ( <center-x> <center-y>  <center-z> <owner> <number>)* )
 
         All values are integer values.
 
@@ -173,11 +193,13 @@ class CardTracker(BaseModule):
         # send all cards
         for card in cards:
 
+            point3D = self.convert(card.center[0], card.center[1])
+
             # id and center
             card_values = cards_list.addList()
-            card_values.addInt(card.tid)
-            card_values.addInt(card.center[0])
-            card_values.addInt(card.center[1])
+            card_values.addDouble(point3D[0])
+            card_values.addDouble(point3D[1])
+            card_values.addDouble(point3D[2])
             card_values.addString(card.belongsTo())
             card_values.addInt(card.getEstimatedNumber())
 
@@ -203,6 +225,7 @@ class CardTracker(BaseModule):
 
         # send all cards
         for card in cards:
+            
 
             # id and center
             card_values = cards_list.addList()
@@ -218,6 +241,18 @@ class CardTracker(BaseModule):
             card_contour.addInt(int(card.br[1]))
 
         self.cardsPort.write(bottle)
+
+
+    def convert(self, x, y):
+        msg = yarp.Bottle()
+        msg.addString('Root')
+        msg.addInt(x)
+        msg.addInt(y)
+
+        answer = self._sendMessage(msg)
+
+        z = 0.08
+        return (answer.get(0).asDouble(), answer.get(1).asDouble(), z)
 
 
     def onImage(self, cv2_image):

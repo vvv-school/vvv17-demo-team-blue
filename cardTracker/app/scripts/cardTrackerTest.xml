@@ -64,4 +64,9 @@
       <to>/BrutusTT/CardTracker/image:i</to>
   </connection>
 
+  <connection>
+      <from>/BrutusTT/CardTracker/sfm_rpc</from>
+      <to>/SFM/rpc</to>
+  </connection>
+
 </application>

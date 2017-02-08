@@ -26,14 +26,16 @@ class Module: public RFModule
 protected:
 
     RpcServer rpcPort;
-    yarp::os::BufferedPort<yarp::os::Bottle> stateOutPort;
-    yarp::os::BufferedPort<yarp::os::Bottle> gazeInport;
-    yarp::os::BufferedPort<yarp::os::Bottle> cardInport;
+    RpcClient movementPort;
+    RpcClient gazePort;
 
-    bool                        closing;
+    yarp::os::BufferedPort<yarp::os::Bottle> stateOutPort;
+    yarp::os::BufferedPort<yarp::os::Bottle> cardInport;
+    yarp::os::BufferedPort<yarp::os::Bottle> duckInport;
+
+    bool  closing;
 
     // state variables
-    bool ok_look_down;
     int score_robot;
     int score_human;
 
@@ -52,18 +54,22 @@ public:
             return false;
         }
 
-        if(!gazeInport.open("/state-machine/look:i")) {
-            yError()<<"Cannot open the gazeInport";
+        if(!cardInport.open("/state-machine/card:i")) {
+            yError()<<"Cannot open the cardInport";
             return false;
         }
 
-        if(!cardInport.open("/state-machine/card:i")) {
+        if(!duckInport.open("/state-machine/duck:i")) {
             yError()<<"Cannot open the cardInport";
             return false;
         }
 
         rpcPort.open("/state-machine/command");
         attach(rpcPort);
+
+        movementPort.open("/state-machine/position");
+
+        gazePort.open("/state-machine/look");
 
         int score_robot = 0 ;
         int score_human = 0 ;
@@ -84,18 +90,17 @@ public:
         }
         else if (cmd=="start")
         {
-            Bottle *gaze_input = gazeInport.read();
-            int look_down = gaze_input->get(0).asInt();
-
             // Let's start !
+            string currentGaze ;
 
             publishState("starting");
 
             //we delay a bit so that the robot can speak & ppl can marvel at it
             yarp::os::Time::delay(3.0);
             publishState("look down");
+            currentGaze = gazeState("look down");
 
-            if (look_down){
+            if (currentGaze == "look_down"){
                 publishState("looking at cards");
                 Bottle *card_input = cardInport.read();
                 readCardsAndUpdateScore(card_input);
@@ -103,31 +108,67 @@ public:
             }
             else {
                 publishState("look down");
+                currentGaze = gazeState("look down");
             }
 
             if (score_robot > score_human){
-                publishState("bet");
+                publishState("ask duck position");
+                Bottle *duck_position = duckInport.read();
+
+                Bottle move_cmd ;
+                move_cmd.addString("push duck");
+                for (int i=0; i<3; i++){
+                  move_cmd.addDouble(duck_position->get(i).asDouble());
+                }
+
+                Bottle response ;
+                publishState("push duck");
+                movementPort.write(move_cmd,response) ;
             }
             else {
-                publishState("don't bet");
+                Bottle move_cmd ;
+                move_cmd.addString("push card");
+                move_cmd.addDouble(last_card_locations["icub"].first);
+                move_cmd.addDouble(last_card_locations["icub"].second);
+                // move_cmd.addDouble(last_card_locations["icub"].third);
+
+                Bottle response ;
+                publishState("push card");
+                movementPort.write(move_cmd,response) ;
             }
 
-            if (look_down)
+            if (currentGaze == "look_down")
             {
                 publishState("look up");
+                currentGaze = gazeState("look up");
             }
 
             // The dealer distributes cards in the meantime
             Time::delay(2.0);
 
-            if (!look_down){
+            if (currentGaze == "look up"){
+                publishState("look down");
+                currentGaze = gazeState("look down");
+
                 publishState("looking at cards");
                 Bottle *card_input = cardInport.read();
                 readCardsAndUpdateScore(card_input);
             }
 
             if (score_robot > score_human){
-                publishState("pull object");
+                publishState("ask duck position");
+                Bottle *duck_position = duckInport.read();
+
+                Bottle move_cmd ;
+                move_cmd.addString("pull duck");
+                for (int i=0; i<3; i++){
+                  move_cmd.addDouble(duck_position->get(i).asDouble());
+                }
+
+                Bottle response ;
+                publishState("pull duck");
+                movementPort.write(move_cmd,response) ;
+
                 publishState("won");
             }
             else
@@ -202,8 +243,8 @@ public:
     bool interrupt()
     {
         stateOutPort.interrupt();
-        gazeInport.interrupt();
         cardInport.interrupt();
+        duckInport.interrupt();
         return true;
     }
 
@@ -211,9 +252,11 @@ public:
     bool close()
     {
         rpcPort.close();
+        movementPort.close();
+        gazePort.close();
         stateOutPort.close();
-        gazeInport.close();
         cardInport.close();
+        duckInport.close();
         return true;
     }
 
@@ -244,6 +287,21 @@ public:
         output.addString(state.c_str());
         stateOutPort.write();
         yarp::os::Time::delay(1.0);
+    }
+
+    /***************************************************/
+
+    string gazeState(const std::string& look)
+    {
+        Bottle output ;
+        Bottle response ;
+        output.clear();
+        output.addString(look.c_str());
+        gazePort.write(output,response);
+        yarp::os::Time::delay(1.0);
+
+        string look_state = response.get(0).asString();
+        return look_state ;
     }
 };
 
