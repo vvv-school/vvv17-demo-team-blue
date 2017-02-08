@@ -419,10 +419,9 @@ protected:
         igaze->waitMotionDone();
     }
 
-    bool push_object()
+    bool push_object(const Vector &pos)
     {
-        Vector x; string hand;
-        if (object.getLocation(x))
+        /*if (object.getLocation(x))
         {
             yInfo()<<"retrieved 3D location = ("<<x.toString(3,3)<<")";
 
@@ -431,14 +430,15 @@ protected:
             yInfo()<<"selected hand = \""<<hand<<'\"';
         }
         else
-            return false;
-
+            return false;*/
+        Vector x=pos;
+        string hand=(x[1]>0.0?"right":"left");
         fixate(x);
         yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
 
         // refine the localization of the object
         // with a proper hand-related map
-        if (object.getLocation(x,hand))
+        if (x[1]>0.0)
         {
             yInfo()<<"refined 3D location = ("<<x.toString(3,3)<<")";
 
@@ -819,8 +819,8 @@ public:
             reply.addVocab(Vocab::encode("many"));
             reply.addString("Available commands:");
             reply.addString("- look_down");
-            reply.addString("- grasp_it");
-            reply.addString("- quit");
+            reply.addString("- push_object");
+            reply.addString("- approach_card");
         }
         else if (cmd=="look_down")
         {
@@ -835,13 +835,14 @@ public:
             // close the fingers around the object:
             // if closure == 0.0, the finger joints have to reach their minimum
             // if closure == 1.0, the finger joints have to reach their maximum
-            double fingers_closure=0.9; // default value
+            Vector cardPos(3, 0.0);
+            cardPos[0] = command.get(1).asDouble();
+            cardPos[1] = command.get(2).asDouble();
+            cardPos[2] = command.get(3).asDouble();
+            Vector dof(10,1.0),dummy;
+            iarm->setDOF(dof,dummy);
 
-            // we can pass a new value via rpc
-            if (command.size()>1)
-                fingers_closure=command.get(1).asDouble();
-
-            bool ok=push_object();
+            bool ok=push_object(cardPos);
             // we assume the robot is not moving now
             if (ok)
             {
@@ -859,7 +860,7 @@ public:
             Vector cardPos(3, 0.0);
             cardPos[0] = command.get(1).asDouble();
             cardPos[1] = command.get(2).asDouble();
-            cardPos[2] = command.get(3).asDouble();
+            cardPos[2] = command.get(3).asDouble()+0.05;
 
             bool ok = approach_card(cardPos);
             // we assume the robot is not moving now
@@ -872,6 +873,33 @@ public:
             {
                 reply.addString("nack");
                 reply.addString("I don't see any object!");
+            }
+        }
+        else if (cmd == "touch_card")
+        {
+            Vector cardPos(3, 0.0);
+            cardPos[0] = command.get(1).asDouble();
+            cardPos[1] = command.get(2).asDouble();
+            cardPos[2] = command.get(3).asDouble();
+            Vector dof(10,1.0),dummy;
+            iarm->setDOF(dof,dummy);
+
+            // reach the first via-point
+            // located 5 cm above the target x
+            cardPos[2] -=0.05;
+            //iarm->goToPoseSync(approach,o);
+
+            bool ok = approach_card(cardPos);
+            // we assume the robot is not moving now
+            if (ok)
+            {
+                reply.addString("ack");
+                reply.addString("Yeah! I did it! Maybe...");
+            }
+            else
+            {
+                reply.addString("nack");
+                reply.addString("I don't see any card!");
             }
         }
         else if (cmd == "get_object_loc")

@@ -5,6 +5,7 @@
 #include <string>
 #include <cmath>
 #include <algorithm>
+#include <map>
 
 #include <yarp/os/all.h>
 #include <yarp/dev/all.h>
@@ -35,6 +36,8 @@ protected:
     bool ok_look_down;
     int score_robot;
     int score_human;
+
+    std::map<std::string, std::pair<double, double> > last_card_locations;
 
 
 public:
@@ -84,15 +87,6 @@ public:
             Bottle *gaze_input = gazeInport.read();
             int look_down = gaze_input->get(0).asInt();
 
-            Bottle *card_input = cardInport.read();
-
-            int ind_1 = card_input->get(0).asInt();
-            int x_1 = card_input->get(1).asInt();
-            int y_1 = card_input->get(2).asInt();
-            int ind_2 = card_input->get(3).asInt();
-            int x_2 = card_input->get(4).asInt();
-            int y_2 = card_input->get(5).asInt();
-
             // Let's start !
 
             publishState("starting");
@@ -103,7 +97,9 @@ public:
 
             if (look_down){
                 publishState("looking at cards");
-                updateScore(ind_1,ind_2) ; // update both scores inside
+                Bottle *card_input = cardInport.read();
+                readCardsAndUpdateScore(card_input);
+
             }
             else {
                 publishState("look down");
@@ -126,7 +122,8 @@ public:
 
             if (!look_down){
                 publishState("looking at cards");
-                updateScore(ind_1, ind_2) ;  // update both scores inside
+                Bottle *card_input = cardInport.read();
+                readCardsAndUpdateScore(card_input);
             }
 
             if (score_robot > score_human){
@@ -169,16 +166,37 @@ public:
 
     /***************************************************/
 
-    void updateScore(int ind_robot, int ind_human)
+    void readCardsAndUpdateScore(Bottle* card_input)
     {
-        // FILL IN HERE
-        // check that we have card data
-        // set
 
-        score_robot = ind_robot ;
-        score_human = ind_human ;
+        for (int i=0; i<(card_input->size() / 5); i++)
+        {
+            int id = card_input->get(i+0).asInt();
+            double cx = card_input->get(i+1).asDouble();
+            double cy = card_input->get(i+2).asDouble();
+            std::string owner = card_input->get(i+3).asString();
+            int label = card_input->get(i+4).asInt();
+
+            last_card_locations[owner] = std::pair<double, double>(cx, cy);
+
+            if ( owner == "icub" )
+            {
+                score_robot += label;
+                publishState(std::string("icub got ") + score_robot + " total score");
+            }
+            else if ( owner == "human" )
+            {
+                score_human += label;
+                publishState(std::string("human got ") + score_human + " total score");
+
+            }
+            else
+            {
+                //wtf
+                publishState("unknown user field in card message: " + owner);
+            }
+        }
     }
-
 
     /***************************************************/
     bool interrupt()
