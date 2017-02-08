@@ -751,7 +751,7 @@ public:
         thumb2.push_back(9);
         int indexFingerJ = 11;
         index.push_back(indexFingerJ);
-        for (int i=8; i<16; i++)
+        for (int i=9; i<16; i++)
         {
             if (i != indexFingerJ)
                 fingers.push_back(i);
@@ -773,7 +773,6 @@ public:
         fingerValues[6] = 0.0;
         fingerValues[7] = 0.0;
         fingerValues[8] = 0.0;
-        fingerValues[9] = 8.0;
 
         IControlLimits   *ilim;
         IPositionControl *ipos;
