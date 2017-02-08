@@ -516,7 +516,7 @@ protected:
             iarm->waitMotionDone();
 
             Vector goUp = pullBack;
-            goUp[2] += 0.03;
+            goUp[2] += 0.06;
             iarm->goToPoseSync(goUp, handOrientation, 30);
             iarm->waitMotionDone();
 
