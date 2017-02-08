@@ -86,7 +86,7 @@ public:
         // imgLPortOut.open("/imgL:o");
         // imgRPortOut.open("/imgR:o");
 
-        rpcPort.open("/service");
+        rpcPort.open("/gaze-control/command");
         attach(rpcPort);
 
         ok_look_down = false ;

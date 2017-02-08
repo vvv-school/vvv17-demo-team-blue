@@ -10,7 +10,7 @@ include(YarpInstallationHelpers)
 add_subdirectory(duck-detector)
 add_subdirectory(mood-module)
 add_subdirectory(movement-control)
-add_subdirectory(slide-module)
+add_subdirectory(gaze-module)
 add_subdirectory(state-machine)
 
 icubcontrib_add_uninstall_target()
