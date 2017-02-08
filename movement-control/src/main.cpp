@@ -377,10 +377,10 @@ protected:
         //igaze->waitMotionDone();
 
         // Move fingers back
-        VectorOf<int> abduction,thumb,fingers;
+        VectorOf<int> abduction,thumb,thumb2,fingers;
         abduction.push_back(7);
         thumb.push_back(8);
-        thumb.push_back(9);
+        thumb2.push_back(9);
         thumb.push_back(10);
         for (int i=9; i<16; i++)
             fingers.push_back(i);
@@ -388,7 +388,8 @@ protected:
         // let's put the hand in the pre-grasp configuration
         moveFingers(hand,abduction,0.7);
         moveFingers(hand,fingers,0.1);
-        moveFingers(hand,thumb,0.9);
+        moveFingers(hand,thumb,0.1);
+        moveFingers(hand,thumb2,0.9);
 
         return true;
     }
@@ -420,15 +421,18 @@ protected:
             yInfo()<<"computed orientation = ("<<o.toString(3,3)<<")";
 
             // we set up here the lists of joints we need to actuate
-            VectorOf<int> abduction,thumb,fingers;
+            VectorOf<int> abduction,thumb,thumb2,fingers;
             abduction.push_back(7);
             thumb.push_back(8);
+            thumb2.push_back(9);
+
             for (int i=9; i<16; i++)
                 fingers.push_back(i);
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,0.9);
+            moveFingers(hand,thumb,0.1);
+            moveFingers(hand,thumb2,0.9);
             moveFingers(hand,fingers,0.70);
             yInfo()<<"prepared hand";
 
@@ -467,15 +471,17 @@ protected:
             yInfo()<<"computed orientation = ("<<handOrientation.toString(3,3)<<")";
 
             // we set up here the lists of joints we need to actuate
-            VectorOf<int> abduction,thumb,fingers;
+            VectorOf<int> abduction,thumb,thumb2,fingers;
             abduction.push_back(7);
             thumb.push_back(8);
+            thumb2.push_back(9);
             for (int i=9; i<16; i++)
                 fingers.push_back(i);
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,0.9);
+            moveFingers(hand,thumb,0.1);
+            moveFingers(hand,thumb2,0.9);
             moveFingers(hand,fingers,0.3);
             yInfo()<<"prepared hand";
 
@@ -739,12 +745,13 @@ public:
             handOrientation = dcm2axis(Rot);
         }
 
-        VectorOf<int> abduction,thumb,fingers, index;
+        VectorOf<int> abduction,thumb,thumb2,fingers, index;
         abduction.push_back(7);
         thumb.push_back(8);
+        thumb2.push_back(9);
         int indexFingerJ = 11;
         index.push_back(indexFingerJ);
-        for (int i=9; i<16; i++)
+        for (int i=8; i<16; i++)
         {
             if (i != indexFingerJ)
                 fingers.push_back(i);
@@ -766,6 +773,7 @@ public:
         fingerValues[6] = 0.0;
         fingerValues[7] = 0.0;
         fingerValues[8] = 0.0;
+        fingerValues[9] = 8.0;
 
         IControlLimits   *ilim;
         IPositionControl *ipos;
@@ -878,6 +886,8 @@ public:
     bool push_card(const Vector &pos)
     {
         Vector approachPos=pos;
+        Vector o;
+        iarm->getPose(approachPos,o);
         approachPos[0] -= 0.05;
         string hand="right";
 
@@ -1034,7 +1044,7 @@ public:
         else if (cmd == "push_card")
         {
             Vector cardPos(3, 0.0);
-            cardPos[0] = command.get(1).asDouble()-0.05;//moves 5 cm the cart to the front
+            cardPos[0] = command.get(1).asDouble()-0.1;//moves 5 cm the cart to the front
             cardPos[1] = command.get(2).asDouble();
             cardPos[2] = command.get(3).asDouble();
 
