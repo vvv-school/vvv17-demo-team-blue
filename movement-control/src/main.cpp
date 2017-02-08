@@ -52,6 +52,8 @@ protected:
     RpcServer rpcPort;
     ObjectRetriever object;
 
+    RpcClient port_forces;
+
     ActionPrimitivesLayer1  action;
     string graspModelFileToWrite;
     deque<string> handKeys;
@@ -560,6 +562,14 @@ public:
         https://www.facebook.com
 
         //string robot=rf.check("robot",Value("icub")).asString().c_str();
+        /* Calibration of the force sensor*/
+        port_forces.open("/wholeBodyDynamics/rpc:i");
+        Bottle cmd;
+        cmd.addInt(0);
+        Bottle response;
+        port_forces.write(cmd, response);
+        yInfo()<<"Force sensor:"<<response.toString();
+        /* Calibration of the force sensor*/
         string robot=rf.check("robot",Value("icubSim")).asString();
         arm=rf.check("arm",Value("right")).asString().c_str();
         string name=rf.check("name",Value("movement-controller")).asString().c_str();
@@ -622,7 +632,6 @@ public:
         graspModelFileToWrite+="/";
         graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
         yInfo() << "home path: " << rf.getHomeContextPath();
-        robot=rf.check("robot",Value("icubSim")).asString();
         if (inSimulation)
         {
             if (!action.open(optionAction))
