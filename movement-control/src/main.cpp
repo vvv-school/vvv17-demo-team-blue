@@ -892,9 +892,10 @@ public:
         {
             reply.addVocab(Vocab::encode("many"));
             reply.addString("Available commands:");
-            reply.addString("- look_down");
-            reply.addString("- push_object");
-            reply.addString("- approach_card");
+            reply.addString("- push duck X Y Z");
+            reply.addString("- pull duck X Y Z");
+            reply.addString("- push card X Y Z");
+            reply.addString("- home");
         }
         else if (cmd == "push duck")
         {
@@ -902,22 +903,20 @@ public:
             // close the fingers around the object:
             // if closure == 0.0, the finger joints have to reach their minimum
             // if closure == 1.0, the finger joints have to reach their maximum
-            Vector cardPos(3, 0.0);
-            cardPos[0] = command.get(1).asDouble();
-            cardPos[1] = command.get(2).asDouble();
-            cardPos[2] = command.get(3).asDouble();
+            Vector duckPos(3, 0.0);
+            duckPos[0] = command.get(1).asDouble();
+            duckPos[1] = command.get(2).asDouble();
+            duckPos[2] = command.get(3).asDouble();
 
-            bool ok=push_object(cardPos);
+            bool ok=push_object(duckPos);
             // we assume the robot is not moving now
             if (ok)
             {
-                reply.addString("ack");
-                reply.addString("Yeah! I did it! Maybe...");
+                reply.addString("ok");
             }
             else
             {
-                reply.addString("nack");
-                reply.addString("I don't see any object!");
+                reply.addString("fail");
             }
         }
         else if (cmd == "pull duck")
@@ -931,17 +930,15 @@ public:
             // located 5 cm above the target x
             //iarm->goToPoseSync(approach,o);
 
-            bool ok = retrieve_object(cardPos);
+            bool ok = retrieve_object(duckPos);
             // we assume the robot is not moving now
             if (ok)
             {
-                reply.addString("ack");
-                reply.addString("Yeah! I did it! Maybe...");
+                reply.addString("ok");
             }
             else
             {
-                reply.addString("nack");
-                reply.addString("I don't see any card!");
+                reply.addString("fail");
             }
         }
         else if (cmd == "push card")
@@ -962,13 +959,11 @@ public:
             // we assume the robot is not moving now
             if (ok)
             {
-                reply.addString("ack");
-                reply.addString("Yeah! I did it! Maybe...");
+                reply.addString("ok");
             }
             else
             {
-                reply.addString("nack");
-                reply.addString("I don't see any card!");
+                reply.addString("fail");
             }
         }
         else if (cmd == "approach_card")
@@ -1058,13 +1053,11 @@ public:
             bool ok = home("right") && home("left");
             if (ok)
             {
-                reply.addString("ack");
-                reply.addString("Yeah! I did it! Maybe...");
+                reply.addString("ok");
             }
             else
             {
-                reply.addString("nack");
-                reply.addString("I couldn't get home :(");
+                reply.addString("fail");
             }
         }
         else if (cmd == "home")
