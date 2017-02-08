@@ -196,7 +196,8 @@ public:
 
                 Bottle move_cmd ;
                 move_cmd.addString("pull duck");
-                for (int i=0; i<3; i++){
+                for (int i=0; i<3; i++)
+                {
                     move_cmd.addDouble(duck_position->get(i).asDouble());
                 }
 
