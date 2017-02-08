@@ -203,7 +203,7 @@ public:
                 reply.addString("I've lost :(");
             }
 
-            publishState("A good state machine never prints this.");
+            publishState("Game over");
             return RFModule::respond(command,reply);
         }
         else if( cmd == "demo")
@@ -214,7 +214,7 @@ public:
             yarp::os::Time::delay(1.0);
             publishState("looking at cards");
             yarp::os::Time::delay(1.0);
-            publishState("bet");
+            publishState("push duck");
             yarp::os::Time::delay(1.0);
             publishState("don't bet");
             yarp::os::Time::delay(1.0);
@@ -222,7 +222,7 @@ public:
             yarp::os::Time::delay(1.0);
             publishState("looking at cards");
             yarp::os::Time::delay(1.0);
-            publishState("pull object");
+            publishState("pull duck");
             yarp::os::Time::delay(1.0);
             publishState("won");
             yarp::os::Time::delay(1.0);
