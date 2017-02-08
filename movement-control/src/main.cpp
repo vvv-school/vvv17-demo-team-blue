@@ -449,6 +449,8 @@ protected:
             approach_target_for_push(hand,x,o);
             yInfo()<<"approached object";
 
+            home("right");
+
             return true;
 //        }
         return false;
@@ -499,7 +501,7 @@ protected:
 
             Vector approachFromAbove = x;
             approachFromAbove[2] += 0.05; // be higher than object
-            approachFromAbove[0] -= 0.08; // be behind object
+            approachFromAbove[0] -= 0.00; // be behind object
             drvArmR.view(iarm);
             iarm->goToPoseSync(approachFromAbove,handOrientation,30);
             iarm->waitMotionDone();
@@ -509,9 +511,16 @@ protected:
             iarm->waitMotionDone();
             Vector pullBack;
             pullBack = goDown;
-            pullBack[0] += 0.2;
+            pullBack[0] += 0.1;
             iarm->goToPoseSync(pullBack,handOrientation,30);
             iarm->waitMotionDone();
+
+            Vector goUp = pullBack;
+            goUp[2] += 0.03;
+            iarm->goToPoseSync(goUp, handOrientation, 30);
+            iarm->waitMotionDone();
+
+            home("right");
 
             return true;
 
@@ -676,6 +685,9 @@ public:
             yInfo() << "Waiting for right arm pos";
             Time::delay(0.1);
         }
+        // Activate the torso for arm movements
+        Vector dof(10,1.0),dummy;
+        iarm->setDOF(dof,dummy);
 
         drvArmL.view(iarm);
         iarm->storeContext(&startup_ctxt_arm_left);
@@ -906,8 +918,6 @@ public:
             cardPos[0] = command.get(1).asDouble();
             cardPos[1] = command.get(2).asDouble();
             cardPos[2] = command.get(3).asDouble();
-            Vector dof(10,1.0),dummy;
-            iarm->setDOF(dof,dummy);
 
             bool ok=push_object(cardPos);
             // we assume the robot is not moving now
@@ -949,6 +959,8 @@ public:
             cardPos[1] = command.get(2).asDouble();
             cardPos[2] = command.get(3).asDouble();
             Vector dof(10,1.0),dummy;
+            dof[1] = 0.0;
+            dof[2] = 0.0;
             iarm->setDOF(dof,dummy);
 
             // reach the first via-point
