@@ -4,7 +4,8 @@
     <version>1.0</version>
     <module>
         <name>blue-gaze-module</name>
-        <parameters></parameters>
+        <parameters>--robot icub</parameters>
+        <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
         <node></node>
         <prefix></prefix>
         <geometry>(Pos (x 1311.25) (y 610.011))</geometry>
