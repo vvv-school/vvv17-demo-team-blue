@@ -77,35 +77,22 @@ public:
 
             //we delay a bit so that the robot can speak & ppl can marvel at it
             yarp::os::Time::delay(3.0);
-            ok_look_down = true;
 
             look_down(); // ok_look_down has to be tuned true
-            publishState("looking at cards");
 
-            cardRecognition() ; // update both scores inside
+            updateScoresFromCards() ; // update both scores inside
 
-            if (score_robot > score_human){
-                publishState("bet");
-                pushObject() ;
-            }
-            else {
-                publishState("don't bet");
-            }
-
+            play();
 
             // The dealer distributes cards
-            if (ok_look_down){
-                look_up() ; // ok_look_down has to be tuned false
-                Time::delay(2.0);
-                publishState("look up");
-            }
+            look_up() ; // ok_look_down has to be tuned false
+            Time::delay(2.0);
 
-            if (!ok_look_down){
-                look_down() ; // ok_look_down has to be tuned true
-                publishState("looking at cards");
-            }
+// ask for card
+            look_down() ; // ok_look_down has to be tuned true
+            publishState("looking at cards");
 
-            cardRecognition() ;  // update both scores inside
+            updateScoresFromCards() ;  // update both scores inside
 
             if (score_robot > score_human){
                 pullObject() ;
@@ -127,26 +114,43 @@ public:
         // FILL IN HERE
     }
 
-    void cardRecognition()
+    void updateScoresFromCards()
     {
+        publishState("looking at cards");
         // FILL IN HERE
         // check that we have card data
-        // set
+        // set score_robot and score_human
 
 
     }
 
     void look_down()
     {
+        publishState("looking at cards");
+
         // FILL IN HERE
-        ok_look_down = true;
     }
 
     void look_up()
     {
+        publishState("look up");
+
         // FILL IN HERE
     }
 
+    void play()
+    {
+        if (score_robot > score_human)
+        {
+            publishState("bet");
+            pushObject() ;
+        }
+        else
+        {
+            publishState("don't bet");
+        }
+
+    }
 
     void pushObject()
     {
