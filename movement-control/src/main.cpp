@@ -623,7 +623,7 @@ public:
         graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
         yInfo() << "home path: " << rf.getHomeContextPath();
         robot=rf.check("robot",Value("icubSim")).asString();
-        if (!inSimulation)
+        if (inSimulation)
         {
             if (!action.open(optionAction))
             {
@@ -828,6 +828,7 @@ public:
         }
         //iarm->waitMotionDone();
         Model *model; action.getGraspModel(model);
+        if(!inSimulation){
         if (model!=NULL)
         {
             Value out;
@@ -842,6 +843,7 @@ public:
             }
             iarm->stopControl();
             printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+        }
         }
         expMutex.unlock();
 
