@@ -413,7 +413,7 @@ def createArgParser():
     parser.add_argument( '-m', '--memory',
                          dest       = 'memory',
                          type       = type(0),
-                         default    = 0,
+                         default    = 2,
                          help       = 'Defines how long the marker positions are kept in memory.')
 
     parser.add_argument( '-t', '--translation',
