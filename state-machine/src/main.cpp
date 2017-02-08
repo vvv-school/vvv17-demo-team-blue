@@ -126,7 +126,9 @@ public:
                 publishState("push duck");
                 movementPort.write(move_cmd,response) ;
             }
-            else {
+            else
+            {
+                publishState("don't bet");
                 Bottle move_cmd ;
                 move_cmd.addString("push card");
                 move_cmd.addDouble(last_card_locations["icub"].first);
