@@ -1,0 +1,25 @@
+<application>
+    <name>blue-card-demo</name>
+    <description>Description</description>
+    <version>1.0</version>
+    <module>
+        <name>blue_slide_module</name>
+        <parameters></parameters>
+        <node></node>
+        <prefix>/blue-card-demo:blue_slide_module:1</prefix>
+        <geometry>(Pos (x 272) (y 266))</geometry>
+    </module>
+    <module>
+        <name>duck-detector</name>
+        <parameters></parameters>
+        <node></node>
+        <prefix>/blue-card-demo:duck-detector:1</prefix>
+        <geometry>(Pos (x 233) (y 91))</geometry>
+    </module>
+    <connection>
+        <from>/blue-card-demo:duck-detector:1/duck-detector/output</from>
+        <to>/blue-card-demo:blue_slide_module:1/slidingController/input</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 94) (y 0)) ((x -104) (y -16))  )</geometry>
+    </connection>
+</application>

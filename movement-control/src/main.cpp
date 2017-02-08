@@ -12,6 +12,7 @@
 #include <yarp/sig/all.h>
 #include <yarp/math/Math.h>
 
+#include <iCub/ctrl/math.h>
 #include <iCub/iKin/iKinFwd.h>
 #include <iCub/perception/models.h>
 #include <iCub/action/actionPrimitives.h>
@@ -34,12 +35,15 @@ using namespace iCub::action;
 
 
 /***************************************************/
-class CtrlModule: public RFModule
+class CtrlModule: public RFModule, public slidingController_IDL
 {
 protected:
     PolyDriver drvArmR, drvArmL, drvGaze;
+    PolyDriver driverJoint;
     PolyDriver drvHandR, drvHandL;
     ICartesianControl *iarm;
+    string arm;
+    bool impedanceSw,oldImpedanceSw;
     IGazeControl      *igaze;
     int startup_ctxt_arm_right;
     int startup_ctxt_arm_left;
@@ -51,6 +55,10 @@ protected:
     ActionPrimitivesLayer1  action;
     string graspModelFileToWrite;
     deque<string> handKeys;
+    double exploration_max_force;
+
+    Mutex mainMutex;
+    Mutex expMutex;
     /******************Touch model***********/
     bool calibrateGraspModel(const bool forceCalibration)
     {
@@ -66,12 +74,19 @@ protected:
                 fng.addString("ring");
                 fng.addString("little");
 
-                Property prop;
+                /*Property prop;
                 prop.put("finger",fingers.get(0));
                 model->calibrate(prop);
 
                 prop.clear();
                 prop.put("finger","thumb");
+                model->calibrate(prop);
+
+                ofstream fout;
+                fout.open(graspModelFileToWrite.c_str());
+                model->toStream(fout);
+                fout.close();*/
+                Property prop("(finger all_parallel)");
                 model->calibrate(prop);
 
                 ofstream fout;
@@ -86,7 +101,31 @@ protected:
         return false;
     }
 
-    /***************************************************/
+    /******************ARM CONTROLLER*******************/
+    void setImpedance(const bool enable=true, const bool forceSet=false)
+    {
+        if (!forceSet && (enable==impedanceSw))
+            return;
+
+        IInteractionMode *imode;
+        drvArmR.view(imode);
+
+        if (enable)
+        {
+            IImpedanceControl *iimp;
+            drvArmR.view(iimp);
+            //Thanks Ugo ;)
+            imode->setInteractionMode(0,VOCAB_IM_COMPLIANT); iimp->setImpedance(0,0.4,0.03);
+            imode->setInteractionMode(1,VOCAB_IM_COMPLIANT); iimp->setImpedance(1,0.4,0.03);
+            imode->setInteractionMode(2,VOCAB_IM_COMPLIANT); iimp->setImpedance(2,0.4,0.03);
+            imode->setInteractionMode(3,VOCAB_IM_COMPLIANT); iimp->setImpedance(3,0.2,0.01);
+            imode->setInteractionMode(4,VOCAB_IM_COMPLIANT); iimp->setImpedance(4,0.2,0.0);
+        }
+        else for (int j=0; j<5; j++)
+            imode->setInteractionMode(j,VOCAB_IM_STIFF);
+
+        impedanceSw=enable;
+    }
 
     void fixate(const Vector &x)
     {
@@ -98,6 +137,8 @@ protected:
         igaze->lookAtFixationPoint(x);
         igaze->waitMotionDone();
     }
+
+
 
     /***************************************************/
     Vector computeHandOrientation(const string &hand)
@@ -210,6 +251,21 @@ protected:
         else
             drvArmL.view(iarm);
 
+        Model *model = NULL;
+        if (action.getGraspModel(model))
+        {
+            Value out;
+            model->getOutput(out);
+            double contact_force=out.asList()->get(1).asDouble();   // 1 => index finger
+            if (contact_force>exploration_max_force)
+            {
+                printf("contact detected: (%g>%g)\n",contact_force,exploration_max_force);
+
+                //INSERT PUSH CARD HERE
+
+                //expMutex.unlock();
+            }
+        }
         // enable all dofs but the roll of the torso
 
         Vector dof(10, 1.0);
@@ -363,67 +419,6 @@ protected:
         igaze->waitMotionDone();
     }
 
-    /***************************************************/
-    bool grasp_it(const double fingers_closure)
-    {
-        Vector x;
-        string hand;
-        if (object.getLocation(x))
-        {
-            yInfo()<<"retrieved 3D location = ("<<x.toString(3,3)<<")";
-
-            // we select the hand accordingly
-            hand=(x[1]>0.0?"right":"left");
-            yInfo()<<"selected hand = \""<<hand<<'\"';
-        }
-        else
-            return false;
-
-        fixate(x);
-        yInfo()<<"fixating at ("<<x.toString(3,3)<<")";
-
-        // refine the localization of the object
-        // with a proper hand-related map
-        if (object.getLocation(x,hand))
-        {
-            yInfo()<<"refined 3D location = ("<<x.toString(3,3)<<")";
-
-            // TODO: Make proper hand orientation
-            Vector o=computeHandOrientation(hand);
-            yInfo()<<"computed orientation = ("<<o.toString(3,3)<<")";
-
-            // we set up here the lists of joints we need to actuate
-            VectorOf<int> abduction,thumb,fingers;
-            abduction.push_back(7);
-            thumb.push_back(8);
-            for (int i=9; i<16; i++)
-                fingers.push_back(i);
-
-            // let's put the hand in the pre-grasp configuration
-            moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,1.0);
-            moveFingers(hand,fingers,0.0);
-            yInfo()<<"prepared hand";
-
-            approachTargetWithHand(hand,x,o);
-            yInfo()<<"approached object";
-
-            moveFingers(hand,fingers,fingers_closure);
-            yInfo()<<"grasped";
-
-            liftObject(hand);
-            yInfo()<<"lifted";
-
-            moveFingers(hand,fingers,0.0);
-            yInfo()<<"released";
-
-            home(hand);
-            yInfo()<<"gone home";
-            return true;
-        }
-        return false;
-    }
-
     bool push_object()
     {
         Vector x; string hand;
@@ -506,8 +501,8 @@ protected:
 
             // let's put the hand in the pre-grasp configuration
             moveFingers(hand,abduction,0.7);
-            moveFingers(hand,thumb,1.0);
-            moveFingers(hand,fingers,0.2);
+            moveFingers(hand,thumb,0.0);
+            moveFingers(hand,fingers,0.3);
             yInfo()<<"prepared hand";
 
             //approach_target_for_push(hand,x,o);
@@ -570,11 +565,19 @@ public:
     yarp::sig::Vector leftArmStartX;
     yarp::sig::Vector leftArmStartO;
 
+    bool inSimulation;
+
     /***************************************************/
     bool configure(ResourceFinder &rf)
     {
         http://www.google.com
+        https://www.facebook.com
+
+        //string robot=rf.check("robot",Value("icub")).asString().c_str();
         string robot=rf.check("robot",Value("icubSim")).asString();
+        arm=rf.check("arm",Value("right")).asString().c_str();
+        string name=rf.check("name",Value("movement-controller")).asString().c_str();
+        inSimulation = robot == "icubSim";
 
         if (!openCartesian(robot,"right_arm"))
             return false;
@@ -615,6 +618,40 @@ public:
             drvGaze.close();
             drvHandL.close();
             return false;
+        }
+        Property optionAction;
+
+        robot=rf.check("robot",Value("icub")).asString().c_str();
+        string grasp_model_file=(arm=="left"?"grasp_model_file_left":"grasp_model_file_right");
+        optionAction.put("robot",robot.c_str());
+        optionAction.put("local",(name+"/action").c_str());
+        optionAction.put("part",(arm+"_arm").c_str());
+        optionAction.put("torso_pitch","on");
+        optionAction.put("torso_roll","off");
+        optionAction.put("torso_yaw","on");
+        optionAction.put("grasp_model_type",rf.find("grasp_model_type").asString().c_str());
+        optionAction.put("grasp_model_file",rf.findFile(grasp_model_file.c_str()).c_str());
+        optionAction.put("hand_sequences_file",rf.findFile("hand_sequences_file").c_str());
+        graspModelFileToWrite=rf.getHomeContextPath().c_str();
+        graspModelFileToWrite+="/";
+        graspModelFileToWrite+=rf.find(grasp_model_file.c_str()).asString().c_str();
+        yInfo() << "home path: " << rf.getHomeContextPath();
+        robot=rf.check("robot",Value("icubSim")).asString();
+        if (!inSimulation)
+        {
+            if (!action.open(optionAction))
+            {
+                yError() << "Could not open action";
+                drvHandR.close();
+                driverJoint.close();
+                return false;
+            }
+
+            handKeys=action.getHandSeqList();
+            printf("***** List of available hand sequence keys:\n");
+            for (size_t i=0; i<handKeys.size(); i++)
+                printf("%s\n",handKeys[i].c_str());
+            calibrateGraspModel(false);
         }
 
         // save startup contexts
@@ -668,10 +705,109 @@ public:
         return true;
     }
 
-    void deny_card()
+    bool approach_card(Vector cardPos)
     {
-        Vector denyConfig(16, 0.0);
-        denyConfig[0] = 36.0;
+        // TODO: bla
+        Vector approachPos = cardPos;
+        approachPos[0] += 0.00;
+        approachPos[2] += 0.05;
+
+        // We only use the right hand
+        std::string hand="right";
+        yInfo() << "Choosing hand: " << hand;
+
+        fixate(cardPos);
+
+        Vector handOrientation(4, 0.0);
+        {
+            Matrix Rot(3,3);
+
+            Rot(0,0)=-1.0; Rot(0,1)= 0.0;  Rot(0,2)= 0.0;
+            Rot(1,0)= 0.0; Rot(1,1)= 1.0;  Rot(1,2)= 0.0;
+            Rot(2,0)= 0.0; Rot(2,1)= 0.0;  Rot(2,2)= -1.0;
+
+            handOrientation = dcm2axis(Rot);
+        }
+
+        VectorOf<int> abduction,thumb,fingers, index;
+        abduction.push_back(7);
+        thumb.push_back(8);
+        int indexFingerJ = 11;
+        index.push_back(indexFingerJ);
+        for (int i=9; i<16; i++)
+        {
+            if (i != indexFingerJ)
+                fingers.push_back(i);
+        }
+
+        Vector fingerJoints;
+        for (int i = 7; i < 16; ++i)
+        {
+            fingerJoints.push_back(i);
+        }
+
+        Vector fingerValues(fingerJoints.size());
+        fingerValues[0] = 50.0;
+        fingerValues[1] = 80.0;
+        fingerValues[2] = 10.0;
+        fingerValues[3] = 120.0;
+        fingerValues[4] = 22.5;
+        fingerValues[5] = 72.0;
+        fingerValues[6] = 0.0;
+        fingerValues[7] = 0.0;
+        fingerValues[8] = 0.0;
+
+        IControlLimits   *ilim;
+        IPositionControl *ipos;
+        IControlMode2     *imod;
+        if (hand=="right")
+        {
+            drvHandR.view(ilim);
+            drvHandR.view(ipos);
+            drvHandR.view(imod);
+            drvArmR.view(iarm);
+        }
+        else
+        {
+            drvHandL.view(ilim);
+            drvHandL.view(ipos);
+            drvHandL.view(imod);
+            drvArmL.view(iarm);
+        }
+
+        for (size_t i=0; i<fingerJoints.size(); i++)
+        {
+            int j=fingerJoints[i];
+            double value = fingerValues[i];
+
+            imod->setControlMode(j, VOCAB_CM_POSITION);
+            ipos->positionMove(j, value);
+        }
+
+        // wait until all fingers have attained their set-points
+        bool done;
+        do
+        {
+            done = true;
+            for (size_t i=0; i<fingerJoints.size(); i++)
+            {
+                int j = fingerJoints[i];
+                bool jointDone = false;
+                ipos->checkMotionDone(j, &jointDone);
+                done = done && jointDone;
+            }
+        } while (!done);
+
+        if (!iarm->goToPoseSync(approachPos, handOrientation, 20.0))
+        {
+            yError() << "Could not move to approach position";
+            return false;
+        }
+        iarm->waitMotionDone();
+
+
+
+        return true;
     }
 
     /***************************************************/
@@ -692,31 +828,6 @@ public:
             // we assume the robot is not moving now
             reply.addString("ack");
             reply.addString("Yep! I'm looking down now!");
-        }
-        else if (cmd=="grasp_it")
-        {
-            // the "closure" accounts for how much we should
-            // close the fingers around the object:
-            // if closure == 0.0, the finger joints have to reach their minimum
-            // if closure == 1.0, the finger joints have to reach their maximum
-            double fingers_closure=0.5; // default value
-
-            // we can pass a new value via rpc
-            if (command.size()>1)
-                fingers_closure=command.get(1).asDouble();
-
-            bool ok=grasp_it(fingers_closure);
-            // we assume the robot is not moving now
-            if (ok)
-            {
-                reply.addString("ack");
-                reply.addString("Yeah! I did it! Maybe...");
-            }
-            else
-            {
-                reply.addString("nack");
-                reply.addString("I don't see any object!");
-            }
         }
         else if (cmd == "push_object")
         {
@@ -741,6 +852,40 @@ public:
             {
                 reply.addString("nack");
                 reply.addString("I don't see any object!");
+            }
+        }
+        else if (cmd == "approach_card")
+        {
+            Vector cardPos(3, 0.0);
+            cardPos[0] = command.get(1).asDouble();
+            cardPos[1] = command.get(2).asDouble();
+            cardPos[2] = command.get(3).asDouble();
+
+            bool ok = approach_card(cardPos);
+            // we assume the robot is not moving now
+            if (ok)
+            {
+                reply.addString("ack");
+                reply.addString("Yeah! I did it! Maybe...");
+            }
+            else
+            {
+                reply.addString("nack");
+                reply.addString("I don't see any object!");
+            }
+        }
+        else if (cmd == "get_object_loc")
+        {
+            // Temporary
+            Vector loc;
+            if (object.getLocation(loc))
+            {
+                reply.addString("ack");
+                reply.addString(loc.toString());
+            }
+            else
+            {
+                reply.addString("nack");
             }
         }
         else if (cmd == "home")
@@ -828,6 +973,12 @@ int main(int argc, char *argv[])
 
     CtrlModule mod;
     ResourceFinder rf;
+    rf.setDefaultContext("movement-controller");
+    rf.setDefault("grasp_model_type","springy");
+    rf.setDefault("grasp_model_file_left","grasp_model_left.ini");
+    rf.setDefault("grasp_model_file_right","grasp_model_right.ini");
+    rf.setDefault("hand_sequences_file","hand_sequences.ini");
     rf.configure(argc,argv);
+
     return mod.runModule(rf);
 }

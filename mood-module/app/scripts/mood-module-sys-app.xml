@@ -1,0 +1,76 @@
+<application>
+
+  <name>mood-module-sys-app</name>
+  <description> Tutorial on yarp RFModule</description>
+
+  <dependencies>
+      <port>/yarplogger</port>
+  </dependencies>
+
+  <module>
+      <name>iCub_SIM</name>
+      <parameters></parameters>
+      <prefix></prefix>
+      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+      <node>localhost</node>
+  </module>
+
+  <module>
+      <name>speech</name>
+      <parameters>--lingware-context speech --default-language en-US --pitch 100 --speed 100</parameters>
+      <prefix></prefix>
+      <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+      <deployer>yarpdev</deployer>
+      <node>localhost</node>
+  </module>
+
+    <module>
+        <name>iSpeak</name>
+        <parameters></parameters>
+        <prefix></prefix>
+        <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>simFaceExpressions</name>
+        <parameters></parameters>
+        <prefix></prefix>
+        <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+        <node>localhost</node>
+    </module>
+
+    <module>
+        <name>emotionInterface</name>
+        <parameters></parameters>
+        <prefix></prefix>
+        <environment>YARP_FORWARD_LOG_ENABLE=1</environment>
+        <node>localhost</node>
+    </module>
+
+    <connection>
+      <from>/iSpeak/speech-dev/rpc</from>
+      <to>/icub/speech:rpc</to>
+      <protocol>tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/face/eyelids</from>
+        <to>/icubSim/face/eyelids</to>
+        <protocol>tcp</protocol>
+    </connection>
+
+    <connection>
+        <from>/face/image/out</from>
+        <to>/icubSim/texture/face</to>
+        <protocol>tcp</protocol>
+    </connection>
+    
+    <connection>
+        <from>/emotion/out</from>
+        <to>/icubSim/face/raw/in</to>
+        <protocol>tcp</protocol>
+    </connection>
+    
+</application>
+
