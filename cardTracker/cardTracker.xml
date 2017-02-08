@@ -2,7 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="yarpmanifest.xsl"?>
 
 <module>
-  <name>cardDetector</name>
+  <name>cardTracker</name>
   <description>Detects cards with color and number within an image.</description>
   <version>1.0</version>
 
@@ -18,7 +18,7 @@
 
     <input>
       <type>yarp::sig::Image</type>
-      <port carrier="udp">/CardDetector/image:i</port>
+      <port carrier="udp">/CardTracker/image:i</port>
       <description>
         Expects an segmented image from the lbpExtract module.
       </description>
@@ -26,7 +26,7 @@
 
     <input>
       <type>*</type>
-      <port carrier="udp">/CardDetector/rpc</port>
+      <port carrier="udp">/CardTracker/rpc</port>
       <description>
         RPC port to control the modules parameters.
       </description>
@@ -34,7 +34,7 @@
 
     <output>
       <type>yarp::sig::Image</type>
-      <port carrier="udp">/CardDetector/image:o</port>
+      <port carrier="udp">/CardTracker/image:o</port>
       <description>
         Streams out the image with the cards information.
       </description>
@@ -42,7 +42,7 @@
 
     <output>
       <type>yarp::sig::Image</type>
-      <port carrier="udp">/CardDetector/debug:o</port>
+      <port carrier="udp">/CardTracker/debug:o</port>
       <description>
         Streams out the image with the binary segmentation which is used for color estimation.
       </description>
@@ -50,7 +50,7 @@
 
     <output>
       <type>*</type>
-      <port carrier="udp">/CardDetector/simple:o</port>
+      <port carrier="udp">/CardTracker/simple:o</port>
       <description>
         Streams the card information. Bottle Format: ( center-x:Double center-y:Double center-z:Double owner:String number:Int )
       </description>
@@ -58,7 +58,7 @@
 
     <output>
       <type>*</type>
-      <port carrier="udp">/CardDetector/convert2D:rpc</port>
+      <port carrier="udp">/CardTracker/convert2D:rpc</port>
       <description>
         Port used for the conversion between 2D image coordinates and 3D world coordinates. This
         port needs to be connected to /iKinGazeCtrl/rpc .
@@ -67,7 +67,7 @@
 
     <output>
       <type>*</type>
-      <port carrier="udp">/CardDetector/cards:o</port>
+      <port carrier="udp">/CardTracker/cards:o</port>
       <description>
         Streams the card information with additional information.
       </description>
@@ -75,7 +75,7 @@
 
     <output>
       <type>*</type>
-      <port carrier="udp">/CardDetector/order:o</port>
+      <port carrier="udp">/CardTracker/order:o</port>
       <description>
         Streams the order of the cards. 
       </description>
@@ -83,7 +83,7 @@
 
     <output>
       <type>*</type>
-      <port carrier="udp">/CardDetector/translate:o</port>
+      <port carrier="udp">/CardTracker/translate:o</port>
       <description>
         Streams a text representation of the detected cards.
       </description>
