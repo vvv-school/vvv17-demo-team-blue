@@ -2,14 +2,14 @@
 <?xml-stylesheet type="text/xsl" href="yarpmanifest.xsl"?>
 
 <module>
-  <name>blue-gaze-control</name>
+  <name>blue-gaze-module</name>
   <description>Gaze control module with a simple rpc interface</description>
   <version>1.0</version>
 
   <data>
-    <inputi port+type="service">
+    <input port_type="service">
       <type>yarp::sig::Bottle</type>
-      <port carrier="tcp">/gaze-control/command</port>
+      <port carrier="tcp">/gaze-module/look</port>
       <description>It's great, believe me!</description>
     </input>
   </data>

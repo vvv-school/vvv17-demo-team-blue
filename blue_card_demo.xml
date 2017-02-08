@@ -3,23 +3,62 @@
     <description>Description</description>
     <version>1.0</version>
     <module>
-        <name>blue_slide_module</name>
+        <name>blue-gaze-module</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo:blue_slide_module:1</prefix>
-        <geometry>(Pos (x 272) (y 266))</geometry>
+        <prefix>/blue-card-demo:blue-gaze-module:1</prefix>
+        <geometry>(Pos (x 1055.8) (y 182.183))</geometry>
+    </module>
+    <module>
+        <name>blue_mood_module</name>
+        <parameters></parameters>
+        <node></node>
+        <prefix>/blue-card-demo:blue_mood_module:1</prefix>
+        <geometry>(Pos (x 1065.35) (y 319.983))</geometry>
+    </module>
+    <module>
+        <name>blue_state_machine</name>
+        <parameters></parameters>
+        <node></node>
+        <prefix>/blue-card-demo:blue_state_machine:1</prefix>
+        <geometry>(Pos (x 626.481) (y 238.008))</geometry>
+    </module>
+    <module>
+        <name>blue_watchdog_module</name>
+        <parameters></parameters>
+        <node></node>
+        <prefix>/blue-card-demo:blue_watchdog_module:1</prefix>
+        <geometry>(Pos (x 176.932) (y 364.854))</geometry>
     </module>
     <module>
         <name>duck-detector</name>
         <parameters></parameters>
         <node></node>
-        <prefix>/blue-card-demo:duck-detector:1</prefix>
-        <geometry>(Pos (x 233) (y 91))</geometry>
+        <prefix>/blue-card-demo:duck-detector:2</prefix>
+        <geometry>(Pos (x 150.319) (y 177.125))</geometry>
     </module>
     <connection>
-        <from>/blue-card-demo:duck-detector:1/duck-detector/output</from>
-        <to>/blue-card-demo:blue_slide_module:1/slidingController/input</to>
+        <from>/blue-card-demo:blue_state_machine:1/state-machine/state:o</from>
+        <to>/blue-card-demo:blue_mood_module:1/mood/in</to>
+        <protocol>udp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y 16)) ((x -111) (y -16))  )</geometry>
+    </connection>
+    <connection>
+        <from>/blue-card-demo:blue_state_machine:1/state-machine/look</from>
+        <to>/blue-card-demo:blue-gaze-module:1/gaze-module/look</to>
         <protocol>tcp</protocol>
-        <geometry>(Pos ((x -1) (y -1)) ((x 94) (y 0)) ((x -104) (y -16))  )</geometry>
+        <geometry>(Pos ((x -1) (y -1)) ((x 111) (y -48)) ((x -101) (y 0))  )</geometry>
+    </connection>
+    <connection>
+        <from>/blue-card-demo:duck-detector:2/duck-detector/output</from>
+        <to>/blue-card-demo:blue_state_machine:1/state-machine/duck:i</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 94) (y 0)) ((x -111) (y -16))  )</geometry>
+    </connection>
+    <connection>
+        <from>/blue-card-demo:blue_watchdog_module:1/blue_watchdog/alert:o</from>
+        <to>/blue-card-demo:blue_state_machine:1/state-machine/alert:i</to>
+        <protocol>tcp</protocol>
+        <geometry>(Pos ((x -1) (y -1)) ((x 116) (y 0)) ((x -111) (y 48))  )</geometry>
     </connection>
 </application>

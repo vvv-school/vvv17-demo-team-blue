@@ -25,6 +25,7 @@ setup( name                 = 'cardTracker',
        install_requires     = [
            'setuptools',
            # -*- Extra requirements: -*-
+           'numpy',
        ],
        entry_points         = """
        # -*- Entry points: -*-

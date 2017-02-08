@@ -21,6 +21,15 @@ using namespace yarp::sig;
 using namespace yarp::math;
 
 
+struct Position3D
+{
+    double x,y,z;
+    Position3D()
+     : x(0) , y(0) , z(0) { }
+    Position3D(double x_, double y_, double z_ = 0.0)
+     : x(x_) , y(y_) , z(z_) { }
+};
+
 /***************************************************/
 class Module: public RFModule
 {
@@ -40,8 +49,7 @@ protected:
     int score_robot;
     int score_human;
 
-    std::map<std::string, std::pair<double, double> > last_card_locations;
-
+    std::map<std::string, Position3D > last_card_locations;
 
 public:
     /***************************************************/
@@ -101,7 +109,7 @@ public:
             publishState("look down");
             currentGaze = gazeState("look down");
 
-            if (currentGaze == "look_down"){
+            if (currentGaze == "look_down ok"){
                 publishState("looking at cards");
                 Bottle *card_input = cardInport.read();
                 readCardsAndUpdateScore(card_input);
@@ -126,19 +134,21 @@ public:
                 publishState("push duck");
                 movementPort.write(move_cmd,response) ;
             }
-            else {
+            else
+            {
+                publishState("don't bet");
                 Bottle move_cmd ;
                 move_cmd.addString("push card");
-                move_cmd.addDouble(last_card_locations["icub"].first);
-                move_cmd.addDouble(last_card_locations["icub"].second);
-                // move_cmd.addDouble(last_card_locations["icub"].third);
+                move_cmd.addDouble(last_card_locations["icub"].x);
+                move_cmd.addDouble(last_card_locations["icub"].y);
+                move_cmd.addDouble(last_card_locations["icub"].z);
 
                 Bottle response ;
                 publishState("push card");
                 movementPort.write(move_cmd,response) ;
             }
 
-            if (currentGaze == "look_down")
+            if (currentGaze == "look_down ok")
             {
                 publishState("look up");
                 currentGaze = gazeState("look up");
@@ -147,7 +157,7 @@ public:
             // The dealer distributes cards in the meantime
             Time::delay(2.0);
 
-            if (currentGaze == "look up")
+            if (currentGaze == "look up ok")
             {
                 publishState("look down");
                 currentGaze = gazeState("look down");
@@ -220,14 +230,14 @@ public:
         {
             int base_ind = message_size*i;
             // parse messages
-            int id = card_input->get(base_ind+0).asInt();
-            double cx = card_input->get(base_ind+1).asDouble();
-            double cy = card_input->get(base_ind+2).asDouble();
+            double cx = card_input->get(base_ind+0).asDouble();
+            double cy = card_input->get(base_ind+1).asDouble();
+            double cz = card_input->get(base_ind+2).asDouble();
             std::string owner = card_input->get(base_ind+3).asString();
             int label = card_input->get(base_ind+4).asInt();
 
             // save one card location of each for later use
-            last_card_locations[owner] = std::pair<double, double>(cx, cy);
+            last_card_locations[owner] = Position3D(cx, cy, cz);
 
             // update scores
             if ( owner == "icub" )
