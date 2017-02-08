@@ -150,15 +150,15 @@ public:
                 publishState("don't bet");
 
                 // COMMENT HERE TO DISABLE PUSH CARD
-                Bottle move_cmd ;
-                move_cmd.addString("push card");
-                move_cmd.addDouble(last_card_locations["icub"].x);
-                move_cmd.addDouble(last_card_locations["icub"].y);
-                move_cmd.addDouble(last_card_locations["icub"].z);
+                //                Bottle move_cmd ;
+                //                move_cmd.addString("push card");
+                //                move_cmd.addDouble(last_card_locations["icub"].x);
+                //                move_cmd.addDouble(last_card_locations["icub"].y);
+                //                move_cmd.addDouble(last_card_locations["icub"].z);
 
-                Bottle response ;
-                publishState("push card");
-                movementPort.write(move_cmd,response) ;
+                //                Bottle response ;
+                //                publishState("push card");
+                //                movementPort.write(move_cmd,response) ;
             }
 
             if (currentGaze == "look down ok")
