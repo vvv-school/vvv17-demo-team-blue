@@ -651,6 +651,7 @@ public:
         optionAction.put("torso_pitch","on");
         optionAction.put("torso_roll","off");
         optionAction.put("torso_yaw","on");
+        optionAction.put("verbosity","on");
         optionAction.put("grasp_model_type",rf.find("grasp_model_type").asString().c_str());
         optionAction.put("grasp_model_file",rf.findFile(grasp_model_file.c_str()).c_str());
         optionAction.put("hand_sequences_file",rf.findFile("hand_sequences_file").c_str());
